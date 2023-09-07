@@ -11,13 +11,21 @@ import java.util.HashMap;
 
 public class Token
 {
+    /**
+     * TODO: Investigate requirements to implement the unused tokens
+     * (starting from DIV, MOD, AND, ......, ELSE, CASE, OF)
+     */
     public enum TokenType
     {
         PROGRAM, BEGIN, END, REPEAT, UNTIL, WRITE, WRITELN, 
-        PERIOD, COLON, COLON_EQUALS, SEMICOLON,
+        PERIOD, COMMA, COLON, COLON_EQUALS, SEMICOLON,
         PLUS, MINUS, STAR, SLASH, LPAREN, RPAREN, 
-        EQUALS, LESS_THAN,
-        IDENTIFIER, INTEGER, REAL, STRING, END_OF_FILE, ERROR
+        EQUALS, NOT_EQUAL, LESS_THAN, LESS_EQUALS, GREATER_THAN, GREATER_EQUALS,
+        DOT_DOT, QUOTE, LBRACKET, RBRACKET, CARAT,
+        IDENTIFIER, INTEGER, REAL, STRING, END_OF_FILE, ERROR,
+        DIV, MOD, AND, OR, NOT, CONST, TYPE, VAR, PROCEDURE,
+        FUNCTION, WHILE, DO, FOR, TO, DOWNTO, IF, THEN, ELSE, CASE,
+        OF
     }
     
     /**
@@ -136,9 +144,42 @@ public class Token
 
         // Loop to append the rest of the characters of the string,
         // up to but not including the closing quote.
-        for (char ch = source.nextChar(); ch != '\''; ch = source.nextChar())
+        boolean closingQuote = false;
+        char ch = '\'';
+
+
+        /**
+         * TODO: STATE DIAGRAM --> Prereq to Handle String not closed error.
+         * Draw a state diagram to indicate how we will read in a string
+         * and figure out if it has been left unclosed.
+         */
+        /**
+         * TODO: Handle String not closed error.
+         * Hint: The string is not closed when we run into an unexpected character.
+         * What characters do we expect when reading a string and what
+         * characters do we not expect?
+         */
+        while (!closingQuote)
         {
-            token.text += ch;
+            ch = source.nextChar();
+            // Got a '
+            if (ch == '\'')
+            {
+                ch = source.nextChar();
+                // Is it a '' ?
+                if (ch == '\'')
+                {
+                    token.text += '\'';
+                }
+                // Then it is the closing '
+                else{
+                    closingQuote = true;
+                }
+            }
+            else
+            {
+                token.text += ch;
+            }
         }
         
         token.text += '\'';  // append the closing '
@@ -165,17 +206,39 @@ public class Token
 
         switch (firstChar)
         {
-            case '.' : token.type = TokenType.PERIOD;     break;
+            case ',' : token.type = TokenType.COMMA;      break;
             case ';' : token.type = TokenType.SEMICOLON;  break;
             case '+' : token.type = TokenType.PLUS;       break;
             case '-' : token.type = TokenType.MINUS;      break;
             case '*' : token.type = TokenType.STAR;       break;
             case '/' : token.type = TokenType.SLASH;      break;
-            case '=' : token.type = TokenType.EQUALS;     break;
-            case '<' : token.type = TokenType.LESS_THAN;  break;
             case '(' : token.type = TokenType.LPAREN;     break;
             case ')' : token.type = TokenType.RPAREN;     break;
-            
+            case '=' : token.type = TokenType.EQUALS;     break;
+            case '\'': token.type = TokenType.QUOTE;      break;
+            case '[' : token.type = TokenType.LBRACKET;   break;
+            case ']' : token.type = TokenType.RBRACKET;   break;
+            case '^' : token.type = TokenType.CARAT;      break;
+
+            case '.' : {
+                char nextChar = source.nextChar();
+
+                //Is it the .. symbol?
+                if (nextChar == '.')
+                {
+                    token.text += '.';
+                    token.type = TokenType.DOT_DOT;
+                }
+
+                // No, it's just the . symbol
+                else
+                {
+                    token.type = TokenType.PERIOD;
+                    return token;
+                }
+                break;
+            }
+
             case ':' : 
             {
                 char nextChar = source.nextChar();
@@ -194,6 +257,57 @@ public class Token
                     return token;  // already consumed :
                 }
 
+                break;
+            }
+
+            case '<' :
+            {
+                char nextChar = source.nextChar();
+
+                //Is it the <> symbol?
+                if (nextChar == '>')
+                {
+                    token.text += '>';
+                    token.type = TokenType.NOT_EQUAL;
+                }
+
+                //Is it the <= symbol?
+                if (nextChar == '=')
+                {
+                    token.text += '=';
+                    token.type = TokenType.LESS_EQUALS;
+                }
+
+
+
+                //No, it's just the < symbol
+                else
+                {
+                    token.type = TokenType.LESS_THAN;
+                    return token;
+
+                }
+                break;
+            }
+
+            case '>' :
+            {
+                char nextChar = source.nextChar();
+
+                //Is it the >= symbol?
+                if (nextChar == '=')
+                {
+                    token.text += '=';
+                    token.type = TokenType.GREATER_EQUALS;
+                }
+
+                //No, it's just the < symbol
+                else
+                {
+                    token.type = TokenType.GREATER_THAN;
+                    return token;
+
+                }
                 break;
             }
             
