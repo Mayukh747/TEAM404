@@ -43,6 +43,26 @@ public class Token
         reservedWords.put("UNTIL",   TokenType.UNTIL);
         reservedWords.put("WRITE",   TokenType.WRITE);
         reservedWords.put("WRITELN", TokenType.WRITELN);
+        reservedWords.put("DIV", TokenType.DIV);
+        reservedWords.put("MOD", TokenType.MOD);
+        reservedWords.put("AND", TokenType.AND);
+        reservedWords.put("OR", TokenType.OR);
+        reservedWords.put("NOT", TokenType.NOT);
+        reservedWords.put("CONST", TokenType.CONST);
+        reservedWords.put("TYPE", TokenType.TYPE);
+        reservedWords.put("VAR", TokenType.VAR);
+        reservedWords.put("PROCEDURE", TokenType.PROCEDURE);
+        reservedWords.put("FUNCTION", TokenType.FUNCTION);
+        reservedWords.put("WHILE", TokenType.WHILE);
+        reservedWords.put("DO", TokenType.DO);
+        reservedWords.put("FOR", TokenType.FOR);
+        reservedWords.put("TO", TokenType.TO);
+        reservedWords.put("DOWNTO", TokenType.DOWNTO);
+        reservedWords.put("IF", TokenType.IF);
+        reservedWords.put("THEN", TokenType.THEN);
+        reservedWords.put("ELSE", TokenType.ELSE);
+        reservedWords.put("CASE", TokenType.CASE);
+        reservedWords.put("OF", TokenType.OF);
     }
     
     public TokenType type;       // what type of token
@@ -301,7 +321,7 @@ public class Token
                     token.type = TokenType.GREATER_EQUALS;
                 }
 
-                //No, it's just the < symbol
+                //No, it's just the > symbol
                 else
                 {
                     token.type = TokenType.GREATER_THAN;
