@@ -161,6 +161,7 @@ public class Token
     {
         Token token = new Token(firstChar);  // the leading '
         token.lineNumber = source.lineNumber();
+        token.type = TokenType.STRING;
 
         // Loop to append the rest of the characters of the string,
         // up to but not including the closing quote.
@@ -179,32 +180,33 @@ public class Token
          * What characters do we expect when reading a string and what
          * characters do we not expect?
          */
-        while (!closingQuote)
-        {
+        while (!closingQuote) {
             ch = source.nextChar();
             // Got a '
-            if (ch == '\'')
-            {
+            if (ch == '\'') {
                 ch = source.nextChar();
                 // Is it a '' ?
-                if (ch == '\'')
-                {
+                if (ch == '\'') {
                     token.text += '\'';
                 }
                 // Then it is the closing '
-                else{
+                else {
                     closingQuote = true;
                 }
             }
-            else
+            // Reached end of file before string closes
+            else if (ch == source.EOF)
             {
+                tokenError(token, "String not closed" );
+                token.value = token.text.substring(1);  // Don't include leading ' in value
+                return token;
+            }
+            else {
                 token.text += ch;
             }
         }
         
         token.text += '\'';  // append the closing '
-        
-        token.type = TokenType.STRING;
         
         // Don't include the leading and trailing ' in the value.
         token.value = token.text.substring(1, token.text.length() - 1);
