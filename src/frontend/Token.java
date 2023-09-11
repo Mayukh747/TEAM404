@@ -11,10 +11,6 @@ import java.util.HashMap;
 
 public class Token
 {
-    /**
-     * TODO: Investigate requirements to implement the unused tokens
-     * (starting from DIV, MOD, AND, ......, ELSE, CASE, OF)
-     */
     public enum TokenType
     {
         PROGRAM, BEGIN, END, REPEAT, UNTIL, WRITE, WRITELN, 
@@ -160,12 +156,12 @@ public class Token
     public static Token string(char firstChar, Source source)
     {
         Token token = new Token(firstChar);  // the leading '
+        token.type = TokenType.STRING;
         token.lineNumber = source.lineNumber();
 
         // Loop to append the rest of the characters of the string,
         // up to but not including the closing quote.
-        boolean closingQuote = false;
-        char ch = '\'';
+        char ch = source.nextChar();
 
 
         /**
@@ -173,39 +169,39 @@ public class Token
          * Draw a state diagram to indicate how we will read in a string
          * and figure out if it has been left unclosed.
          */
-        /**
-         * TODO: Handle String not closed error.
-         * Hint: The string is not closed when we run into an unexpected character.
-         * What characters do we expect when reading a string and what
-         * characters do we not expect?
-         */
-        while (!closingQuote)
+        while (true)
         {
-            ch = source.nextChar();
-            // Got a '
-            if (ch == '\'')
+            // Handle String Not Closed
+            if (ch == 0)
             {
+                tokenError(token, "String not closed");
+                return token;
+            }
+
+            // Got a '
+            if (ch == '\'') {
+
                 ch = source.nextChar();
-                // Is it a '' ?
-                if (ch == '\'')
-                {
+                if (ch == '\'') {
                     token.text += '\'';
+
                 }
                 // Then it is the closing '
-                else{
-                    closingQuote = true;
+                else {
+                    token.text += '\''; //append the already consumed closing '
+                    break;
                 }
             }
+            // Otherwise, keep appending to the string
             else
             {
                 token.text += ch;
             }
+            ch = source.nextChar();
         }
         
-        token.text += '\'';  // append the closing '
-        source.nextChar();   // and consume it
-        
-        token.type = TokenType.STRING;
+//        token.text += '\'';  // append the closing '
+//        source.nextChar();   // and consume it
         
         // Don't include the leading and trailing ' in the value.
         token.value = token.text.substring(1, token.text.length() - 1);
@@ -297,8 +293,6 @@ public class Token
                     token.text += '=';
                     token.type = TokenType.LESS_EQUALS;
                 }
-
-
 
                 //No, it's just the < symbol
                 else
