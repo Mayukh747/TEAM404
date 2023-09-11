@@ -11,10 +11,6 @@ import java.util.HashMap;
 
 public class Token
 {
-    /**
-     * TODO: Investigate requirements to implement the unused tokens
-     * (starting from DIV, MOD, AND, ......, ELSE, CASE, OF)
-     */
     public enum TokenType
     {
         PROGRAM, BEGIN, END, REPEAT, UNTIL, WRITE, WRITELN, 
@@ -169,17 +165,6 @@ public class Token
         char ch = '\'';
 
 
-        /**
-         * TODO: STATE DIAGRAM --> Prereq to Handle String not closed error.
-         * Draw a state diagram to indicate how we will read in a string
-         * and figure out if it has been left unclosed.
-         */
-        /**
-         * TODO: Handle String not closed error.
-         * Hint: The string is not closed when we run into an unexpected character.
-         * What characters do we expect when reading a string and what
-         * characters do we not expect?
-         */
         while (!closingQuote) {
             ch = source.nextChar();
             // Got a '
