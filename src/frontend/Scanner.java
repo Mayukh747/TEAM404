@@ -29,10 +29,6 @@ public class Scanner
         char ch = source.currentChar();
         
         // Skip blanks and other whitespace characters.
-        /**
-         * TODO: STATE DIGRAM: Verify that your logic for scanning
-         * comments is appropriate with
-         */
         while (Character.isWhitespace(ch) || ch == '{')
         {
             if (ch == '{')
