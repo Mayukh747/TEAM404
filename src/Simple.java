@@ -59,7 +59,7 @@ public class Simple
              token.type != END_OF_FILE; 
              token = scanner.nextToken())
         {
-            System.out.printf("%12s : %s\n", token.type, token.text);
+            System.out.printf("%14s : %s\n", token.type, token.text);
         }
     }
     
@@ -74,26 +74,35 @@ public class Simple
         Node programNode = parser.parseProgram();     // and parse the program
         int errorCount = parser.errorCount();
         
+//        // If no errors, print the parse tree.
+//        if (errorCount == 0)
+//        {
+//            System.out.println("Parse tree:");
+//            System.out.println();
+//
+//            ParseTreePrinter printer = new ParseTreePrinter();
+//            printer.print(programNode);
+//        }
+//        else
+//        {
+//            System.out.println();
+//            System.out.println("There were " + errorCount + " syntax errors.");
+//        }
         // If no errors, print the parse tree.
-        if (errorCount == 0)
-        {
+
             System.out.println("Parse tree:");
             System.out.println();
-            
+
             ParseTreePrinter printer = new ParseTreePrinter();
             printer.print(programNode);
-        }
-        else
-        {
+
             System.out.println();
             System.out.println("There were " + errorCount + " syntax errors.");
-        }
     }
     
     /**
      * Test the executor.
      * @param parser the parser.
-     * @param symtab the symbol table.
      */
     private static void executeProgram(Parser parser, Symtab symtab)
     {

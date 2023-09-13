@@ -30,7 +30,7 @@ public class SymtabEntry
 
     /**
      * Getter.
-     * @return the entry's valuel
+     * @return the entry's value
      */
     public Double getValue() { return value; }
     

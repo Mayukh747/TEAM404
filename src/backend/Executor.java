@@ -33,6 +33,7 @@ public class Executor
         
         relationals.add(EQ);
         relationals.add(LT);
+        relationals.add(LEQ);
     }
     
     public Executor(Symtab symtab)
@@ -46,14 +47,17 @@ public class Executor
         {
             case PROGRAM :  return visitProgram(node);
             
-            case COMPOUND : 
-            case ASSIGN :   
-            case LOOP : 
-            case WRITE :
+            case COMPOUND : return visitCompound(node);
+            case ASSIGN :   return visitAssign(node);
+            case LOOP :     return visitLoop(node);
+            case WRITE :    return visitWrite(node);
             case WRITELN :  return visitStatement(node);
+
             
             case TEST:      return visitTest(node);
-            
+
+            case NOT :      return visitNot(node);
+
             default :       return visitExpression(node);
         }
     }
@@ -210,7 +214,8 @@ public class Executor
             {
                 case EQ : value = value1 == value2; break;
                 case LT : value = value1 <  value2; break;
-                
+                case LEQ : value = value1 <= value2; break;
+
                 default : break;
             }
             
@@ -268,6 +273,24 @@ public class Executor
     private Object visitStringConstant(Node stringConstantNode)
     {
         return (String) stringConstantNode.value;
+    }
+
+    // TODO: Should NOT even have its own visit method / node?
+    private Object visitNot(Node notNode) {
+        Object expression = visitExpression(notNode.children.get(0));
+
+        // TODO: This feels like a job for the parser to check instead. Also returning null seems incorrect.
+        //  Shouldn't the program stop running as soon as there is a runtime error?
+        if (expression instanceof Boolean) {
+            return !(boolean)(visitExpression(notNode.children.get(0)));
+        }
+        else if (expression instanceof Integer){
+            return -1 * (Integer) visitExpression(notNode.children.get(0));
+        }
+        else {
+            runtimeError(notNode, "Expression after \"NOT\" is not boolean");
+            return null;
+        }
     }
 
     private void runtimeError(Node node, String message)

@@ -87,6 +87,8 @@ public class Parser
         statementStarters.add(BEGIN);
         statementStarters.add(IDENTIFIER);
         statementStarters.add(REPEAT);
+        statementStarters.add(WHILE);
+        statementStarters.add(Token.TokenType.IF);
         statementStarters.add(Token.TokenType.WRITE);
         statementStarters.add(Token.TokenType.WRITELN);
         
@@ -98,6 +100,8 @@ public class Parser
         
         relationalOperators.add(EQUALS);
         relationalOperators.add(LESS_THAN);
+        relationalOperators.add(LESS_EQUALS);
+        relationalOperators.add(NOT_EQUALS);
         
         simpleExpressionOperators.add(PLUS);
         simpleExpressionOperators.add(MINUS);
@@ -117,8 +121,11 @@ public class Parser
             case IDENTIFIER : stmtNode = parseAssignmentStatement(); break;
             case BEGIN :      stmtNode = parseCompoundStatement();   break;
             case REPEAT :     stmtNode = parseRepeatStatement();     break;
+            case WHILE :      stmtNode = parseWhileStatement();      break;
+            case IF:          stmtNode = parseIfStatement();         break;
             case WRITE :      stmtNode = parseWriteStatement();      break;
             case WRITELN :    stmtNode = parseWritelnStatement();    break;
+
             case SEMICOLON :  stmtNode = null; break;  // empty statement
             
             default : syntaxError("Unexpected token");
@@ -138,10 +145,10 @@ private Node parseAssignmentStatement()
     // if it isn't already in there.
     String variableName = currentToken.text;
     SymtabEntry variableId = symtab.lookup(variableName.toLowerCase());
-    if (variableId == null) variableId = symtab.enter(variableName.toLowerCase());
+    if (variableId == null) variableId = symtab.enter(variableName);
     
     // The assignment node adopts the variable node as its first child.
-    Node lhsNode = new Node(VARIABLE);        
+    Node lhsNode  = new Node(VARIABLE);        
     lhsNode.text  = variableName;
     lhsNode.entry = variableId;
     assignmentNode.adopt(lhsNode);
@@ -228,6 +235,57 @@ private Node parseAssignmentStatement()
         
         return loopNode;
     }
+
+    private Node parseWhileStatement() {
+        // The current token should now be WHILE
+
+        Node loopNode = new Node(LOOP);
+        currentToken = scanner.nextToken();     // consume WHILE
+
+        // current token should be condition of while loop
+        Node testNode = new Node(TEST);
+        testNode.lineNumber = currentToken.lineNumber;
+        Node notNode = new Node(Node.NodeType.NOT);     // NOT node because while handles condition in opposite way as repeat
+        notNode.adopt(parseExpression());
+        testNode.adopt(notNode);
+        loopNode.adopt(testNode);
+
+        // current token should be DO
+        if (currentToken.type == DO) {
+            currentToken = scanner.nextToken();     // consume DO
+            loopNode.adopt(parseCompoundStatement());
+        }
+        else syntaxError("Expecting DO");
+
+        return loopNode;
+    }
+
+    private Node parseIfStatement()
+    {
+        Node ifNode = new Node(Node.NodeType.IF);
+        currentToken = scanner.nextToken(); //consume IF
+
+        // current token should be the condition of the if clause
+        Node testNode = new Node(TEST);
+        testNode.lineNumber = currentToken.lineNumber;
+        testNode.adopt(parseExpression());
+        ifNode.adopt(testNode);
+
+        // current token should be THEN
+        if (currentToken.type == THEN){
+            currentToken = scanner.nextToken(); //consume THEN
+            ifNode.adopt(parseStatement());
+        }
+        else syntaxError("Expecting THEN");
+
+        if (currentToken.type == ELSE)
+        {
+            currentToken = scanner.nextToken(); //consume ELSE
+            ifNode.adopt(parseStatement());
+        }
+
+        return ifNode;
+    }
     
     private Node parseWriteStatement()
     {
@@ -275,7 +333,8 @@ private Node parseAssignmentStatement()
             node.adopt(parseVariable());
             hasArgument = true;
         }
-        else if (currentToken.type == STRING)
+        else if (   (currentToken.type == CHARACTER)
+                 || (currentToken.type == STRING))
         {
             node.adopt(parseStringConstant());
             hasArgument = true;
@@ -328,8 +387,11 @@ private Node parseAssignmentStatement()
         if (relationalOperators.contains(currentToken.type))
         {
             Token.TokenType tokenType = currentToken.type;
-            Node opNode = tokenType == EQUALS    ? new Node(EQ)
-                        : tokenType == LESS_THAN ? new Node(LT)
+            Node opNode = tokenType == EQUALS      ? new Node(EQ)
+                        : tokenType == LESS_THAN   ? new Node(LT)
+                        : tokenType == LESS_EQUALS ? new Node(LEQ)
+                        : tokenType == NOT_EQUALS  ? new Node(NEQ)
+                        : tokenType == Token.TokenType.NOT
                         :                          null;
             
             currentToken = scanner.nextToken();  // consume relational operator
@@ -351,7 +413,7 @@ private Node parseAssignmentStatement()
     private Node parseSimpleExpression()
     {
         // The current token should now be an identifier or a number.
-        
+        //TODO: + -
         // The simple expression's root node.
         Node simpExprNode = parseTerm();
         
@@ -382,7 +444,7 @@ private Node parseAssignmentStatement()
         // The term's root node.
         Node termNode = parseFactor();
         
-        // Keep parsing more factor as long as the current token
+        // Keep parsing more factors as long as the current token
         // is a * or / operator.
         while (termOperators.contains(currentToken.type))
         {
@@ -437,8 +499,9 @@ private Node parseAssignmentStatement()
         SymtabEntry variableId = symtab.lookup(variableName.toLowerCase());
         if (variableId == null) semanticError("Undeclared identifier");
         
-        Node node = new Node(VARIABLE);
-        node.text = variableName;
+        Node node  = new Node(VARIABLE);
+        node.text  = variableName;
+        node.entry = variableId;
         
         currentToken = scanner.nextToken();  // consume the identifier        
         return node;
@@ -468,7 +531,7 @@ private Node parseAssignmentStatement()
     
     private Node parseStringConstant()
     {
-        // The current token should now be STRING.
+        // The current token should now be CHARACTER or STRING.
         
         Node stringNode = new Node(STRING_CONSTANT);
         stringNode.value = currentToken.value;
