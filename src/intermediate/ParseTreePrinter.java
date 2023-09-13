@@ -20,7 +20,6 @@ public class ParseTreePrinter
 
     /**
      * Constructor
-     * @param ps the output print stream.
      */
     public ParseTreePrinter()
     {

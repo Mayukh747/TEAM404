@@ -34,6 +34,7 @@ public class Node
         this.type = type;
         this.lineNumber = 0;
         this.text = null;
+        this.entry = null;
         this.value = null;
         this.children = new ArrayList<Node>();
     }

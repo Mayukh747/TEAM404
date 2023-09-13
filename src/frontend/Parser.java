@@ -138,10 +138,10 @@ private Node parseAssignmentStatement()
     // if it isn't already in there.
     String variableName = currentToken.text;
     SymtabEntry variableId = symtab.lookup(variableName.toLowerCase());
-    if (variableId == null) variableId = symtab.enter(variableName.toLowerCase());
+    if (variableId == null) variableId = symtab.enter(variableName);
     
     // The assignment node adopts the variable node as its first child.
-    Node lhsNode = new Node(VARIABLE);        
+    Node lhsNode  = new Node(VARIABLE);        
     lhsNode.text  = variableName;
     lhsNode.entry = variableId;
     assignmentNode.adopt(lhsNode);
@@ -275,7 +275,8 @@ private Node parseAssignmentStatement()
             node.adopt(parseVariable());
             hasArgument = true;
         }
-        else if (currentToken.type == STRING)
+        else if (   (currentToken.type == CHARACTER)
+                 || (currentToken.type == STRING))
         {
             node.adopt(parseStringConstant());
             hasArgument = true;
@@ -382,7 +383,7 @@ private Node parseAssignmentStatement()
         // The term's root node.
         Node termNode = parseFactor();
         
-        // Keep parsing more factor as long as the current token
+        // Keep parsing more factors as long as the current token
         // is a * or / operator.
         while (termOperators.contains(currentToken.type))
         {
@@ -437,8 +438,9 @@ private Node parseAssignmentStatement()
         SymtabEntry variableId = symtab.lookup(variableName.toLowerCase());
         if (variableId == null) semanticError("Undeclared identifier");
         
-        Node node = new Node(VARIABLE);
-        node.text = variableName;
+        Node node  = new Node(VARIABLE);
+        node.text  = variableName;
+        node.entry = variableId;
         
         currentToken = scanner.nextToken();  // consume the identifier        
         return node;
@@ -468,7 +470,7 @@ private Node parseAssignmentStatement()
     
     private Node parseStringConstant()
     {
-        // The current token should now be STRING.
+        // The current token should now be CHARACTER or STRING.
         
         Node stringNode = new Node(STRING_CONSTANT);
         stringNode.value = currentToken.value;

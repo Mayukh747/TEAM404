@@ -39,7 +39,7 @@ public class Simple
         else if (operation.equalsIgnoreCase("-execute"))
         {
             Symtab symtab = new Symtab();
-            executeProgram(new Parser(new Scanner(source), symtab), symtab);
+            executeProgram(new Parser(new Scanner(source), symtab));
         }
     }
     
@@ -59,7 +59,7 @@ public class Simple
              token.type != END_OF_FILE; 
              token = scanner.nextToken())
         {
-            System.out.printf("%12s : %s\n", token.type, token.text);
+            System.out.printf("%14s : %s\n", token.type, token.text);
         }
     }
     
@@ -93,9 +93,8 @@ public class Simple
     /**
      * Test the executor.
      * @param parser the parser.
-     * @param symtab the symbol table.
      */
-    private static void executeProgram(Parser parser, Symtab symtab)
+    private static void executeProgram(Parser parser)
     {
         Node programNode = parser.parseProgram();  // build the parse tree
         int errorCount = parser.errorCount();
@@ -103,7 +102,7 @@ public class Simple
         // If no errors, execute the program using the parse tree.
         if (errorCount == 0)
         {
-            Executor executor = new Executor(symtab);
+            Executor executor = new Executor();
             executor.visit(programNode);
         }
         else
