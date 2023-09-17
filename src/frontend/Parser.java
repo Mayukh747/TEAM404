@@ -92,6 +92,9 @@ public class Parser
         statementStarters.add(WHILE);
         statementStarters.add(Token.TokenType.WRITE);
         statementStarters.add(Token.TokenType.WRITELN);
+        statementStarters.add(Token.TokenType.IF);
+        statementStarters.add(Token.TokenType.FOR);
+        statementStarters.add(Token.TokenType.CASE);
 
         // Tokens that can immediately follow a statement.
         statementFollowers.add(SEMICOLON);
@@ -251,7 +254,7 @@ public class Parser
         // current token should be DO
         if (currentToken.type == DO) {
             currentToken = scanner.nextToken();     // consume DO
-            loopNode.adopt(parseCompoundStatement());
+            loopNode.adopt(parseStatement());
         }
         else syntaxError("Expecting DO");
 
