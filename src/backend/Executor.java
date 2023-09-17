@@ -35,6 +35,7 @@ public class Executor
         relationals.add(EQ);
         relationals.add(LT);
         relationals.add(LEQ);
+        relationals.add(GT);
     }
     
     public Executor(Symtab symtab)
@@ -204,7 +205,8 @@ public class Executor
         // Binary expressions.
         double value1 = (Double) visit(expressionNode.children.get(0));
         double value2 = (Double) visit(expressionNode.children.get(1));
-        
+
+        // TODO: Add more stuff here as we add more node types
         // Relational expressions.
         if (relationals.contains(expressionNode.type))
         {
@@ -212,9 +214,10 @@ public class Executor
             
             switch (expressionNode.type)
             {
-                case EQ : value = value1 == value2; break;
-                case LT : value = value1 <  value2; break;
+                case EQ : value = value1 ==  value2; break;
+                case LT : value = value1 <   value2; break;
                 case LEQ : value = value1 <= value2; break;
+                case GT : value = value1 >   value2; break;
                 
                 default : break;
             }

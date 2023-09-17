@@ -101,6 +101,10 @@ public class Parser
         statementFollowers.add(END);
         statementFollowers.add(UNTIL);
         statementFollowers.add(END_OF_FILE);
+        statementFollowers.add(THEN);
+        statementFollowers.add(ELSE);
+        statementFollowers.add(TO);
+        statementFollowers.add(DOWNTO);
         
         relationalOperators.add(EQUALS);
         relationalOperators.add(LESS_THAN);
@@ -125,6 +129,7 @@ public class Parser
             case BEGIN :      stmtNode = parseCompoundStatement();   break;
             case REPEAT :     stmtNode = parseRepeatStatement();     break;
             case WHILE :      stmtNode = parseWhileStatement();      break;
+            case FOR :        stmtNode = parseForStatement();        break;
             case WRITE :      stmtNode = parseWriteStatement();      break;
             case WRITELN :    stmtNode = parseWritelnStatement();    break;
             case SEMICOLON :  stmtNode = null; break;  // empty statement
@@ -259,6 +264,81 @@ public class Parser
         else syntaxError("Expecting DO");
 
         return loopNode;
+    }
+
+    // TODO: missing things related to line number
+    private Node parseForStatement() {
+        // The current token should be FOR
+
+        Node compoundNode = new Node(COMPOUND);
+        currentToken = scanner.nextToken();      // consume FOR
+        compoundNode.lineNumber = currentToken.lineNumber;
+
+        compoundNode.adopt(parseAssignmentStatement());     // initial assignment
+
+        Node assignmentVarNode = (compoundNode.children.get(0)).children.get(0);
+        assignmentVarNode.lineNumber = currentToken.lineNumber;
+
+        // The current token should be either TO or DOWNTO
+        Node loopNode = new Node(LOOP);
+        Node testNode = new Node(TEST);
+        loopNode.adopt(testNode);
+        loopNode.lineNumber = currentToken.lineNumber;
+        testNode.lineNumber = currentToken.lineNumber;
+
+        Token.TokenType toOrDownto = currentToken.type;     // storing for later
+        if (currentToken.type == TO) {
+            Node greaterThanNode = new Node(GT);
+            greaterThanNode.lineNumber = currentToken.lineNumber;
+            greaterThanNode.adopt(assignmentVarNode);
+            currentToken = scanner.nextToken();         // consume TO
+            greaterThanNode.adopt(parseIntegerConstant());
+            testNode.adopt(greaterThanNode);
+        }
+        else if (currentToken.type == DOWNTO) {
+            Node lessThanNode = new Node(LT);
+            lessThanNode.lineNumber = currentToken.lineNumber;
+            lessThanNode.adopt(assignmentVarNode);
+            currentToken = scanner.nextToken();         // consume DOWNTO
+            lessThanNode.adopt(parseIntegerConstant());
+            testNode.adopt(lessThanNode);
+        }
+        else {
+            syntaxError("Expected either TO or DOWNTO");
+        }
+
+        // The current token should be DO
+        if (currentToken.type != DO) syntaxError("Expected DO");
+        currentToken = scanner.nextToken();             // consume DO
+
+        loopNode.adopt(parseStatement());
+
+        // update loop variable
+        Node updateVarNode = new Node(ASSIGN);
+        updateVarNode.lineNumber = currentToken.lineNumber;
+        updateVarNode.adopt(assignmentVarNode);
+        Node intNode = new Node(INTEGER_CONSTANT);
+        intNode.lineNumber = currentToken.lineNumber;
+        intNode.value = 1l;
+        if (toOrDownto == TO) {
+            Node addNode = new Node(ADD);
+            addNode.lineNumber = currentToken.lineNumber;
+            addNode.adopt(assignmentVarNode);
+            addNode.adopt(intNode);
+            updateVarNode.adopt(addNode);
+        }
+        else {
+            Node subtractNode = new Node(SUBTRACT);
+            subtractNode.lineNumber = currentToken.lineNumber;
+            subtractNode.adopt(assignmentVarNode);
+            subtractNode.adopt(intNode);
+            updateVarNode.adopt(subtractNode);
+        }
+
+        loopNode.adopt(updateVarNode);
+        compoundNode.adopt(loopNode);
+
+        return compoundNode;
     }
     
     private Node parseWriteStatement()
