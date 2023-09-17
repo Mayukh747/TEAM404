@@ -1,6 +1,6 @@
 The following output is from running Simple -scan ScannerTest.txt:
 
-/Users/mayukh/Library/Java/JavaVirtualMachines/openjdk-20.0.2/Contents/Home/bin/java -javaagent:/Applications/IntelliJ IDEA.app/Contents/lib/idea_rt.jar=59460:/Applications/IntelliJ IDEA.app/Contents/bin -Dfile.encoding=UTF-8 -Dsun.stdout.encoding=UTF-8 -Dsun.stderr.encoding=UTF-8 -classpath /Users/mayukh/IdeaProjects/Team 404/out/production/Team 404 Simple -scan ScannerTest.txt
+/Users/mayukh/Library/Java/JavaVirtualMachines/openjdk-20.0.2/Contents/Home/bin/java -javaagent:/Applications/IntelliJ IDEA.app/Contents/lib/idea_rt.jar=60815:/Applications/IntelliJ IDEA.app/Contents/bin -Dfile.encoding=UTF-8 -Dsun.stdout.encoding=UTF-8 -Dsun.stderr.encoding=UTF-8 -classpath /Users/mayukh/IdeaProjects/Team 404/out/production/Team 404 Simple -scan ScannerTest.txt
 Tokens:
 
   IDENTIFIER : Two
@@ -15,9 +15,9 @@ Tokens:
       STRING : 'Hello, world.'
       STRING : 'It's Friday!'
       STRING : ''
-      STRING : 'A'
-      STRING : 'x'
-      STRING : '''
+   CHARACTER : 'A'
+   CHARACTER : 'x'
+   CHARACTER : '''
       STRING : ' ' ' '
       STRING : ''''
       STRING : 'This string
@@ -33,8 +33,7 @@ COLON_EQUALS : :=
    SEMICOLON : ;
        COLON : :
       EQUALS : =
-   LESS_THAN : <>
-GREATER_THAN : >
+  NOT_EQUALS : <>
    LESS_THAN : <
  LESS_EQUALS : <=
 GREATER_EQUALS : >=
@@ -50,8 +49,8 @@ TOKEN ERROR at line 24: Invalid token at '}'
         PLUS : +
        MINUS : -
 COLON_EQUALS : :=
-   LESS_THAN : <>
-GREATER_EQUALS : >=
+  NOT_EQUALS : <>
+      EQUALS : =
  LESS_EQUALS : <=
       EQUALS : =
      DOT_DOT : ..
@@ -75,3 +74,4 @@ TOKEN ERROR at line 34: String not closed at ''String 'not' closed'
       STRING : 'String 'not' closed
 
 Process finished with exit code 0
+

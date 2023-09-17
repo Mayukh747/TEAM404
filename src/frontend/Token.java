@@ -16,9 +16,9 @@ public class Token
         PROGRAM, BEGIN, END, REPEAT, UNTIL, WRITE, WRITELN, 
         PERIOD, COMMA, COLON, COLON_EQUALS, SEMICOLON,
         PLUS, MINUS, STAR, SLASH, LPAREN, RPAREN, 
-        EQUALS, NOT_EQUAL, LESS_THAN, LESS_EQUALS, GREATER_THAN, GREATER_EQUALS,
+        EQUALS, NOT_EQUALS, LESS_THAN, LESS_EQUALS, GREATER_THAN, GREATER_EQUALS,
         DOT_DOT, QUOTE, LBRACKET, RBRACKET, CARAT,
-        IDENTIFIER, INTEGER, REAL, STRING, END_OF_FILE, ERROR,
+        IDENTIFIER, INTEGER, REAL, CHARACTER, STRING, END_OF_FILE, ERROR,
         DIV, MOD, AND, OR, NOT, CONST, TYPE, VAR, PROCEDURE,
         FUNCTION, WHILE, DO, FOR, TO, DOWNTO, IF, THEN, ELSE, CASE,
         OF
@@ -196,6 +196,10 @@ public class Token
         // Don't include the leading and trailing ' in the value.
         token.value = token.text.substring(1, token.text.length() - 1);
 
+        if (token.text.length() == 3){
+            token.type = Token.TokenType.CHARACTER;
+        }
+
         return token;
     }
     
@@ -268,17 +272,17 @@ public class Token
 
             case '<' :
             {
-                char nextChar = source.nextChar();
+               char nextChar = source.nextChar();
 
                 //Is it the <> symbol?
                 if (nextChar == '>')
                 {
                     token.text += '>';
-                    token.type = TokenType.NOT_EQUAL;
+                    token.type = TokenType.NOT_EQUALS;
                 }
 
                 //Is it the <= symbol?
-                if (nextChar == '=')
+                else if (nextChar == '=')
                 {
                     token.text += '=';
                     token.type = TokenType.LESS_EQUALS;

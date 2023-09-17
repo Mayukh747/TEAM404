@@ -1,6 +1,6 @@
 The following output is from running Simple -scan SquareRootTable.pas:
 
-/Users/mayukh/Library/Java/JavaVirtualMachines/openjdk-20.0.2/Contents/Home/bin/java -javaagent:/Applications/IntelliJ IDEA.app/Contents/lib/idea_rt.jar=59452:/Applications/IntelliJ IDEA.app/Contents/bin -Dfile.encoding=UTF-8 -Dsun.stdout.encoding=UTF-8 -Dsun.stderr.encoding=UTF-8 -classpath /Users/mayukh/IdeaProjects/Team 404/out/production/Team 404 Simple -scan SquareRootTable.pas
+/Users/mayukh/Library/Java/JavaVirtualMachines/openjdk-20.0.2/Contents/Home/bin/java -javaagent:/Applications/IntelliJ IDEA.app/Contents/lib/idea_rt.jar=60802:/Applications/IntelliJ IDEA.app/Contents/bin -Dfile.encoding=UTF-8 -Dsun.stdout.encoding=UTF-8 -Dsun.stderr.encoding=UTF-8 -classpath /Users/mayukh/IdeaProjects/Team 404/out/production/Team 404 Simple -scan SquareRootTable.pas
 Tokens:
 
      PROGRAM : PROGRAM

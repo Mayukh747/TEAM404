@@ -13,9 +13,12 @@ public class Node
 {
     public enum NodeType
     {
+        // TODO: Add more node types.
         PROGRAM, COMPOUND, ASSIGN, LOOP, TEST, WRITE, WRITELN,
         ADD, SUBTRACT, MULTIPLY, DIVIDE, EQ, LT,
-        VARIABLE, INTEGER_CONSTANT, REAL_CONSTANT, STRING_CONSTANT
+        VARIABLE, INTEGER_CONSTANT, REAL_CONSTANT, STRING_CONSTANT,
+
+        NOT, LEQ
     }
 
     public NodeType type;
