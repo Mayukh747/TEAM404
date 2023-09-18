@@ -109,16 +109,23 @@ public class Simple
         Node programNode = parser.parseProgram();  // build the parse tree
         int errorCount = parser.errorCount();
         
-        // If no errors, execute the program using the parse tree.
-        if (errorCount == 0)
-        {
+//        // If no errors, execute the program using the parse tree.
+//        if (errorCount == 0)
+//        {
+//            Executor executor = new Executor(symtab);
+//            executor.visit(programNode);
+//        }
+//        else
+//        {
+//            System.out.println();
+//            System.out.println("There were " + errorCount + " errors.");
+//        }
+
             Executor executor = new Executor(symtab);
             executor.visit(programNode);
-        }
-        else
-        {
+
             System.out.println();
             System.out.println("There were " + errorCount + " errors.");
-        }
+
     }
 }

@@ -102,12 +102,18 @@ public class Parser
         relationalOperators.add(LESS_THAN);
         relationalOperators.add(LESS_EQUALS);
         relationalOperators.add(NOT_EQUALS);
+        relationalOperators.add(GREATER_THAN);
+        relationalOperators.add(GREATER_EQUALS);
         
         simpleExpressionOperators.add(PLUS);
         simpleExpressionOperators.add(MINUS);
+        simpleExpressionOperators.add(Token.TokenType.OR);
         
         termOperators.add(STAR);
         termOperators.add(SLASH);
+        termOperators.add(Token.TokenType.DIV);
+        termOperators.add(Token.TokenType.AND);
+        
     }
     
     private Node parseStatement()
@@ -390,8 +396,9 @@ private Node parseAssignmentStatement()
             Node opNode = tokenType == EQUALS      ? new Node(EQ)
                         : tokenType == LESS_THAN   ? new Node(LT)
                         : tokenType == LESS_EQUALS ? new Node(LEQ)
+                        : tokenType == GREATER_THAN ? new Node(GT)
+                        : tokenType == GREATER_EQUALS ? new Node(GEQ)
                         : tokenType == NOT_EQUALS  ? new Node(NEQ)
-                        : tokenType == Token.TokenType.NOT
                         :                          null;
             
             currentToken = scanner.nextToken();  // consume relational operator
@@ -422,6 +429,7 @@ private Node parseAssignmentStatement()
         while (simpleExpressionOperators.contains(currentToken.type))
         {
             Node opNode = currentToken.type == PLUS ? new Node(ADD)
+                        : currentToken.type == Token.TokenType.OR ? new Node(Node.NodeType.OR)
                                                     : new Node(SUBTRACT);
             
             currentToken = scanner.nextToken();  // consume the operator
@@ -448,8 +456,19 @@ private Node parseAssignmentStatement()
         // is a * or / operator.
         while (termOperators.contains(currentToken.type))
         {
+//            Token.TokenType tokenType = currentToken.type;
+//            Node opNode = tokenType == EQUALS      ? new Node(EQ)
+//                    : tokenType == LESS_THAN   ? new Node(LT)
+//                    : tokenType == LESS_EQUALS ? new Node(LEQ)
+//                    : tokenType == NOT_EQUALS  ? new Node(NEQ)
+////                        : tokenType == Token.TokenType.NOT
+//                    :                          null;
+
+
             Node opNode = currentToken.type == STAR ? new Node(MULTIPLY)
-                                                    : new Node(DIVIDE);
+                        : currentToken.type == SLASH ? new Node(DIVIDE)
+                        : currentToken.type == Token.TokenType.AND ? new Node(Node.NodeType.AND)
+                                                    : new Node(Node.NodeType.DIV);
             
             currentToken = scanner.nextToken();  // consume the operator
 
@@ -471,7 +490,13 @@ private Node parseAssignmentStatement()
         if      (currentToken.type == IDENTIFIER) return parseVariable();
         else if (currentToken.type == INTEGER)    return parseIntegerConstant();
         else if (currentToken.type == REAL)       return parseRealConstant();
-        
+        else if (currentToken.type == Token.TokenType.NOT)
+        {
+            currentToken = scanner.nextToken(); //consume NOT
+            Node notNode = new Node(Node.NodeType.NOT);
+            notNode.adopt(parseFactor());
+            return notNode;
+        }
         else if (currentToken.type == LPAREN)
         {
             currentToken = scanner.nextToken();  // consume (

@@ -52,9 +52,12 @@ public class Executor
             case LOOP :     return visitLoop(node);
             case WRITE :    return visitWrite(node);
             case WRITELN :  return visitStatement(node);
+            case IF     :    return visitIf(node);
 
             
             case TEST:      return visitTest(node);
+
+
 
             case NOT :      return visitNot(node);
 
@@ -79,6 +82,7 @@ public class Executor
             case LOOP :      return visitLoop(statementNode);
             case WRITE :     return visitWrite(statementNode);
             case WRITELN :   return visitWriteln(statementNode);
+            case IF     :    return visitIf(statementNode);
             
             default :        return null;
         }
@@ -141,6 +145,18 @@ public class Executor
         if (writelnNode.children.size() > 0) printValue(writelnNode.children);
         System.out.println();
         
+        return null;
+    }
+
+    private Object visitIf(Node ifNode)
+    {
+        if ( (Boolean) visit(ifNode.children.get(0)))
+        {
+            visit(ifNode.children.get(1));
+        }
+        else if (ifNode.children.size() > 2){
+            visit(ifNode.children.get(2));
+        }
         return null;
     }
 
@@ -215,6 +231,9 @@ public class Executor
                 case EQ : value = value1 == value2; break;
                 case LT : value = value1 <  value2; break;
                 case LEQ : value = value1 <= value2; break;
+                case GT : value = value1 > value2; break;
+                case GEQ : value = value1 >= value2; break;
+                case NEQ : value = value1 != value2; break;
 
                 default : break;
             }
