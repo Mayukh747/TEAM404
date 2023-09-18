@@ -1,0 +1,130 @@
+/Users/mdas/Library/Java/JavaVirtualMachines/openjdk-20.0.2/Contents/Home/bin/java -javaagent:/Applications/IntelliJ IDEA.app/Contents/lib/idea_rt.jar=51284:/Applications/IntelliJ IDEA.app/Contents/bin -Dfile.encoding=UTF-8 -Dsun.stdout.encoding=UTF-8 -Dsun.stderr.encoding=UTF-8 -classpath /Users/mdas/IntelliJ-Workspace/TEAM404/out/production/TEAM404 Simple -parse TestFor.txt
+Parse tree:
+
+<PROGRAM TestFor>
+    <COMPOUND line 3>
+        <COMPOUND line 4>
+            <ASSIGN>
+                <VARIABLE i line 4 />
+                <INTEGER_CONSTANT 1 />
+            </ASSIGN>
+            <LOOP line 4>
+                <TEST line 4>
+                    <GT line 4>
+                        <VARIABLE i line 4 />
+                        <INTEGER_CONSTANT 5 />
+                    </GT>
+                </TEST>
+                <COMPOUND line 4>
+                    <WRITE line 5>
+                        <STRING_CONSTANT 'i = ' />
+                    </WRITE>
+                    <WRITELN line 5>
+                        <VARIABLE i />
+                    </WRITELN>
+                </COMPOUND>
+                <ASSIGN line 6>
+                    <VARIABLE i line 4 />
+                    <ADD line 6>
+                        <VARIABLE i line 4 />
+                        <INTEGER_CONSTANT 1 line 6 />
+                    </ADD>
+                </ASSIGN>
+            </LOOP>
+        </COMPOUND>
+        <WRITELN line 7 />
+        <COMPOUND line 9>
+            <ASSIGN>
+                <VARIABLE i line 9 />
+                <INTEGER_CONSTANT 5 />
+            </ASSIGN>
+            <LOOP line 9>
+                <TEST line 9>
+                    <LT line 9>
+                        <VARIABLE i line 9 />
+                        <INTEGER_CONSTANT 1 />
+                    </LT>
+                </TEST>
+                <COMPOUND line 9>
+                    <WRITE line 10>
+                        <STRING_CONSTANT 'i = ' />
+                    </WRITE>
+                    <WRITELN line 10>
+                        <VARIABLE i />
+                    </WRITELN>
+                </COMPOUND>
+                <ASSIGN line 11>
+                    <VARIABLE i line 9 />
+                    <SUBTRACT line 11>
+                        <VARIABLE i line 9 />
+                        <INTEGER_CONSTANT 1 line 11 />
+                    </SUBTRACT>
+                </ASSIGN>
+            </LOOP>
+        </COMPOUND>
+        <WRITELN line 12 />
+        <COMPOUND line 14>
+            <ASSIGN>
+                <VARIABLE i line 14 />
+                <INTEGER_CONSTANT 1 />
+            </ASSIGN>
+            <LOOP line 14>
+                <TEST line 14>
+                    <GT line 14>
+                        <VARIABLE i line 14 />
+                        <INTEGER_CONSTANT 3 />
+                    </GT>
+                </TEST>
+                <COMPOUND line 14>
+                    <COMPOUND line 15>
+                        <ASSIGN>
+                            <VARIABLE j line 15 />
+                            <INTEGER_CONSTANT 4 />
+                        </ASSIGN>
+                        <LOOP line 15>
+                            <TEST line 15>
+                                <LT line 15>
+                                    <VARIABLE j line 15 />
+                                    <INTEGER_CONSTANT 1 />
+                                </LT>
+                            </TEST>
+                            <COMPOUND line 15>
+                                <WRITE line 16>
+                                    <STRING_CONSTANT 'i = ' />
+                                </WRITE>
+                                <WRITE line 16>
+                                    <VARIABLE i />
+                                </WRITE>
+                                <WRITE line 17>
+                                    <STRING_CONSTANT ', j = ' />
+                                </WRITE>
+                                <WRITELN line 17>
+                                    <VARIABLE j />
+                                </WRITELN>
+                            </COMPOUND>
+                            <ASSIGN line 19>
+                                <VARIABLE j line 15 />
+                                <SUBTRACT line 19>
+                                    <VARIABLE j line 15 />
+                                    <INTEGER_CONSTANT 1 line 19 />
+                                </SUBTRACT>
+                            </ASSIGN>
+                        </LOOP>
+                    </COMPOUND>
+                </COMPOUND>
+                <ASSIGN line 19>
+                    <VARIABLE i line 14 />
+                    <ADD line 19>
+                        <VARIABLE i line 14 />
+                        <INTEGER_CONSTANT 1 line 19 />
+                    </ADD>
+                </ASSIGN>
+            </LOOP>
+        </COMPOUND>
+        <WRITELN line 21 />
+    </COMPOUND>
+</PROGRAM>
+
+There were 0 syntax errors.
+
+Process finished with exit code 0

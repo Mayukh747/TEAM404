@@ -1,0 +1,26 @@
+/Users/mdas/Library/Java/JavaVirtualMachines/openjdk-20.0.2/Contents/Home/bin/java -javaagent:/Applications/IntelliJ IDEA.app/Contents/lib/idea_rt.jar=51238:/Applications/IntelliJ IDEA.app/Contents/bin -Dfile.encoding=UTF-8 -Dsun.stdout.encoding=UTF-8 -Dsun.stderr.encoding=UTF-8 -classpath /Users/mdas/IntelliJ-Workspace/TEAM404/out/production/TEAM404 Simple -execute TestWhile.txt
+i = 1
+i = 2
+i = 3
+i = 4
+i = 5
+
+i = 1, j = 10
+i = 1, j = 20
+i = 1, j = 30
+i = 2, j = 10
+i = 2, j = 20
+i = 2, j = 30
+i = 3, j = 10
+i = 3, j = 20
+i = 3, j = 30
+i = 4, j = 10
+i = 4, j = 20
+i = 4, j = 30
+i = 5, j = 10
+i = 5, j = 20
+i = 5, j = 30
+
+There were 0 errors.
+
+Process finished with exit code 0

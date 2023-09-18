@@ -295,10 +295,10 @@ public class Parser
             // form list of constants for this line
             ArrayList<Node> constantList = new ArrayList<>();
             constantList.add(parseSimpleExpression());
-            currentToken = scanner.nextToken(); // consume constant
+            //currentToken = scanner.nextToken(); // consume constant
 
             // Current token should be : or ,
-            if (currentToken.type != COLON || currentToken.type != COMMA) syntaxError("Expected COLON or COMMA");
+            if (currentToken.type != COLON && currentToken.type != COMMA) syntaxError("Expected COLON or COMMA");
 
             // add the rest of constants to list
             while (currentToken.type != COLON) {
@@ -311,6 +311,7 @@ public class Parser
             currentToken = scanner.nextToken();          // consume COLON
 
             Node statementNode = parseStatement();
+            if (currentToken.type == SEMICOLON) currentToken = scanner.nextToken(); // consume semicolon if it exists
 
             // form the chain of IF nodes corresponding to this list of constants
             while (constantList.size() > 0){
@@ -336,7 +337,8 @@ public class Parser
 
         return rootIfNode;
     }
-// Nathan's Parse While
+
+    // Nathan's Parse While
 //    private Node parseWhileStatement() {
 //        // The current token should now be WHILE
 //

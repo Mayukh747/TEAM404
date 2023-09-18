@@ -1,0 +1,1110 @@
+/Users/mdas/Library/Java/JavaVirtualMachines/openjdk-20.0.2/Contents/Home/bin/java -javaagent:/Applications/IntelliJ IDEA.app/Contents/lib/idea_rt.jar=51288:/Applications/IntelliJ IDEA.app/Contents/bin -Dfile.encoding=UTF-8 -Dsun.stdout.encoding=UTF-8 -Dsun.stderr.encoding=UTF-8 -classpath /Users/mdas/IntelliJ-Workspace/TEAM404/out/production/TEAM404 Simple -parse TestCase.txt
+Parse tree:
+
+<PROGRAM TestCase>
+    <COMPOUND line 3>
+        <ASSIGN line 4>
+            <VARIABLE i />
+            <INTEGER_CONSTANT 3 />
+        </ASSIGN>
+        <ASSIGN line 4>
+            <VARIABLE even />
+            <INTEGER_CONSTANT -999 />
+        </ASSIGN>
+        <ASSIGN line 4>
+            <VARIABLE odd />
+            <INTEGER_CONSTANT -999 />
+        </ASSIGN>
+        <ASSIGN line 4>
+            <VARIABLE prime />
+            <INTEGER_CONSTANT -999 />
+        </ASSIGN>
+        <IF line 6>
+            <EQ>
+                <ADD>
+                    <VARIABLE i />
+                    <INTEGER_CONSTANT 1 />
+                </ADD>
+                <INTEGER_CONSTANT 1 />
+            </EQ>
+            <ASSIGN line 7>
+                <VARIABLE j />
+                <VARIABLE i />
+            </ASSIGN>
+            <IF>
+                <EQ>
+                    <ADD>
+                        <VARIABLE i />
+                        <INTEGER_CONSTANT 1 />
+                    </ADD>
+                    <INTEGER_CONSTANT -8 />
+                </EQ>
+                <ASSIGN line 8>
+                    <VARIABLE j />
+                    <MULTIPLY>
+                        <INTEGER_CONSTANT 8 />
+                        <VARIABLE i />
+                    </MULTIPLY>
+                </ASSIGN>
+                <IF>
+                    <EQ>
+                        <ADD>
+                            <VARIABLE i />
+                            <INTEGER_CONSTANT 1 />
+                        </ADD>
+                        <INTEGER_CONSTANT 5 />
+                    </EQ>
+                    <ASSIGN line 9>
+                        <VARIABLE j />
+                        <MULTIPLY>
+                            <INTEGER_CONSTANT 574 />
+                            <VARIABLE i />
+                        </MULTIPLY>
+                    </ASSIGN>
+                    <IF>
+                        <EQ>
+                            <ADD>
+                                <VARIABLE i />
+                                <INTEGER_CONSTANT 1 />
+                            </ADD>
+                            <INTEGER_CONSTANT 7 />
+                        </EQ>
+                        <ASSIGN line 9>
+                            <VARIABLE j />
+                            <MULTIPLY>
+                                <INTEGER_CONSTANT 574 />
+                                <VARIABLE i />
+                            </MULTIPLY>
+                        </ASSIGN>
+                        <IF>
+                            <EQ>
+                                <ADD>
+                                    <VARIABLE i />
+                                    <INTEGER_CONSTANT 1 />
+                                </ADD>
+                                <INTEGER_CONSTANT 4 />
+                            </EQ>
+                            <ASSIGN line 9>
+                                <VARIABLE j />
+                                <MULTIPLY>
+                                    <INTEGER_CONSTANT 574 />
+                                    <VARIABLE i />
+                                </MULTIPLY>
+                            </ASSIGN>
+                        </IF>
+                    </IF>
+                </IF>
+            </IF>
+        </IF>
+        <WRITE line 12>
+            <STRING_CONSTANT 'j = ' />
+        </WRITE>
+        <WRITELN line 12>
+            <VARIABLE j />
+        </WRITELN>
+        <WRITELN line 13 />
+        <COMPOUND line 15>
+            <ASSIGN>
+                <VARIABLE i line 15 />
+                <INTEGER_CONSTANT -5 />
+            </ASSIGN>
+            <LOOP line 15>
+                <TEST line 15>
+                    <GT line 15>
+                        <VARIABLE i line 15 />
+                        <INTEGER_CONSTANT 15 />
+                    </GT>
+                </TEST>
+                <COMPOUND line 15>
+                    <IF line 16>
+                        <EQ>
+                            <VARIABLE i />
+                            <INTEGER_CONSTANT 2 />
+                        </EQ>
+                        <COMPOUND line 17>
+                            <ASSIGN line 17>
+                                <VARIABLE even />
+                                <VARIABLE i />
+                            </ASSIGN>
+                            <ASSIGN line 17>
+                                <VARIABLE prime />
+                                <VARIABLE i />
+                            </ASSIGN>
+                        </COMPOUND>
+                        <IF>
+                            <EQ>
+                                <VARIABLE i />
+                                <INTEGER_CONSTANT -4 />
+                            </EQ>
+                            <ASSIGN line 18>
+                                <VARIABLE even />
+                                <VARIABLE i />
+                            </ASSIGN>
+                            <IF>
+                                <EQ>
+                                    <VARIABLE i />
+                                    <INTEGER_CONSTANT -2 />
+                                </EQ>
+                                <ASSIGN line 18>
+                                    <VARIABLE even />
+                                    <VARIABLE i />
+                                </ASSIGN>
+                                <IF>
+                                    <EQ>
+                                        <VARIABLE i />
+                                        <INTEGER_CONSTANT 0 />
+                                    </EQ>
+                                    <ASSIGN line 18>
+                                        <VARIABLE even />
+                                        <VARIABLE i />
+                                    </ASSIGN>
+                                    <IF>
+                                        <EQ>
+                                            <VARIABLE i />
+                                            <INTEGER_CONSTANT 4 />
+                                        </EQ>
+                                        <ASSIGN line 18>
+                                            <VARIABLE even />
+                                            <VARIABLE i />
+                                        </ASSIGN>
+                                        <IF>
+                                            <EQ>
+                                                <VARIABLE i />
+                                                <INTEGER_CONSTANT 6 />
+                                            </EQ>
+                                            <ASSIGN line 18>
+                                                <VARIABLE even />
+                                                <VARIABLE i />
+                                            </ASSIGN>
+                                            <IF>
+                                                <EQ>
+                                                    <VARIABLE i />
+                                                    <INTEGER_CONSTANT 8 />
+                                                </EQ>
+                                                <ASSIGN line 18>
+                                                    <VARIABLE even />
+                                                    <VARIABLE i />
+                                                </ASSIGN>
+                                                <IF>
+                                                    <EQ>
+                                                        <VARIABLE i />
+                                                        <INTEGER_CONSTANT 10 />
+                                                    </EQ>
+                                                    <ASSIGN line 18>
+                                                        <VARIABLE even />
+                                                        <VARIABLE i />
+                                                    </ASSIGN>
+                                                    <IF>
+                                                        <EQ>
+                                                            <VARIABLE i />
+                                                            <INTEGER_CONSTANT 12 />
+                                                        </EQ>
+                                                        <ASSIGN line 18>
+                                                            <VARIABLE even />
+                                                            <VARIABLE i />
+                                                        </ASSIGN>
+                                                        <IF>
+                                                            <EQ>
+                                                                <VARIABLE i />
+                                                                <INTEGER_CONSTANT 14 />
+                                                            </EQ>
+                                                            <ASSIGN line 18>
+                                                                <VARIABLE even />
+                                                                <VARIABLE i />
+                                                            </ASSIGN>
+                                                            <IF>
+                                                                <EQ>
+                                                                    <VARIABLE i />
+                                                                    <INTEGER_CONSTANT -5 />
+                                                                </EQ>
+                                                                <COMPOUND line 20>
+                                                                    <ASSIGN line 21>
+                                                                        <VARIABLE odd />
+                                                                        <VARIABLE i />
+                                                                    </ASSIGN>
+                                                                    <IF line 22>
+                                                                        <EQ>
+                                                                            <VARIABLE i />
+                                                                            <INTEGER_CONSTANT 2 />
+                                                                        </EQ>
+                                                                        <ASSIGN line 23>
+                                                                            <VARIABLE prime />
+                                                                            <VARIABLE i />
+                                                                        </ASSIGN>
+                                                                        <IF>
+                                                                            <EQ>
+                                                                                <VARIABLE i />
+                                                                                <INTEGER_CONSTANT 3 />
+                                                                            </EQ>
+                                                                            <ASSIGN line 23>
+                                                                                <VARIABLE prime />
+                                                                                <VARIABLE i />
+                                                                            </ASSIGN>
+                                                                            <IF>
+                                                                                <EQ>
+                                                                                    <VARIABLE i />
+                                                                                    <INTEGER_CONSTANT 5 />
+                                                                                </EQ>
+                                                                                <ASSIGN line 23>
+                                                                                    <VARIABLE prime />
+                                                                                    <VARIABLE i />
+                                                                                </ASSIGN>
+                                                                                <IF>
+                                                                                    <EQ>
+                                                                                        <VARIABLE i />
+                                                                                        <INTEGER_CONSTANT 7 />
+                                                                                    </EQ>
+                                                                                    <ASSIGN line 23>
+                                                                                        <VARIABLE prime />
+                                                                                        <VARIABLE i />
+                                                                                    </ASSIGN>
+                                                                                    <IF>
+                                                                                        <EQ>
+                                                                                            <VARIABLE i />
+                                                                                            <INTEGER_CONSTANT 11 />
+                                                                                        </EQ>
+                                                                                        <ASSIGN line 23>
+                                                                                            <VARIABLE prime />
+                                                                                            <VARIABLE i />
+                                                                                        </ASSIGN>
+                                                                                        <IF>
+                                                                                            <EQ>
+                                                                                                <VARIABLE i />
+                                                                                                <INTEGER_CONSTANT 13 />
+                                                                                            </EQ>
+                                                                                            <ASSIGN line 23>
+                                                                                                <VARIABLE prime />
+                                                                                                <VARIABLE i />
+                                                                                            </ASSIGN>
+                                                                                        </IF>
+                                                                                    </IF>
+                                                                                </IF>
+                                                                            </IF>
+                                                                        </IF>
+                                                                    </IF>
+                                                                </COMPOUND>
+                                                                <IF>
+                                                                    <EQ>
+                                                                        <VARIABLE i />
+                                                                        <INTEGER_CONSTANT -3 />
+                                                                    </EQ>
+                                                                    <COMPOUND line 20>
+                                                                        <ASSIGN line 21>
+                                                                            <VARIABLE odd />
+                                                                            <VARIABLE i />
+                                                                        </ASSIGN>
+                                                                        <IF line 22>
+                                                                            <EQ>
+                                                                                <VARIABLE i />
+                                                                                <INTEGER_CONSTANT 2 />
+                                                                            </EQ>
+                                                                            <ASSIGN line 23>
+                                                                                <VARIABLE prime />
+                                                                                <VARIABLE i />
+                                                                            </ASSIGN>
+                                                                            <IF>
+                                                                                <EQ>
+                                                                                    <VARIABLE i />
+                                                                                    <INTEGER_CONSTANT 3 />
+                                                                                </EQ>
+                                                                                <ASSIGN line 23>
+                                                                                    <VARIABLE prime />
+                                                                                    <VARIABLE i />
+                                                                                </ASSIGN>
+                                                                                <IF>
+                                                                                    <EQ>
+                                                                                        <VARIABLE i />
+                                                                                        <INTEGER_CONSTANT 5 />
+                                                                                    </EQ>
+                                                                                    <ASSIGN line 23>
+                                                                                        <VARIABLE prime />
+                                                                                        <VARIABLE i />
+                                                                                    </ASSIGN>
+                                                                                    <IF>
+                                                                                        <EQ>
+                                                                                            <VARIABLE i />
+                                                                                            <INTEGER_CONSTANT 7 />
+                                                                                        </EQ>
+                                                                                        <ASSIGN line 23>
+                                                                                            <VARIABLE prime />
+                                                                                            <VARIABLE i />
+                                                                                        </ASSIGN>
+                                                                                        <IF>
+                                                                                            <EQ>
+                                                                                                <VARIABLE i />
+                                                                                                <INTEGER_CONSTANT 11 />
+                                                                                            </EQ>
+                                                                                            <ASSIGN line 23>
+                                                                                                <VARIABLE prime />
+                                                                                                <VARIABLE i />
+                                                                                            </ASSIGN>
+                                                                                            <IF>
+                                                                                                <EQ>
+                                                                                                    <VARIABLE i />
+                                                                                                    <INTEGER_CONSTANT 13 />
+                                                                                                </EQ>
+                                                                                                <ASSIGN line 23>
+                                                                                                    <VARIABLE prime />
+                                                                                                    <VARIABLE i />
+                                                                                                </ASSIGN>
+                                                                                            </IF>
+                                                                                        </IF>
+                                                                                    </IF>
+                                                                                </IF>
+                                                                            </IF>
+                                                                        </IF>
+                                                                    </COMPOUND>
+                                                                    <IF>
+                                                                        <EQ>
+                                                                            <VARIABLE i />
+                                                                            <INTEGER_CONSTANT -1 />
+                                                                        </EQ>
+                                                                        <COMPOUND line 20>
+                                                                            <ASSIGN line 21>
+                                                                                <VARIABLE odd />
+                                                                                <VARIABLE i />
+                                                                            </ASSIGN>
+                                                                            <IF line 22>
+                                                                                <EQ>
+                                                                                    <VARIABLE i />
+                                                                                    <INTEGER_CONSTANT 2 />
+                                                                                </EQ>
+                                                                                <ASSIGN line 23>
+                                                                                    <VARIABLE prime />
+                                                                                    <VARIABLE i />
+                                                                                </ASSIGN>
+                                                                                <IF>
+                                                                                    <EQ>
+                                                                                        <VARIABLE i />
+                                                                                        <INTEGER_CONSTANT 3 />
+                                                                                    </EQ>
+                                                                                    <ASSIGN line 23>
+                                                                                        <VARIABLE prime />
+                                                                                        <VARIABLE i />
+                                                                                    </ASSIGN>
+                                                                                    <IF>
+                                                                                        <EQ>
+                                                                                            <VARIABLE i />
+                                                                                            <INTEGER_CONSTANT 5 />
+                                                                                        </EQ>
+                                                                                        <ASSIGN line 23>
+                                                                                            <VARIABLE prime />
+                                                                                            <VARIABLE i />
+                                                                                        </ASSIGN>
+                                                                                        <IF>
+                                                                                            <EQ>
+                                                                                                <VARIABLE i />
+                                                                                                <INTEGER_CONSTANT 7 />
+                                                                                            </EQ>
+                                                                                            <ASSIGN line 23>
+                                                                                                <VARIABLE prime />
+                                                                                                <VARIABLE i />
+                                                                                            </ASSIGN>
+                                                                                            <IF>
+                                                                                                <EQ>
+                                                                                                    <VARIABLE i />
+                                                                                                    <INTEGER_CONSTANT 11 />
+                                                                                                </EQ>
+                                                                                                <ASSIGN line 23>
+                                                                                                    <VARIABLE prime />
+                                                                                                    <VARIABLE i />
+                                                                                                </ASSIGN>
+                                                                                                <IF>
+                                                                                                    <EQ>
+                                                                                                        <VARIABLE i />
+                                                                                                        <INTEGER_CONSTANT 13 />
+                                                                                                    </EQ>
+                                                                                                    <ASSIGN line 23>
+                                                                                                        <VARIABLE prime />
+                                                                                                        <VARIABLE i />
+                                                                                                    </ASSIGN>
+                                                                                                </IF>
+                                                                                            </IF>
+                                                                                        </IF>
+                                                                                    </IF>
+                                                                                </IF>
+                                                                            </IF>
+                                                                        </COMPOUND>
+                                                                        <IF>
+                                                                            <EQ>
+                                                                                <VARIABLE i />
+                                                                                <INTEGER_CONSTANT 1 />
+                                                                            </EQ>
+                                                                            <COMPOUND line 20>
+                                                                                <ASSIGN line 21>
+                                                                                    <VARIABLE odd />
+                                                                                    <VARIABLE i />
+                                                                                </ASSIGN>
+                                                                                <IF line 22>
+                                                                                    <EQ>
+                                                                                        <VARIABLE i />
+                                                                                        <INTEGER_CONSTANT 2 />
+                                                                                    </EQ>
+                                                                                    <ASSIGN line 23>
+                                                                                        <VARIABLE prime />
+                                                                                        <VARIABLE i />
+                                                                                    </ASSIGN>
+                                                                                    <IF>
+                                                                                        <EQ>
+                                                                                            <VARIABLE i />
+                                                                                            <INTEGER_CONSTANT 3 />
+                                                                                        </EQ>
+                                                                                        <ASSIGN line 23>
+                                                                                            <VARIABLE prime />
+                                                                                            <VARIABLE i />
+                                                                                        </ASSIGN>
+                                                                                        <IF>
+                                                                                            <EQ>
+                                                                                                <VARIABLE i />
+                                                                                                <INTEGER_CONSTANT 5 />
+                                                                                            </EQ>
+                                                                                            <ASSIGN line 23>
+                                                                                                <VARIABLE prime />
+                                                                                                <VARIABLE i />
+                                                                                            </ASSIGN>
+                                                                                            <IF>
+                                                                                                <EQ>
+                                                                                                    <VARIABLE i />
+                                                                                                    <INTEGER_CONSTANT 7 />
+                                                                                                </EQ>
+                                                                                                <ASSIGN line 23>
+                                                                                                    <VARIABLE prime />
+                                                                                                    <VARIABLE i />
+                                                                                                </ASSIGN>
+                                                                                                <IF>
+                                                                                                    <EQ>
+                                                                                                        <VARIABLE i />
+                                                                                                        <INTEGER_CONSTANT 11 />
+                                                                                                    </EQ>
+                                                                                                    <ASSIGN line 23>
+                                                                                                        <VARIABLE prime />
+                                                                                                        <VARIABLE i />
+                                                                                                    </ASSIGN>
+                                                                                                    <IF>
+                                                                                                        <EQ>
+                                                                                                            <VARIABLE i />
+                                                                                                            <INTEGER_CONSTANT 13 />
+                                                                                                        </EQ>
+                                                                                                        <ASSIGN line 23>
+                                                                                                            <VARIABLE prime />
+                                                                                                            <VARIABLE i />
+                                                                                                        </ASSIGN>
+                                                                                                    </IF>
+                                                                                                </IF>
+                                                                                            </IF>
+                                                                                        </IF>
+                                                                                    </IF>
+                                                                                </IF>
+                                                                            </COMPOUND>
+                                                                            <IF>
+                                                                                <EQ>
+                                                                                    <VARIABLE i />
+                                                                                    <INTEGER_CONSTANT 3 />
+                                                                                </EQ>
+                                                                                <COMPOUND line 20>
+                                                                                    <ASSIGN line 21>
+                                                                                        <VARIABLE odd />
+                                                                                        <VARIABLE i />
+                                                                                    </ASSIGN>
+                                                                                    <IF line 22>
+                                                                                        <EQ>
+                                                                                            <VARIABLE i />
+                                                                                            <INTEGER_CONSTANT 2 />
+                                                                                        </EQ>
+                                                                                        <ASSIGN line 23>
+                                                                                            <VARIABLE prime />
+                                                                                            <VARIABLE i />
+                                                                                        </ASSIGN>
+                                                                                        <IF>
+                                                                                            <EQ>
+                                                                                                <VARIABLE i />
+                                                                                                <INTEGER_CONSTANT 3 />
+                                                                                            </EQ>
+                                                                                            <ASSIGN line 23>
+                                                                                                <VARIABLE prime />
+                                                                                                <VARIABLE i />
+                                                                                            </ASSIGN>
+                                                                                            <IF>
+                                                                                                <EQ>
+                                                                                                    <VARIABLE i />
+                                                                                                    <INTEGER_CONSTANT 5 />
+                                                                                                </EQ>
+                                                                                                <ASSIGN line 23>
+                                                                                                    <VARIABLE prime />
+                                                                                                    <VARIABLE i />
+                                                                                                </ASSIGN>
+                                                                                                <IF>
+                                                                                                    <EQ>
+                                                                                                        <VARIABLE i />
+                                                                                                        <INTEGER_CONSTANT 7 />
+                                                                                                    </EQ>
+                                                                                                    <ASSIGN line 23>
+                                                                                                        <VARIABLE prime />
+                                                                                                        <VARIABLE i />
+                                                                                                    </ASSIGN>
+                                                                                                    <IF>
+                                                                                                        <EQ>
+                                                                                                            <VARIABLE i />
+                                                                                                            <INTEGER_CONSTANT 11 />
+                                                                                                        </EQ>
+                                                                                                        <ASSIGN line 23>
+                                                                                                            <VARIABLE prime />
+                                                                                                            <VARIABLE i />
+                                                                                                        </ASSIGN>
+                                                                                                        <IF>
+                                                                                                            <EQ>
+                                                                                                                <VARIABLE i />
+                                                                                                                <INTEGER_CONSTANT 13 />
+                                                                                                            </EQ>
+                                                                                                            <ASSIGN line 23>
+                                                                                                                <VARIABLE prime />
+                                                                                                                <VARIABLE i />
+                                                                                                            </ASSIGN>
+                                                                                                        </IF>
+                                                                                                    </IF>
+                                                                                                </IF>
+                                                                                            </IF>
+                                                                                        </IF>
+                                                                                    </IF>
+                                                                                </COMPOUND>
+                                                                                <IF>
+                                                                                    <EQ>
+                                                                                        <VARIABLE i />
+                                                                                        <INTEGER_CONSTANT 5 />
+                                                                                    </EQ>
+                                                                                    <COMPOUND line 20>
+                                                                                        <ASSIGN line 21>
+                                                                                            <VARIABLE odd />
+                                                                                            <VARIABLE i />
+                                                                                        </ASSIGN>
+                                                                                        <IF line 22>
+                                                                                            <EQ>
+                                                                                                <VARIABLE i />
+                                                                                                <INTEGER_CONSTANT 2 />
+                                                                                            </EQ>
+                                                                                            <ASSIGN line 23>
+                                                                                                <VARIABLE prime />
+                                                                                                <VARIABLE i />
+                                                                                            </ASSIGN>
+                                                                                            <IF>
+                                                                                                <EQ>
+                                                                                                    <VARIABLE i />
+                                                                                                    <INTEGER_CONSTANT 3 />
+                                                                                                </EQ>
+                                                                                                <ASSIGN line 23>
+                                                                                                    <VARIABLE prime />
+                                                                                                    <VARIABLE i />
+                                                                                                </ASSIGN>
+                                                                                                <IF>
+                                                                                                    <EQ>
+                                                                                                        <VARIABLE i />
+                                                                                                        <INTEGER_CONSTANT 5 />
+                                                                                                    </EQ>
+                                                                                                    <ASSIGN line 23>
+                                                                                                        <VARIABLE prime />
+                                                                                                        <VARIABLE i />
+                                                                                                    </ASSIGN>
+                                                                                                    <IF>
+                                                                                                        <EQ>
+                                                                                                            <VARIABLE i />
+                                                                                                            <INTEGER_CONSTANT 7 />
+                                                                                                        </EQ>
+                                                                                                        <ASSIGN line 23>
+                                                                                                            <VARIABLE prime />
+                                                                                                            <VARIABLE i />
+                                                                                                        </ASSIGN>
+                                                                                                        <IF>
+                                                                                                            <EQ>
+                                                                                                                <VARIABLE i />
+                                                                                                                <INTEGER_CONSTANT 11 />
+                                                                                                            </EQ>
+                                                                                                            <ASSIGN line 23>
+                                                                                                                <VARIABLE prime />
+                                                                                                                <VARIABLE i />
+                                                                                                            </ASSIGN>
+                                                                                                            <IF>
+                                                                                                                <EQ>
+                                                                                                                    <VARIABLE i />
+                                                                                                                    <INTEGER_CONSTANT 13 />
+                                                                                                                </EQ>
+                                                                                                                <ASSIGN line 23>
+                                                                                                                    <VARIABLE prime />
+                                                                                                                    <VARIABLE i />
+                                                                                                                </ASSIGN>
+                                                                                                            </IF>
+                                                                                                        </IF>
+                                                                                                    </IF>
+                                                                                                </IF>
+                                                                                            </IF>
+                                                                                        </IF>
+                                                                                    </COMPOUND>
+                                                                                    <IF>
+                                                                                        <EQ>
+                                                                                            <VARIABLE i />
+                                                                                            <INTEGER_CONSTANT 7 />
+                                                                                        </EQ>
+                                                                                        <COMPOUND line 20>
+                                                                                            <ASSIGN line 21>
+                                                                                                <VARIABLE odd />
+                                                                                                <VARIABLE i />
+                                                                                            </ASSIGN>
+                                                                                            <IF line 22>
+                                                                                                <EQ>
+                                                                                                    <VARIABLE i />
+                                                                                                    <INTEGER_CONSTANT 2 />
+                                                                                                </EQ>
+                                                                                                <ASSIGN line 23>
+                                                                                                    <VARIABLE prime />
+                                                                                                    <VARIABLE i />
+                                                                                                </ASSIGN>
+                                                                                                <IF>
+                                                                                                    <EQ>
+                                                                                                        <VARIABLE i />
+                                                                                                        <INTEGER_CONSTANT 3 />
+                                                                                                    </EQ>
+                                                                                                    <ASSIGN line 23>
+                                                                                                        <VARIABLE prime />
+                                                                                                        <VARIABLE i />
+                                                                                                    </ASSIGN>
+                                                                                                    <IF>
+                                                                                                        <EQ>
+                                                                                                            <VARIABLE i />
+                                                                                                            <INTEGER_CONSTANT 5 />
+                                                                                                        </EQ>
+                                                                                                        <ASSIGN line 23>
+                                                                                                            <VARIABLE prime />
+                                                                                                            <VARIABLE i />
+                                                                                                        </ASSIGN>
+                                                                                                        <IF>
+                                                                                                            <EQ>
+                                                                                                                <VARIABLE i />
+                                                                                                                <INTEGER_CONSTANT 7 />
+                                                                                                            </EQ>
+                                                                                                            <ASSIGN line 23>
+                                                                                                                <VARIABLE prime />
+                                                                                                                <VARIABLE i />
+                                                                                                            </ASSIGN>
+                                                                                                            <IF>
+                                                                                                                <EQ>
+                                                                                                                    <VARIABLE i />
+                                                                                                                    <INTEGER_CONSTANT 11 />
+                                                                                                                </EQ>
+                                                                                                                <ASSIGN line 23>
+                                                                                                                    <VARIABLE prime />
+                                                                                                                    <VARIABLE i />
+                                                                                                                </ASSIGN>
+                                                                                                                <IF>
+                                                                                                                    <EQ>
+                                                                                                                        <VARIABLE i />
+                                                                                                                        <INTEGER_CONSTANT 13 />
+                                                                                                                    </EQ>
+                                                                                                                    <ASSIGN line 23>
+                                                                                                                        <VARIABLE prime />
+                                                                                                                        <VARIABLE i />
+                                                                                                                    </ASSIGN>
+                                                                                                                </IF>
+                                                                                                            </IF>
+                                                                                                        </IF>
+                                                                                                    </IF>
+                                                                                                </IF>
+                                                                                            </IF>
+                                                                                        </COMPOUND>
+                                                                                        <IF>
+                                                                                            <EQ>
+                                                                                                <VARIABLE i />
+                                                                                                <INTEGER_CONSTANT 9 />
+                                                                                            </EQ>
+                                                                                            <COMPOUND line 20>
+                                                                                                <ASSIGN line 21>
+                                                                                                    <VARIABLE odd />
+                                                                                                    <VARIABLE i />
+                                                                                                </ASSIGN>
+                                                                                                <IF line 22>
+                                                                                                    <EQ>
+                                                                                                        <VARIABLE i />
+                                                                                                        <INTEGER_CONSTANT 2 />
+                                                                                                    </EQ>
+                                                                                                    <ASSIGN line 23>
+                                                                                                        <VARIABLE prime />
+                                                                                                        <VARIABLE i />
+                                                                                                    </ASSIGN>
+                                                                                                    <IF>
+                                                                                                        <EQ>
+                                                                                                            <VARIABLE i />
+                                                                                                            <INTEGER_CONSTANT 3 />
+                                                                                                        </EQ>
+                                                                                                        <ASSIGN line 23>
+                                                                                                            <VARIABLE prime />
+                                                                                                            <VARIABLE i />
+                                                                                                        </ASSIGN>
+                                                                                                        <IF>
+                                                                                                            <EQ>
+                                                                                                                <VARIABLE i />
+                                                                                                                <INTEGER_CONSTANT 5 />
+                                                                                                            </EQ>
+                                                                                                            <ASSIGN line 23>
+                                                                                                                <VARIABLE prime />
+                                                                                                                <VARIABLE i />
+                                                                                                            </ASSIGN>
+                                                                                                            <IF>
+                                                                                                                <EQ>
+                                                                                                                    <VARIABLE i />
+                                                                                                                    <INTEGER_CONSTANT 7 />
+                                                                                                                </EQ>
+                                                                                                                <ASSIGN line 23>
+                                                                                                                    <VARIABLE prime />
+                                                                                                                    <VARIABLE i />
+                                                                                                                </ASSIGN>
+                                                                                                                <IF>
+                                                                                                                    <EQ>
+                                                                                                                        <VARIABLE i />
+                                                                                                                        <INTEGER_CONSTANT 11 />
+                                                                                                                    </EQ>
+                                                                                                                    <ASSIGN line 23>
+                                                                                                                        <VARIABLE prime />
+                                                                                                                        <VARIABLE i />
+                                                                                                                    </ASSIGN>
+                                                                                                                    <IF>
+                                                                                                                        <EQ>
+                                                                                                                            <VARIABLE i />
+                                                                                                                            <INTEGER_CONSTANT 13 />
+                                                                                                                        </EQ>
+                                                                                                                        <ASSIGN line 23>
+                                                                                                                            <VARIABLE prime />
+                                                                                                                            <VARIABLE i />
+                                                                                                                        </ASSIGN>
+                                                                                                                    </IF>
+                                                                                                                </IF>
+                                                                                                            </IF>
+                                                                                                        </IF>
+                                                                                                    </IF>
+                                                                                                </IF>
+                                                                                            </COMPOUND>
+                                                                                            <IF>
+                                                                                                <EQ>
+                                                                                                    <VARIABLE i />
+                                                                                                    <INTEGER_CONSTANT 11 />
+                                                                                                </EQ>
+                                                                                                <COMPOUND line 20>
+                                                                                                    <ASSIGN line 21>
+                                                                                                        <VARIABLE odd />
+                                                                                                        <VARIABLE i />
+                                                                                                    </ASSIGN>
+                                                                                                    <IF line 22>
+                                                                                                        <EQ>
+                                                                                                            <VARIABLE i />
+                                                                                                            <INTEGER_CONSTANT 2 />
+                                                                                                        </EQ>
+                                                                                                        <ASSIGN line 23>
+                                                                                                            <VARIABLE prime />
+                                                                                                            <VARIABLE i />
+                                                                                                        </ASSIGN>
+                                                                                                        <IF>
+                                                                                                            <EQ>
+                                                                                                                <VARIABLE i />
+                                                                                                                <INTEGER_CONSTANT 3 />
+                                                                                                            </EQ>
+                                                                                                            <ASSIGN line 23>
+                                                                                                                <VARIABLE prime />
+                                                                                                                <VARIABLE i />
+                                                                                                            </ASSIGN>
+                                                                                                            <IF>
+                                                                                                                <EQ>
+                                                                                                                    <VARIABLE i />
+                                                                                                                    <INTEGER_CONSTANT 5 />
+                                                                                                                </EQ>
+                                                                                                                <ASSIGN line 23>
+                                                                                                                    <VARIABLE prime />
+                                                                                                                    <VARIABLE i />
+                                                                                                                </ASSIGN>
+                                                                                                                <IF>
+                                                                                                                    <EQ>
+                                                                                                                        <VARIABLE i />
+                                                                                                                        <INTEGER_CONSTANT 7 />
+                                                                                                                    </EQ>
+                                                                                                                    <ASSIGN line 23>
+                                                                                                                        <VARIABLE prime />
+                                                                                                                        <VARIABLE i />
+                                                                                                                    </ASSIGN>
+                                                                                                                    <IF>
+                                                                                                                        <EQ>
+                                                                                                                            <VARIABLE i />
+                                                                                                                            <INTEGER_CONSTANT 11 />
+                                                                                                                        </EQ>
+                                                                                                                        <ASSIGN line 23>
+                                                                                                                            <VARIABLE prime />
+                                                                                                                            <VARIABLE i />
+                                                                                                                        </ASSIGN>
+                                                                                                                        <IF>
+                                                                                                                            <EQ>
+                                                                                                                                <VARIABLE i />
+                                                                                                                                <INTEGER_CONSTANT 13 />
+                                                                                                                            </EQ>
+                                                                                                                            <ASSIGN line 23>
+                                                                                                                                <VARIABLE prime />
+                                                                                                                                <VARIABLE i />
+                                                                                                                            </ASSIGN>
+                                                                                                                        </IF>
+                                                                                                                    </IF>
+                                                                                                                </IF>
+                                                                                                            </IF>
+                                                                                                        </IF>
+                                                                                                    </IF>
+                                                                                                </COMPOUND>
+                                                                                                <IF>
+                                                                                                    <EQ>
+                                                                                                        <VARIABLE i />
+                                                                                                        <INTEGER_CONSTANT 13 />
+                                                                                                    </EQ>
+                                                                                                    <COMPOUND line 20>
+                                                                                                        <ASSIGN line 21>
+                                                                                                            <VARIABLE odd />
+                                                                                                            <VARIABLE i />
+                                                                                                        </ASSIGN>
+                                                                                                        <IF line 22>
+                                                                                                            <EQ>
+                                                                                                                <VARIABLE i />
+                                                                                                                <INTEGER_CONSTANT 2 />
+                                                                                                            </EQ>
+                                                                                                            <ASSIGN line 23>
+                                                                                                                <VARIABLE prime />
+                                                                                                                <VARIABLE i />
+                                                                                                            </ASSIGN>
+                                                                                                            <IF>
+                                                                                                                <EQ>
+                                                                                                                    <VARIABLE i />
+                                                                                                                    <INTEGER_CONSTANT 3 />
+                                                                                                                </EQ>
+                                                                                                                <ASSIGN line 23>
+                                                                                                                    <VARIABLE prime />
+                                                                                                                    <VARIABLE i />
+                                                                                                                </ASSIGN>
+                                                                                                                <IF>
+                                                                                                                    <EQ>
+                                                                                                                        <VARIABLE i />
+                                                                                                                        <INTEGER_CONSTANT 5 />
+                                                                                                                    </EQ>
+                                                                                                                    <ASSIGN line 23>
+                                                                                                                        <VARIABLE prime />
+                                                                                                                        <VARIABLE i />
+                                                                                                                    </ASSIGN>
+                                                                                                                    <IF>
+                                                                                                                        <EQ>
+                                                                                                                            <VARIABLE i />
+                                                                                                                            <INTEGER_CONSTANT 7 />
+                                                                                                                        </EQ>
+                                                                                                                        <ASSIGN line 23>
+                                                                                                                            <VARIABLE prime />
+                                                                                                                            <VARIABLE i />
+                                                                                                                        </ASSIGN>
+                                                                                                                        <IF>
+                                                                                                                            <EQ>
+                                                                                                                                <VARIABLE i />
+                                                                                                                                <INTEGER_CONSTANT 11 />
+                                                                                                                            </EQ>
+                                                                                                                            <ASSIGN line 23>
+                                                                                                                                <VARIABLE prime />
+                                                                                                                                <VARIABLE i />
+                                                                                                                            </ASSIGN>
+                                                                                                                            <IF>
+                                                                                                                                <EQ>
+                                                                                                                                    <VARIABLE i />
+                                                                                                                                    <INTEGER_CONSTANT 13 />
+                                                                                                                                </EQ>
+                                                                                                                                <ASSIGN line 23>
+                                                                                                                                    <VARIABLE prime />
+                                                                                                                                    <VARIABLE i />
+                                                                                                                                </ASSIGN>
+                                                                                                                            </IF>
+                                                                                                                        </IF>
+                                                                                                                    </IF>
+                                                                                                                </IF>
+                                                                                                            </IF>
+                                                                                                        </IF>
+                                                                                                    </COMPOUND>
+                                                                                                    <IF>
+                                                                                                        <EQ>
+                                                                                                            <VARIABLE i />
+                                                                                                            <INTEGER_CONSTANT 15 />
+                                                                                                        </EQ>
+                                                                                                        <COMPOUND line 20>
+                                                                                                            <ASSIGN line 21>
+                                                                                                                <VARIABLE odd />
+                                                                                                                <VARIABLE i />
+                                                                                                            </ASSIGN>
+                                                                                                            <IF line 22>
+                                                                                                                <EQ>
+                                                                                                                    <VARIABLE i />
+                                                                                                                    <INTEGER_CONSTANT 2 />
+                                                                                                                </EQ>
+                                                                                                                <ASSIGN line 23>
+                                                                                                                    <VARIABLE prime />
+                                                                                                                    <VARIABLE i />
+                                                                                                                </ASSIGN>
+                                                                                                                <IF>
+                                                                                                                    <EQ>
+                                                                                                                        <VARIABLE i />
+                                                                                                                        <INTEGER_CONSTANT 3 />
+                                                                                                                    </EQ>
+                                                                                                                    <ASSIGN line 23>
+                                                                                                                        <VARIABLE prime />
+                                                                                                                        <VARIABLE i />
+                                                                                                                    </ASSIGN>
+                                                                                                                    <IF>
+                                                                                                                        <EQ>
+                                                                                                                            <VARIABLE i />
+                                                                                                                            <INTEGER_CONSTANT 5 />
+                                                                                                                        </EQ>
+                                                                                                                        <ASSIGN line 23>
+                                                                                                                            <VARIABLE prime />
+                                                                                                                            <VARIABLE i />
+                                                                                                                        </ASSIGN>
+                                                                                                                        <IF>
+                                                                                                                            <EQ>
+                                                                                                                                <VARIABLE i />
+                                                                                                                                <INTEGER_CONSTANT 7 />
+                                                                                                                            </EQ>
+                                                                                                                            <ASSIGN line 23>
+                                                                                                                                <VARIABLE prime />
+                                                                                                                                <VARIABLE i />
+                                                                                                                            </ASSIGN>
+                                                                                                                            <IF>
+                                                                                                                                <EQ>
+                                                                                                                                    <VARIABLE i />
+                                                                                                                                    <INTEGER_CONSTANT 11 />
+                                                                                                                                </EQ>
+                                                                                                                                <ASSIGN line 23>
+                                                                                                                                    <VARIABLE prime />
+                                                                                                                                    <VARIABLE i />
+                                                                                                                                </ASSIGN>
+                                                                                                                                <IF>
+                                                                                                                                    <EQ>
+                                                                                                                                        <VARIABLE i />
+                                                                                                                                        <INTEGER_CONSTANT 13 />
+                                                                                                                                    </EQ>
+                                                                                                                                    <ASSIGN line 23>
+                                                                                                                                        <VARIABLE prime />
+                                                                                                                                        <VARIABLE i />
+                                                                                                                                    </ASSIGN>
+                                                                                                                                </IF>
+                                                                                                                            </IF>
+                                                                                                                        </IF>
+                                                                                                                    </IF>
+                                                                                                                </IF>
+                                                                                                            </IF>
+                                                                                                        </COMPOUND>
+                                                                                                    </IF>
+                                                                                                </IF>
+                                                                                            </IF>
+                                                                                        </IF>
+                                                                                    </IF>
+                                                                                </IF>
+                                                                            </IF>
+                                                                        </IF>
+                                                                    </IF>
+                                                                </IF>
+                                                            </IF>
+                                                        </IF>
+                                                    </IF>
+                                                </IF>
+                                            </IF>
+                                        </IF>
+                                    </IF>
+                                </IF>
+                            </IF>
+                        </IF>
+                    </IF>
+                    <WRITE line 28>
+                        <STRING_CONSTANT 'i =' />
+                    </WRITE>
+                    <WRITE line 28>
+                        <VARIABLE i />
+                        <INTEGER_CONSTANT 3 />
+                    </WRITE>
+                    <WRITE line 29>
+                        <STRING_CONSTANT ', even = ' />
+                    </WRITE>
+                    <IF line 29>
+                        <TEST line 29>
+                            <NEQ>
+                                <VARIABLE even />
+                                <INTEGER_CONSTANT -999 />
+                            </NEQ>
+                        </TEST>
+                        <WRITE line 29>
+                            <VARIABLE even />
+                            <INTEGER_CONSTANT 3 />
+                        </WRITE>
+                        <WRITE line 29>
+                            <STRING_CONSTANT '...' />
+                        </WRITE>
+                    </IF>
+                    <WRITE line 30>
+                        <STRING_CONSTANT ', odd = ' />
+                    </WRITE>
+                    <IF line 30>
+                        <TEST line 30>
+                            <NEQ>
+                                <VARIABLE odd />
+                                <INTEGER_CONSTANT -999 />
+                            </NEQ>
+                        </TEST>
+                        <WRITE line 30>
+                            <VARIABLE odd />
+                            <INTEGER_CONSTANT 3 />
+                        </WRITE>
+                        <WRITE line 30>
+                            <STRING_CONSTANT '...' />
+                        </WRITE>
+                    </IF>
+                    <WRITE line 31>
+                        <STRING_CONSTANT ', prime = ' />
+                    </WRITE>
+                    <IF line 31>
+                        <TEST line 31>
+                            <NEQ>
+                                <VARIABLE prime />
+                                <INTEGER_CONSTANT -999 />
+                            </NEQ>
+                        </TEST>
+                        <WRITE line 31>
+                            <VARIABLE prime />
+                            <INTEGER_CONSTANT 3 />
+                        </WRITE>
+                        <WRITE line 31>
+                            <STRING_CONSTANT '...' />
+                        </WRITE>
+                    </IF>
+                    <WRITELN line 32 />
+                    <ASSIGN line 34>
+                        <VARIABLE even />
+                        <INTEGER_CONSTANT -999 />
+                    </ASSIGN>
+                    <ASSIGN line 34>
+                        <VARIABLE odd />
+                        <INTEGER_CONSTANT -999 />
+                    </ASSIGN>
+                    <ASSIGN line 34>
+                        <VARIABLE prime />
+                        <INTEGER_CONSTANT -999 />
+                    </ASSIGN>
+                </COMPOUND>
+                <ASSIGN line 35>
+                    <VARIABLE i line 15 />
+                    <ADD line 35>
+                        <VARIABLE i line 15 />
+                        <INTEGER_CONSTANT 1 line 35 />
+                    </ADD>
+                </ASSIGN>
+            </LOOP>
+        </COMPOUND>
+        <WRITELN line 37 />
+        <WRITELN line 38>
+            <STRING_CONSTANT 'Done!' />
+        </WRITELN>
+    </COMPOUND>
+</PROGRAM>
+
+There were 0 syntax errors.
+
+Process finished with exit code 0

@@ -1,0 +1,19 @@
+/Users/mdas/Library/Java/JavaVirtualMachines/openjdk-20.0.2/Contents/Home/bin/java -javaagent:/Applications/IntelliJ IDEA.app/Contents/lib/idea_rt.jar=51245:/Applications/IntelliJ IDEA.app/Contents/bin -Dfile.encoding=UTF-8 -Dsun.stdout.encoding=UTF-8 -Dsun.stderr.encoding=UTF-8 -classpath /Users/mdas/IntelliJ-Workspace/TEAM404/out/production/TEAM404 Simple -execute TestIf.txt
+i =   1, j =   2, x = -5.00, y =  3.14
+i =   1, j =   2, x =  8.00, y = 14.00
+i =   1, j =   2, x = 77.77, y = 88.88
+i =   6, j =   2, x = 77.77, y = 88.88
+k =  10
+i =   6, j =   9, x = 77.77, y = 88.88
+k =  10
+i =   6, j =   9, x = 77.77, y = 88.88
+k =  10
+
+x = -141.65
+
+Good-bye, world!
+Done!
+
+There were 0 errors.
+
+Process finished with exit code 0
