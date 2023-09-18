@@ -7,6 +7,7 @@
  */
 package frontend;
 
+import java.util.ArrayList;
 import java.util.HashSet;
 
 import intermediate.*;
@@ -132,6 +133,7 @@ public class Parser
             case FOR :        stmtNode = parseForStatement();        break;
             case WRITE :      stmtNode = parseWriteStatement();      break;
             case WRITELN :    stmtNode = parseWritelnStatement();    break;
+            case CASE   :     stmtNode = parseCaseStatement();       break;
             case SEMICOLON :  stmtNode = null; break;  // empty statement
             
             default : syntaxError("Unexpected token");
@@ -242,6 +244,69 @@ public class Parser
         return loopNode;
     }
 
+    private Node parseCaseStatement() {
+        // The current token should be CASE
+
+        currentToken = scanner.nextToken();     // consume CASE
+
+        Node caseVarNode = parseExpression();
+
+        // The current token should be OF
+        if (currentToken.type != OF) syntaxError("Expected OF");
+        currentToken = scanner.nextToken();     // consume OF
+
+        Node rootIfNode = new Node(Node.NodeType.IF);
+        Node currentIfNode = rootIfNode;
+        Node previousIfNode = rootIfNode;       // this is needed at the end of the method
+        while (currentToken.type != END) {  // note: there can still be a compound statement "END" without triggering the loop to break
+
+            // Each iteration of this while loop handles one "line" of the case statement.
+
+            // form list of constants for this line
+            ArrayList<Node> constantList = new ArrayList<>();
+            constantList.add(parseSimpleExpression());
+            currentToken = scanner.nextToken(); // consume constant
+
+            // Current token should be : or ,
+            if (currentToken.type != COLON || currentToken.type != COMMA) syntaxError("Expected COLON or COMMA");
+
+            // add the rest of constants to list
+            while (currentToken.type != COLON) {
+                if (currentToken.type != COMMA) syntaxError("Expected COLON or COMMA");
+                currentToken = scanner.nextToken();     // consume COMMA
+                constantList.add(parseSimpleExpression());
+            }
+
+            // Current token is colon, as is guaranteed by the previous while loop
+            currentToken = scanner.nextToken();          // consume COLON
+
+            Node statementNode = parseStatement();
+
+            // form the chain of IF nodes corresponding to this list of constants
+            while (constantList.size() > 0){
+                Node equalsNode = new Node(EQ);
+                equalsNode.adopt(caseVarNode);
+                equalsNode.adopt(constantList.get(0));
+                constantList.remove(0);
+
+                currentIfNode.adopt(equalsNode);
+                currentIfNode.adopt(statementNode);     // all of these IF nodes share the same statement node
+                Node nextIfNode = new Node(Node.NodeType.IF);
+                currentIfNode.adopt(nextIfNode);
+
+                previousIfNode = currentIfNode;         // so that we can abandon currentIfNode as a child after the loop
+                currentIfNode = nextIfNode;
+            }
+        }
+        // At this point, there is an IF node at the very bottom without any children that should be removed.
+        previousIfNode.children.remove(2);
+
+
+        currentToken = scanner.nextToken();     // consume END (of case statement)
+
+        return rootIfNode;
+    }
+
     private Node parseWhileStatement() {
         // The current token should now be WHILE
 
@@ -266,7 +331,6 @@ public class Parser
         return loopNode;
     }
 
-    // TODO: missing things related to line number
     private Node parseForStatement() {
         // The current token should be FOR
 
