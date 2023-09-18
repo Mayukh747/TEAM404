@@ -34,6 +34,10 @@ public class Executor
         relationals.add(EQ);
         relationals.add(LT);
         relationals.add(LEQ);
+        relationals.add(GT);
+        relationals.add(GEQ);
+        relationals.add(NEQ);
+
     }
     
     public Executor(Symtab symtab)
@@ -57,7 +61,8 @@ public class Executor
             
             case TEST:      return visitTest(node);
 
-
+            case AND:       return visitAnd(node);
+            case OR:        return visitOr(node);
 
             case NOT :      return visitNot(node);
 
@@ -131,6 +136,7 @@ public class Executor
     
     private Object visitTest(Node testNode)
     {
+//        System.out.println(lineNumber);
         return (Boolean) visit(testNode.children.get(0));
     }
     
@@ -309,6 +315,26 @@ public class Executor
         else {
             runtimeError(notNode, "Expression after \"NOT\" is not boolean");
             return null;
+        }
+    }
+
+    private Object visitAnd(Node andNode){
+        Object expression = visitExpression(andNode.children.get(1));
+        if ((Boolean) expression){
+            return visit(andNode.children.get(0));
+        }
+        else{
+            return false;
+        }
+    }
+
+    private Object visitOr(Node orNode){
+        Object expression = visitExpression(orNode.children.get(1));
+        if (!(Boolean) expression){
+            return visit(orNode.children.get(0));
+        }
+        else{
+            return true;
         }
     }
 
