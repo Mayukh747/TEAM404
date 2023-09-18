@@ -58,7 +58,7 @@ public class Executor
             case WRITELN :  return visitStatement(node);
             case IF     :    return visitIf(node);
 
-            
+
             case TEST:      return visitTest(node);
 
             case AND:       return visitAnd(node);
@@ -88,7 +88,7 @@ public class Executor
             case WRITE :     return visitWrite(statementNode);
             case WRITELN :   return visitWriteln(statementNode);
             case IF     :    return visitIf(statementNode);
-            
+
             default :        return null;
         }
     }
@@ -136,7 +136,6 @@ public class Executor
     
     private Object visitTest(Node testNode)
     {
-//        System.out.println(lineNumber);
         return (Boolean) visit(testNode.children.get(0));
     }
     
@@ -300,12 +299,11 @@ public class Executor
         return (String) stringConstantNode.value;
     }
 
-    // TODO: Should NOT even have its own visit method / node?
+
     private Object visitNot(Node notNode) {
         Object expression = visitExpression(notNode.children.get(0));
 
-        // TODO: This feels like a job for the parser to check instead. Also returning null seems incorrect.
-        //  Shouldn't the program stop running as soon as there is a runtime error?
+
         if (expression instanceof Boolean) {
             return !(boolean)(visitExpression(notNode.children.get(0)));
         }

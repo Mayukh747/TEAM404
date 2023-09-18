@@ -14,16 +14,14 @@ public class Token
     public enum TokenType
     {
         PROGRAM, BEGIN, END, REPEAT, UNTIL, WRITE, WRITELN, 
-        DIV, MOD, AND, OR, NOT,
-        CONST, TYPE, VAR, PROCEDURE, FUNCTION,
-        WHILE, DO, FOR, TO, DOWNTO, IF, THEN, ELSE, CASE, OF,
         PERIOD, COMMA, COLON, COLON_EQUALS, SEMICOLON,
         PLUS, MINUS, STAR, SLASH, LPAREN, RPAREN, 
-        EQUALS, NOT_EQUALS, LESS_THAN, LESS_EQUALS, 
-        GREATER_THAN, GREATER_EQUALS, DOT_DOT, QUOTE,
-        LBRACKET, RBRACKET, CARAT,
-        IDENTIFIER, INTEGER, REAL, CHARACTER, STRING, 
-        END_OF_FILE, ERROR
+        EQUALS, NOT_EQUALS, LESS_THAN, LESS_EQUALS, GREATER_THAN, GREATER_EQUALS,
+        DOT_DOT, QUOTE, LBRACKET, RBRACKET, CARAT,
+        IDENTIFIER, INTEGER, REAL, CHARACTER, STRING, END_OF_FILE, ERROR,
+        DIV, MOD, AND, OR, NOT, CONST, TYPE, VAR, PROCEDURE,
+        FUNCTION, WHILE, DO, FOR, TO, DOWNTO, IF, THEN, ELSE, CASE,
+        OF
     }
     
     /**
@@ -34,34 +32,33 @@ public class Token
     {
         reservedWords = new HashMap<String, TokenType>();
         
-        reservedWords.put("PROGRAM",   TokenType.PROGRAM);
-        reservedWords.put("BEGIN",     TokenType.BEGIN);
-        reservedWords.put("END",       TokenType.END);
-        reservedWords.put("REPEAT",    TokenType.REPEAT);
-        reservedWords.put("UNTIL",     TokenType.UNTIL);
-        reservedWords.put("WRITE",     TokenType.WRITE);
-        reservedWords.put("WRITELN",   TokenType.WRITELN);
-        reservedWords.put("DIV",       TokenType.DIV);
-        reservedWords.put("MOD",       TokenType.MOD);
-        reservedWords.put("AND",       TokenType.AND);
-        reservedWords.put("OR",        TokenType.OR);
-        reservedWords.put("NOT",       TokenType.NOT);
-        reservedWords.put("CONST",     TokenType.CONST);
-        reservedWords.put("TYPE",      TokenType.TYPE);
-        reservedWords.put("VAR",       TokenType.VAR);
+        reservedWords.put("PROGRAM", TokenType.PROGRAM);
+        reservedWords.put("BEGIN",   TokenType.BEGIN);
+        reservedWords.put("END",     TokenType.END);
+        reservedWords.put("REPEAT",  TokenType.REPEAT);
+        reservedWords.put("UNTIL",   TokenType.UNTIL);
+        reservedWords.put("WRITE",   TokenType.WRITE);
+        reservedWords.put("WRITELN", TokenType.WRITELN);
+        reservedWords.put("DIV", TokenType.DIV);
+        reservedWords.put("MOD", TokenType.MOD);
+        reservedWords.put("AND", TokenType.AND);
+        reservedWords.put("OR", TokenType.OR);
+        reservedWords.put("NOT", TokenType.NOT);
+        reservedWords.put("CONST", TokenType.CONST);
+        reservedWords.put("TYPE", TokenType.TYPE);
+        reservedWords.put("VAR", TokenType.VAR);
         reservedWords.put("PROCEDURE", TokenType.PROCEDURE);
-        reservedWords.put("FUNCTION",  TokenType.FUNCTION);
-        reservedWords.put("WHILE",     TokenType.WHILE);
-        reservedWords.put("DO",        TokenType.DO);
-        reservedWords.put("FOR",       TokenType.FOR);
-        reservedWords.put("TO",        TokenType.TO);
-        reservedWords.put("DOWNTO",    TokenType.DOWNTO);
-        reservedWords.put("IF",        TokenType.IF);
-        reservedWords.put("THEN",      TokenType.THEN);
-        reservedWords.put("ELSE",      TokenType.ELSE);
-        reservedWords.put("WHILE",     TokenType.WHILE);
-        reservedWords.put("CASE",      TokenType.CASE);
-        reservedWords.put("OF",        TokenType.OF);
+        reservedWords.put("FUNCTION", TokenType.FUNCTION);
+        reservedWords.put("WHILE", TokenType.WHILE);
+        reservedWords.put("DO", TokenType.DO);
+        reservedWords.put("FOR", TokenType.FOR);
+        reservedWords.put("TO", TokenType.TO);
+        reservedWords.put("DOWNTO", TokenType.DOWNTO);
+        reservedWords.put("IF", TokenType.IF);
+        reservedWords.put("THEN", TokenType.THEN);
+        reservedWords.put("ELSE", TokenType.ELSE);
+        reservedWords.put("CASE", TokenType.CASE);
+        reservedWords.put("OF", TokenType.OF);
     }
     
     public TokenType type;       // what type of token
@@ -175,26 +172,26 @@ public class Token
                 length++;
                 ch = source.nextChar();  // consume the character
             }
-            
+
             // End of file. An unclosed string.
             if (ch == Source.EOF)
             {
                 tokenError(token, "String not closed");
                 done = true;
             }
-            
+
             // Got a ' so it can be the closing ', or a ''
             else
             {
                 ch = source.nextChar();  // consume the '
-                
+
                 // That was the closing '. Close the string.
-                if (ch != '\'') 
+                if (ch != '\'')
                 {
                     token.text += '\'';
                     done = true;
                 }
-                
+
                 // It's '' so append ' to the string.
                 else
                 {
@@ -214,7 +211,7 @@ public class Token
 
         return token;
     }
-   
+
     /**
      * Construct a special symbol token and set its value.
      * @param firstChar the first character of the token.
@@ -225,7 +222,7 @@ public class Token
     {
         Token token = new Token(firstChar);
         token.lineNumber = source.lineNumber();
-        
+
         switch (firstChar)
         {
             case ',' : token.type = TokenType.COMMA;      break;
@@ -239,7 +236,7 @@ public class Token
             case '[' : token.type = TokenType.LBRACKET;   break;
             case ']' : token.type = TokenType.RBRACKET;   break;
             case '^' : token.type = TokenType.CARAT;      break;
-            
+
             case ':' : 
             {
                 char nextChar = source.nextChar();  // consume :
@@ -260,20 +257,20 @@ public class Token
 
                 break;
             }
-            
-            case '<' : 
+
+            case '<' :
             {
                 char nextChar = source.nextChar();  // consume <
-                
+
                 // Is it the <= symbol?
-                if (nextChar == '=') 
+                if (nextChar == '=')
                 {
                     token.text += '=';
                     token.type = TokenType.LESS_EQUALS;
                 }
-                
+
                 // Is it the <> symbol?
-                else if (nextChar == '>') 
+                else if (nextChar == '>')
                 {
                     token.text += '>';
                     token.type = TokenType.NOT_EQUALS;
@@ -288,18 +285,18 @@ public class Token
 
                 break;
             }
-            
-            case '>' : 
+
+            case '>' :
             {
                 char nextChar = source.nextChar();  // consume >
-                
+
                 // Is it the >= symbol?
-                if (nextChar == '=') 
+                if (nextChar == '=')
                 {
                     token.text += '=';
                     token.type = TokenType.GREATER_EQUALS;
                 }
-                
+
                 // No, it's just the > symbol.
                 else
                 {
@@ -309,18 +306,18 @@ public class Token
 
                 break;
             }
-            
-            case '.' : 
+
+            case '.' :
             {
                 char nextChar = source.nextChar();  // consume .
-                
+
                 // Is it the .. symbol?
-                if (nextChar == '.') 
+                if (nextChar == '.')
                 {
                     token.text += '.';
                     token.type = TokenType.DOT_DOT;
                 }
-                
+
                 // No, it's just the . symbol.
                 else
                 {

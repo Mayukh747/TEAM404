@@ -1,0 +1,170 @@
+The following output is from running Simple -scan SquareRootTable.pas:
+
+/Users/mayukh/Library/Java/JavaVirtualMachines/openjdk-20.0.2/Contents/Home/bin/java -javaagent:/Applications/IntelliJ IDEA.app/Contents/lib/idea_rt.jar=60802:/Applications/IntelliJ IDEA.app/Contents/bin -Dfile.encoding=UTF-8 -Dsun.stdout.encoding=UTF-8 -Dsun.stderr.encoding=UTF-8 -classpath /Users/mayukh/IdeaProjects/Team 404/out/production/Team 404 Simple -scan SquareRootTable.pas
+Tokens:
+
+     PROGRAM : PROGRAM
+  IDENTIFIER : SquareRootTable
+   SEMICOLON : ;
+         VAR : VAR
+  IDENTIFIER : whole
+       COMMA : ,
+  IDENTIFIER : frac
+       COLON : :
+  IDENTIFIER : integer
+   SEMICOLON : ;
+  IDENTIFIER : number
+       COLON : :
+  IDENTIFIER : real
+   SEMICOLON : ;
+    FUNCTION : FUNCTION
+  IDENTIFIER : sqroot
+      LPAREN : (
+  IDENTIFIER : n
+       COLON : :
+  IDENTIFIER : real
+      RPAREN : )
+       COLON : :
+  IDENTIFIER : real
+   SEMICOLON : ;
+         VAR : VAR
+  IDENTIFIER : root
+       COMMA : ,
+  IDENTIFIER : prev
+       COMMA : ,
+  IDENTIFIER : diff
+       COLON : :
+  IDENTIFIER : real
+   SEMICOLON : ;
+       BEGIN : BEGIN
+  IDENTIFIER : root
+COLON_EQUALS : :=
+  IDENTIFIER : n
+   SEMICOLON : ;
+  IDENTIFIER : prev
+COLON_EQUALS : :=
+  IDENTIFIER : root
+   SEMICOLON : ;
+      REPEAT : REPEAT
+  IDENTIFIER : root
+COLON_EQUALS : :=
+      LPAREN : (
+  IDENTIFIER : n
+       SLASH : /
+  IDENTIFIER : root
+        PLUS : +
+  IDENTIFIER : root
+      RPAREN : )
+       SLASH : /
+     INTEGER : 2
+   SEMICOLON : ;
+  IDENTIFIER : diff
+COLON_EQUALS : :=
+  IDENTIFIER : prev
+       MINUS : -
+  IDENTIFIER : root
+   SEMICOLON : ;
+  IDENTIFIER : prev
+COLON_EQUALS : :=
+  IDENTIFIER : root
+   SEMICOLON : ;
+       UNTIL : UNTIL
+  IDENTIFIER : diff
+   LESS_THAN : <
+        REAL : 0.0000001
+   SEMICOLON : ;
+  IDENTIFIER : sqroot
+COLON_EQUALS : :=
+  IDENTIFIER : root
+   SEMICOLON : ;
+         END : END
+   SEMICOLON : ;
+       BEGIN : BEGIN
+     WRITELN : writeln
+      LPAREN : (
+      STRING : 'Square Root Table'
+      RPAREN : )
+   SEMICOLON : ;
+     WRITELN : writeln
+   SEMICOLON : ;
+       WRITE : write
+      LPAREN : (
+      STRING : '     '
+      RPAREN : )
+   SEMICOLON : ;
+         FOR : FOR
+  IDENTIFIER : frac
+COLON_EQUALS : :=
+     INTEGER : 0
+          TO : TO
+     INTEGER : 9
+          DO : DO
+       BEGIN : BEGIN
+       WRITE : write
+      LPAREN : (
+  IDENTIFIER : frac
+       SLASH : /
+        REAL : 10.0
+       COLON : :
+     INTEGER : 10
+       COLON : :
+     INTEGER : 1
+      RPAREN : )
+   SEMICOLON : ;
+         END : END
+   SEMICOLON : ;
+     WRITELN : writeln
+   SEMICOLON : ;
+         FOR : FOR
+  IDENTIFIER : whole
+COLON_EQUALS : :=
+     INTEGER : 1
+          TO : TO
+     INTEGER : 25
+          DO : DO
+       BEGIN : BEGIN
+       WRITE : write
+      LPAREN : (
+  IDENTIFIER : whole
+       COLON : :
+     INTEGER : 5
+      RPAREN : )
+   SEMICOLON : ;
+         FOR : FOR
+  IDENTIFIER : frac
+COLON_EQUALS : :=
+     INTEGER : 0
+          TO : TO
+     INTEGER : 9
+          DO : DO
+       BEGIN : BEGIN
+  IDENTIFIER : number
+COLON_EQUALS : :=
+  IDENTIFIER : whole
+        PLUS : +
+  IDENTIFIER : frac
+       SLASH : /
+        REAL : 10.0
+   SEMICOLON : ;
+       WRITE : write
+      LPAREN : (
+  IDENTIFIER : sqroot
+      LPAREN : (
+  IDENTIFIER : number
+      RPAREN : )
+       COLON : :
+     INTEGER : 10
+       COLON : :
+     INTEGER : 6
+      RPAREN : )
+   SEMICOLON : ;
+         END : END
+   SEMICOLON : ;
+     WRITELN : writeln
+   SEMICOLON : ;
+         END : END
+   SEMICOLON : ;
+         END : END
+      PERIOD : .
+
+Process finished with exit code 0

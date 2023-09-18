@@ -14,6 +14,7 @@ import static frontend.Token.TokenType.*;
 
 public class Simple
 {
+    //yay, yay
     public static void main(String args[])
     {
         if (args.length != 2)
@@ -62,7 +63,7 @@ public class Simple
             System.out.printf("%14s : %s\n", token.type, token.text);
         }
     }
-    
+
     /**
      * Test the parser.
      * @param scanner the scanner.
