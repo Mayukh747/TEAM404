@@ -5,7 +5,7 @@ BEGIN
     
     REPEAT
         i := i + 1;
-        write('#'); write(i);
+        write('#'); write(i:1:0);
         writeln(': Hello, world!')
     UNTIL i = 5
 END.

@@ -5,7 +5,7 @@
  * Department of Computer Science
  * San Jose State University
  */
-package intermediate;
+package intermediate.symtab;
 
 public class SymtabEntry
 {

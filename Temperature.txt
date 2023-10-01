@@ -8,7 +8,7 @@ BEGIN
     
     REPEAT  
         celsius := (fahrenheit - 32)/1.8;
-        write(fahrenheit:6);
+        write(fahrenheit:6:0);
         writeln(celsius:13:2);
         fahrenheit := fahrenheit + 1;
     UNTIL fahrenheit = 101; 
