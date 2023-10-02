@@ -79,6 +79,30 @@ public interface Pcl4Visitor<T> extends ParseTreeVisitor<T> {
 	 */
 	T visitRepeatStatement(Pcl4Parser.RepeatStatementContext ctx);
 	/**
+	 * Visit a parse tree produced by {@link Pcl4Parser#whileStatement}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitWhileStatement(Pcl4Parser.WhileStatementContext ctx);
+	/**
+	 * Visit a parse tree produced by {@link Pcl4Parser#forStatement}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitForStatement(Pcl4Parser.ForStatementContext ctx);
+	/**
+	 * Visit a parse tree produced by {@link Pcl4Parser#ifStatement}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitIfStatement(Pcl4Parser.IfStatementContext ctx);
+	/**
+	 * Visit a parse tree produced by {@link Pcl4Parser#caseStatement}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitCaseStatement(Pcl4Parser.CaseStatementContext ctx);
+	/**
 	 * Visit a parse tree produced by {@link Pcl4Parser#lhs}.
 	 * @param ctx the parse tree
 	 * @return the visitor result

@@ -17,6 +17,10 @@ statement : compoundStatement
           | writeStatement
           | writelnStatement
           | emptyStatement
+          | whileStatement
+          | forStatement
+          | ifStatement
+          | caseStatement
           ;
 
 compoundStatement : BEGIN statementList END ;
@@ -25,6 +29,14 @@ emptyStatement    : ;
 statementList       : statement ( ';' statement )* ;
 assignmentStatement : lhs ':=' rhs ;
 repeatStatement     : REPEAT statementList UNTIL expression ;
+
+whileStatement  : WHILE expression DO statement ;
+forStatement    : FOR IDENTIFIER ':=' expression (TO | DOWNTO) expression DO statement ;
+ifStatement     : IF expression THEN statement (ELSE statement)? ;
+caseStatement   : CASE expression OF
+                        (number (',' number)* ':' statement
+                            (';' number (',' number)* ':' statement)* )? (';')?
+                        END ;       // maybe define a constant and replace factors with constant
 
 lhs : variable ;
 rhs : expression ;

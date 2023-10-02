@@ -47,6 +47,75 @@ public class Executor extends Pcl4BaseVisitor<Object>
         
         return null;
     }
+    @Override
+    public Object visitWhileStatement(Pcl4Parser.WhileStatementContext ctx) {
+        Pcl4Parser.ExpressionContext expressionCtx = ctx.expression();
+        Pcl4Parser.StatementContext statementCtx = ctx.statement();
+
+        while ((Boolean) visit(expressionCtx)) {
+            visit(statementCtx);
+        }
+
+        return null;
+    }
+
+    @Override
+    public Object visitForStatement(Pcl4Parser.ForStatementContext ctx) {
+
+        double val = (Double) visit(ctx.expression().get(0));
+        double end = (Double) visit(ctx.expression().get(1));
+        Pcl4Parser.StatementContext statementCtx = ctx.statement();
+
+        SymtabEntry entry = this.symtab.enter(ctx.children.get(1).getText());
+        entry.setValue(val);
+
+        while(val != end){
+            visit(statementCtx);
+            if(ctx.children.get(4).getText().toLowerCase().equals("to"))
+            {
+                val++;
+            }
+            else{
+                val--;
+            }
+            entry.setValue(val);
+        }
+        visit(statementCtx);
+
+        return null;
+    }
+
+    @Override
+    public Object visitCaseStatement(Pcl4Parser.CaseStatementContext ctx){
+        Double val = (Double) visit(ctx.expression());
+        int idx = 3;
+        // Find matching factor
+        while(idx < ctx.children.size()){
+            // Found matching Number
+            if(ctx.children.get(idx) instanceof Pcl4Parser.NumberContext &&
+                    ((Double) visit(ctx.children.get(idx))).equals(val)){
+                //Find next statement
+                while(!(ctx.children.get(idx) instanceof Pcl4Parser.StatementContext)){
+                    idx++;
+                }
+                visit(ctx.children.get(idx));
+                break;
+            }
+            idx++;
+        }
+        return null;
+    }
+    @Override
+    public Object visitIfStatement(Pcl4Parser.IfStatementContext ctx){
+        if((Boolean) visit(ctx.expression())){
+            visitStatement(ctx.statement().get(0));
+        } else if (ctx.statement().size() > 1){
+            visitStatement(ctx.statement().get(1));
+        }
+        return null;
+    }
+
+
 
     @Override 
     public Object visitWritelnStatement(Pcl4Parser.WritelnStatementContext ctx)
@@ -298,7 +367,6 @@ public class Executor extends Pcl4BaseVisitor<Object>
 
     /**
      * Flag a runtime error.
-     * @param node the root node of the offending statement or expression.
      * @param message the runtime error message.
      * @param ctx the context.
      */

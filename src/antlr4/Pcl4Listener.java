@@ -120,6 +120,46 @@ public interface Pcl4Listener extends ParseTreeListener {
 	 */
 	void exitRepeatStatement(Pcl4Parser.RepeatStatementContext ctx);
 	/**
+	 * Enter a parse tree produced by {@link Pcl4Parser#whileStatement}.
+	 * @param ctx the parse tree
+	 */
+	void enterWhileStatement(Pcl4Parser.WhileStatementContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link Pcl4Parser#whileStatement}.
+	 * @param ctx the parse tree
+	 */
+	void exitWhileStatement(Pcl4Parser.WhileStatementContext ctx);
+	/**
+	 * Enter a parse tree produced by {@link Pcl4Parser#forStatement}.
+	 * @param ctx the parse tree
+	 */
+	void enterForStatement(Pcl4Parser.ForStatementContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link Pcl4Parser#forStatement}.
+	 * @param ctx the parse tree
+	 */
+	void exitForStatement(Pcl4Parser.ForStatementContext ctx);
+	/**
+	 * Enter a parse tree produced by {@link Pcl4Parser#ifStatement}.
+	 * @param ctx the parse tree
+	 */
+	void enterIfStatement(Pcl4Parser.IfStatementContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link Pcl4Parser#ifStatement}.
+	 * @param ctx the parse tree
+	 */
+	void exitIfStatement(Pcl4Parser.IfStatementContext ctx);
+	/**
+	 * Enter a parse tree produced by {@link Pcl4Parser#caseStatement}.
+	 * @param ctx the parse tree
+	 */
+	void enterCaseStatement(Pcl4Parser.CaseStatementContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link Pcl4Parser#caseStatement}.
+	 * @param ctx the parse tree
+	 */
+	void exitCaseStatement(Pcl4Parser.CaseStatementContext ctx);
+	/**
 	 * Enter a parse tree produced by {@link Pcl4Parser#lhs}.
 	 * @param ctx the parse tree
 	 */
