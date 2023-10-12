@@ -1,42 +1,199 @@
 package backend.interpreter;
 
-import org.antlr.v4.runtime.ParserRuleContext;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Scanner;
 
 import antlr4.*;
-import intermediate.symtab.*;
 
-public class Executor extends Pcl4BaseVisitor<Object>
+import intermediate.symtab.*;
+import intermediate.symtab.SymtabEntry.Kind;
+import intermediate.type.*;
+
+import static intermediate.symtab.SymtabEntry.Kind.*;
+import static intermediate.type.Typespec.Form.SUBRANGE;
+import static backend.interpreter.RuntimeErrorHandler.Code.*;
+
+/**
+ * Execute Pascal programs.
+ */
+public class Executor extends PascalBaseVisitor<Object>
 {
-    private Symtab symtab = new Symtab();
+    private int executionCount = 0;     // count of executed statements
+    private SymtabEntry programId;      // program identifier's symbol table entry
+    private RuntimeStack runtimeStack;  // runtime stack
+    private Scanner sysin;              // runtime input
+    private RuntimeErrorHandler error;  // runtime error handler
     
-    @Override 
-    public Object visitProgram(Pcl4Parser.ProgramContext ctx)
+    public Executor(SymtabEntry programId)
     {
-        return visit(ctx.block().compoundStatement());
+        this.programId = programId;
+        runtimeStack = new RuntimeStack();
+        sysin = new Scanner(System.in);
+        error = new RuntimeErrorHandler();
     }
     
     @Override 
-    public Object visitAssignmentStatement(Pcl4Parser.AssignmentStatementContext ctx)
+    public Object visitProgram(PascalParser.ProgramContext ctx) 
+    { 
+        long startTime = System.currentTimeMillis();
+        
+        StackFrame programFrame = new StackFrame(programId);
+        runtimeStack.push(programFrame);
+        
+        visit(ctx.block().compoundStatement());
+
+        long elapsedTime = System.currentTimeMillis() - startTime;
+        System.out.printf("\n%,20d statements executed." +
+                          "\n%,20d runtime errors." +
+                          "\n%,20d milliseconds execution time.\n",
+                          executionCount, error.getCount(), elapsedTime);
+
+        return null;
+    }
+
+    @Override 
+    public Object visitStatement(PascalParser.StatementContext ctx) 
     {
-        String variableName = ctx.lhs().variable().getText();
-        Double value = (Double) visit(ctx.rhs());
-        assign(variableName, value);
+        executionCount++;
+        visitChildren(ctx);
+        
+        return null;
+    }
+
+    @Override 
+    public Object visitAssignmentStatement(
+                                    PascalParser.AssignmentStatementContext ctx) 
+    {
+        PascalParser.ExpressionContext exprCtx = ctx.rhs().expression();
+        Object value = visit(exprCtx);
+        assignValue(ctx.lhs().variable(), value, exprCtx.type);
+        
+        return null;
+    }
+    
+    /**
+     * Assign a value to a target variable's memory cell.
+     * @param varCtx the VariableContext of the target.
+     * @param value the value to assign.
+     * @param valueType the datatype of the value.
+     * @return the target variable's memory cell.
+     */
+    private Cell assignValue(PascalParser.VariableContext varCtx, 
+                             Object value, Typespec valueType)
+    {
+        Typespec targetType = varCtx.type;
+        Cell targetCell = (Cell) visit(varCtx);
+        
+        assignValue(targetCell, targetType, value, valueType);
+        
+        return targetCell;
+    }
+    
+    /**
+     * Assign a value to a target variable's memory cell.
+     * @param targetCell the target variable's memory cell.
+     * @param targetType the datatype of the target variable.
+     * @param value the value to assign.
+     * @param valueType the datatype of the value.
+     */
+    private void assignValue(Cell targetCell, Typespec targetType,
+                             Object value, Typespec valueType)
+    {
+        // Assign with any necessary type conversions.
+        if (   (targetType == Predefined.integerType)
+            && (valueType  == Predefined.charType))
+        {
+            int charValue = (Character) value;
+            targetCell.setValue(charValue);
+        }
+        else if (targetType == Predefined.realType)
+        {
+            double doubleValue = 
+                    (valueType == Predefined.integerType) ? (Integer)   value
+                  : (valueType == Predefined.charType)    ? (Character) value
+                  :                                         (Double)    value;
+            targetCell.setValue(doubleValue);
+        }
+        else 
+        {
+            targetCell.setValue(value);
+        }
+    }
+
+    @Override 
+    public Object visitIfStatement(PascalParser.IfStatementContext ctx) 
+    {
+        PascalParser.TrueStatementContext  trueCtx  = ctx.trueStatement();
+        PascalParser.FalseStatementContext falseCtx = ctx.falseStatement();
+        boolean value = (Boolean) visit(ctx.expression());
+        
+        if      (value)            visit(trueCtx);
+        else if (falseCtx != null) visit(falseCtx);
+        
+        return null;
+    }
+
+    @Override 
+    public Object visitCaseStatement(PascalParser.CaseStatementContext ctx) 
+    {
+        PascalParser.ExpressionContext exprCtx = ctx.expression();
+        PascalParser.CaseBranchListContext branchListCtx = ctx.caseBranchList();
+        
+        // First time: Create the jump table.
+        if (ctx.jumpTable == null) 
+        {
+            ctx.jumpTable = createJumpTable(branchListCtx);
+        }
+        
+        Object value = visit(exprCtx);
+        int intValue = 
+                (exprCtx.type == Predefined.integerType) ? (Integer)   value
+                                                         : (Character) value;
+        
+        // From the jump table obtain the statement corresponding to the value.
+        PascalParser.StatementContext stmtCtx = ctx.jumpTable.get(intValue);
+        if (stmtCtx != null) visit(stmtCtx);
 
         return null;
     }
     
-    private void assign(String variableName, Double value)
+    /**
+     * Create the jump table for a CASE statement.
+     * @param branchListCtx the CaseBranchListContext.
+     * @return the jump table.
+     */
+    private HashMap<Integer, PascalParser.StatementContext> createJumpTable(
+                            PascalParser.CaseBranchListContext branchListCtx)
     {
-        SymtabEntry variableId = symtab.lookup(variableName);
-        if (variableId == null) variableId = symtab.enter(variableName);
+        HashMap<Integer, PascalParser.StatementContext> table = new HashMap<>();
         
-        variableId.setValue(value);
+        // Loop over the CASE branches.
+        for (PascalParser.CaseBranchContext branchCtx : 
+                                                    branchListCtx.caseBranch())
+        {
+            PascalParser.CaseConstantListContext constListCtx = 
+                                                    branchCtx.caseConstantList();
+            PascalParser.StatementContext stmtCtx = branchCtx.statement();
+        
+            if (constListCtx != null)
+            {
+                // Loop over the CASE constants of each CASE branch.
+                for (PascalParser.CaseConstantContext caseConstCtx : 
+                                                    constListCtx.caseConstant())
+                {
+                    table.put(caseConstCtx.value, stmtCtx);
+                }
+            }
+        }
+        
+        return table;
     }
     
     @Override 
-    public Object visitRepeatStatement(Pcl4Parser.RepeatStatementContext ctx)
+    public Object visitRepeatStatement(PascalParser.RepeatStatementContext ctx) 
     {
-        Pcl4Parser.StatementListContext listCtx = ctx.statementList();
+        PascalParser.StatementListContext listCtx = ctx.statementList();
         boolean value;
         
         do
@@ -47,124 +204,86 @@ public class Executor extends Pcl4BaseVisitor<Object>
         
         return null;
     }
-    @Override
-    public Object visitWhileStatement(Pcl4Parser.WhileStatementContext ctx) {
-        Pcl4Parser.ExpressionContext expressionCtx = ctx.expression();
-        Pcl4Parser.StatementContext statementCtx = ctx.statement();
-
-        while ((Boolean) visit(expressionCtx)) {
-            visit(statementCtx);
-        }
-
-        return null;
-    }
-
-    @Override
-    public Object visitForStatement(Pcl4Parser.ForStatementContext ctx) {
-
-        double val = (Double) visit(ctx.expression().get(0));
-        double end = (Double) visit(ctx.expression().get(1));
-        Pcl4Parser.StatementContext statementCtx = ctx.statement();
-
-        SymtabEntry entry = this.symtab.enter(ctx.children.get(1).getText());
-        entry.setValue(val);
-
-        while(val != end){
-            visit(statementCtx);
-            if(ctx.children.get(4).getText().toLowerCase().equals("to"))
-            {
-                val++;
-            }
-            else{
-                val--;
-            }
-            entry.setValue(val);
-        }
-        visit(statementCtx);
-
-        return null;
-    }
-
-    @Override
-    public Object visitCaseStatement(Pcl4Parser.CaseStatementContext ctx){
-        Double val = (Double) visit(ctx.expression());
-        int idx = 3;
-        // Find matching factor
-        while(idx < ctx.children.size()){
-            // Found matching Number
-            if(ctx.children.get(idx) instanceof Pcl4Parser.NumberContext &&
-                    ((Double) visit(ctx.children.get(idx))).equals(val)){
-                //Find next statement
-                while(!(ctx.children.get(idx) instanceof Pcl4Parser.StatementContext)){
-                    idx++;
-                }
-                visit(ctx.children.get(idx));
-                break;
-            }
-            idx++;
-        }
-        return null;
-    }
-    @Override
-    public Object visitIfStatement(Pcl4Parser.IfStatementContext ctx){
-        if((Boolean) visit(ctx.expression())){
-            visitStatement(ctx.statement().get(0));
-        } else if (ctx.statement().size() > 1){
-            visitStatement(ctx.statement().get(1));
-        }
-        return null;
-    }
-
-
 
     @Override 
-    public Object visitWritelnStatement(Pcl4Parser.WritelnStatementContext ctx)
+    public Object visitWhileStatement(PascalParser.WhileStatementContext ctx) 
     {
-        visitChildren(ctx);
-        System.out.println();
-
-        return null;
-    }
-
-    @Override 
-    public Object visitWriteArgumentList(Pcl4Parser.WriteArgumentListContext ctx) 
-    {
-        // Loop over each argument.
-        for (Pcl4Parser.WriteArgumentContext argCtx : ctx.writeArgument())
+        PascalParser.StatementContext stmtCtx = ctx.statement();
+        boolean value = (Boolean) visit(ctx.expression());
+        
+        while (value)
         {
-            // Print the expression value with a format specifier.
-            Object value = visit(argCtx.expression());
-            StringBuffer format = new StringBuffer("%");
+            visit(stmtCtx);
+            value = (Boolean) visit(ctx.expression());
+        }
+        
+        return null;
+    }
+
+    @Override 
+    public Object visitForStatement(PascalParser.ForStatementContext ctx) 
+    {
+        PascalParser.VariableContext   controlCtx   = ctx.variable();
+        PascalParser.ExpressionContext startExprCtx = ctx.expression().get(0);
+        PascalParser.ExpressionContext stopExprCtx  = ctx.expression().get(1);
+
+        // Initial control value.
+        Object startValue = visit(startExprCtx);
+        assignValue(controlCtx, startValue, startExprCtx.type);
+        
+        // Terminal control value.
+        boolean to = ctx.TO() != null;
+        Object stopValue = visit(stopExprCtx);
+        
+        // Integer control values.
+        if (controlCtx.type.baseType() == Predefined.integerType)
+        {
+            int control = (Integer) startValue;
+            int stop    = (Integer) stopValue;
             
-            // Create the format string.
-            Pcl4Parser.FieldWidthContext fwCtx = argCtx.fieldWidth();              
-            if (fwCtx != null)
+            if (to)
             {
-                String sign = (   (fwCtx.sign() != null) 
-                               && (fwCtx.sign().getText().equals("-"))) 
-                            ? "-" : "";
-                format.append(sign)
-                      .append(fwCtx.integerConstant().getText());
-                
-                Pcl4Parser.DecimalPlacesContext dpCtx = 
-                                                    fwCtx.decimalPlaces();
-                if (dpCtx != null)
+                while (control <= stop)
                 {
-                    format.append(".")
-                          .append(dpCtx.integerConstant().getText());
+                    visit(ctx.statement());
+                    Object nextValue = ++control;
+                    assignValue(controlCtx, nextValue, Predefined.integerType);
                 }
             }
-            
-            // Use the format string with printf.
-            if (value instanceof Double)
+            else  // downto
             {
-                format.append("f");
-                System.out.printf(format.toString(), (double) value);
+                while (control >= stop)
+                {
+                    visit(ctx.statement());
+                    Object nextValue = --control;
+                    assignValue(controlCtx, nextValue, Predefined.integerType);
+                }
             }
-            else  // String
+        }
+        
+        // Character control values.
+        else
+        {
+            char control = (Character) startValue;
+            char stop    = (Character) stopValue;
+            
+            if (to)
             {
-                format.append("s");
-                System.out.printf(format.toString(), (String) value);
+                while (control <= stop)
+                {
+                    visit(ctx.statement());
+                    Object nextValue = ++control;
+                    assignValue(controlCtx, nextValue, Predefined.charType);
+                }
+            }
+            else  // downto
+            {
+                while (control >= stop)
+                {
+                    visit(ctx.statement());
+                    Object nextValue = --control;
+                    assignValue(controlCtx, nextValue, Predefined.charType);
+                }
             }
         }
 
@@ -172,66 +291,244 @@ public class Executor extends Pcl4BaseVisitor<Object>
     }
 
     @Override 
-    public Object visitExpression(Pcl4Parser.ExpressionContext ctx) 
+    public Object visitProcedureCallStatement(
+                                PascalParser.ProcedureCallStatementContext ctx) 
     {
-        Pcl4Parser.SimpleExpressionContext simpleCtx1 = ctx.simpleExpression(0);
-        Pcl4Parser.RelOpContext relOpCtx = ctx.relOp();
+        SymtabEntry routineId = ctx.procedureName().entry;
+        PascalParser.ArgumentListContext argListCtx = ctx.argumentList();
+        StackFrame newFrame = new StackFrame(routineId);
+        
+        // Execute any actual parameters and initialize
+        // the formal parameters in the routine's new stack frame.
+        if (argListCtx != null) 
+        {
+            ArrayList<SymtabEntry> parameters = routineId.getRoutineParameters();
+            executeCallArguments(argListCtx, parameters, newFrame);
+        }
+
+        // Push the routine's stack frame onto the runtime stack 
+        // and execute the procedure.
+        runtimeStack.push(newFrame);
+
+        // Execute the routine.
+        PascalParser.CompoundStatementContext stmtCtx = 
+            (PascalParser.CompoundStatementContext) routineId.getExecutable();
+        visit(stmtCtx);
+
+        // Pop off the routine's stack frame.
+        runtimeStack.pop();
+        
+        return null;
+    }
+
+    /**
+     * Execute procedure and function call arguments.
+     * @param argListCtx the ArgumentListContext
+     * @param parameters the routine's parameters.
+     * @param frame the routine's stack frame.
+     */
+    private void executeCallArguments(PascalParser.ArgumentListContext argListCtx,
+                                     ArrayList<SymtabEntry> parameters,
+                                     StackFrame frame)
+    {
+        // Loop over the parameters.
+        for (int i = 0; i < parameters.size(); i++)
+        {
+            SymtabEntry parmId = parameters.get(i);
+            String parmName = parmId.getName();
+            Kind parmKind = parmId.getKind();
+            Cell parmCell = frame.getCell(parmName);
+            PascalParser.ArgumentContext argCtx = argListCtx.argument().get(i);
+            Object value = visit(argCtx);
+            
+            // Value parameter: Copy the argument's value.
+            if (parmKind == VALUE_PARAMETER)
+            {
+                assignValue(parmCell, parmId.getType(),
+                            value, argCtx.expression().type);
+            }
+            
+            // Reference parameter: Copy the argument's cell.
+            else
+            {
+                PascalParser.FactorContext factorCtx =
+                        argCtx.expression().simpleExpression().get(0)
+                              .term().get(0).factor().get(0);
+                PascalParser.VariableContext varCtx =
+                    ((PascalParser.VariableFactorContext) factorCtx).variable();
+                
+                Cell argCell = (Cell) visitVariable(varCtx);
+                frame.replaceCell(parmName, argCell);
+            }
+        }
+    }
+
+    @Override 
+    public Object visitExpression(PascalParser.ExpressionContext ctx) 
+    {
+        PascalParser.SimpleExpressionContext simpleCtx1 = 
+                                                ctx.simpleExpression().get(0);
+        PascalParser.RelOpContext relOpCtx = ctx.relOp();
         Object operand1 = visit(simpleCtx1);
+        Typespec type1 = simpleCtx1.type;
         
         // More than one simple expression?
         if (relOpCtx != null)
         {
             String op = relOpCtx.getText();
-            Pcl4Parser.SimpleExpressionContext simpleCtx2 = 
-                                                        ctx.simpleExpression(1);
-            double value1 = (Double) operand1;
-            double value2 = (Double) visit(simpleCtx2);
-            boolean result = false;
+            PascalParser.SimpleExpressionContext simpleCtx2 = 
+                                                ctx.simpleExpression().get(1);
+            Object operand2 = visit(simpleCtx2);
+            Typespec type2 = simpleCtx2.type;
+
+            boolean integerMode   = false;
+            boolean realMode      = false;
+            boolean characterMode = false;
+
+            if (   (type1 == Predefined.integerType)
+                && (type2 == Predefined.integerType)) 
+            {
+                integerMode = true;
+            }
+            else if (   (type1 == Predefined.realType) 
+                     || (type2 == Predefined.realType))
+            {
+                realMode = true;
+            }
+            else if (   (type1 == Predefined.charType) 
+                     && (type2 == Predefined.charType))
+            {
+                characterMode = true;
+            }
+
+            if (integerMode || characterMode) 
+            {
+                int value1 = type1 == Predefined.integerType
+                        ? (Integer) operand1 : (Character) operand1;
+                int value2 = type2 == Predefined.integerType
+                        ? (Integer) operand2 : (Character) operand2;
+                Boolean result = false;
+
+                if      (op.equals("=" )) result = value1 == value2;
+                else if (op.equals("<>")) result = value1 != value2;
+                else if (op.equals("<" )) result = value1 <  value2;
+                else if (op.equals("<=")) result = value1 <= value2;
+                else if (op.equals(">" )) result = value1 >  value2;
+                else if (op.equals(">=")) result = value1 >= value2;
                 
-            if      (op.equals("=" )) result = value1 == value2;
-            else if (op.equals("<>")) result = value1 != value2;
-            else if (op.equals("<" )) result = value1 <  value2;
-            else if (op.equals("<=")) result = value1 <= value2;
-            else if (op.equals(">" )) result = value1 >  value2;
-            else if (op.equals(">=")) result = value1 >= value2;
-            
-            return result;
+                return result;
+            }
+            else if (realMode)
+            {
+                double value1 = type1 == Predefined.integerType
+                        ? (Integer) operand1 : (Double) operand1;
+                double value2 = type2 == Predefined.integerType
+                        ? (Integer) operand2 : (Double) operand2;
+                Boolean result = false;
+                
+                if      (op.equals("=" )) result = value1 == value2;
+                else if (op.equals("<>")) result = value1 != value2;
+                else if (op.equals("<" )) result = value1 <  value2;
+                else if (op.equals("<=")) result = value1 <= value2;
+                else if (op.equals(">" )) result = value1 >  value2;
+                else if (op.equals(">=")) result = value1 >= value2;
+                
+                return result;
+            }
+            else  // stringMode) 
+            {
+                String value1 = (String) operand1;
+                String value2 = (String) operand2;
+                Boolean result = false;
+                int comp = value1.compareTo(value2);
+                
+                if      (op.equals("=" )) result = comp == 0;
+                else if (op.equals("<>")) result = comp != 0;
+                else if (op.equals("<" )) result = comp <  0;
+                else if (op.equals("<=")) result = comp <= 0;
+                else if (op.equals(">" )) result = comp >  0;
+                else if (op.equals(">=")) result = comp >= 0;
+                
+                return result;
+            }
         }
         
         return operand1;
     }
 
     @Override 
-    public Object visitSimpleExpression(Pcl4Parser.SimpleExpressionContext ctx) 
+    public Object visitSimpleExpression(PascalParser.SimpleExpressionContext ctx) 
     {
         int count = ctx.term().size();
         Boolean negate =    (ctx.sign() != null) 
                          && ctx.sign().getText().equals("-");
         
         // First term.
-        Pcl4Parser.TermContext termCtx1 = ctx.term(0);
-        Object operand1 = visit(termCtx1);       
-        if (negate) operand1 = -((Double) operand1);
+        PascalParser.TermContext termCtx1 = ctx.term().get(0);
+        Object operand1 = visit(termCtx1);
+        Typespec type1 = termCtx1.type;
+        
+        if (negate)
+        {
+            if (type1 == Predefined.integerType)
+            {
+                operand1 = -((Integer) operand1);
+            }
+            else if (type1 == Predefined.realType)
+            {
+                operand1 = -((Double) operand1);
+            }
+        }
         
         // Loop over the subsequent terms.
         for (int i = 1; i < count; i++)
         {
-            String op = ctx.addOp(i-1).getText().toLowerCase();
-            Pcl4Parser.TermContext termCtx2 = ctx.term(i);
+            String op = ctx.addOp().get(i-1).getText().toLowerCase();
+            PascalParser.TermContext termCtx2 = ctx.term().get(i);
             Object operand2 = visit(termCtx2);
+            Typespec type2 = termCtx2.type;
 
-            if (operand2 instanceof Double)
+            boolean integerMode = false;
+            boolean realMode    = false;
+            boolean booleanMode = false;
+
+            if (   (type1 == Predefined.integerType)
+                && (type2 == Predefined.integerType)) 
             {
-                double value1 = (Double) operand1;
-                double value2 = (Double) operand2;
+                integerMode = true;
+            }
+            else if (   (type1 == Predefined.realType) 
+                     || (type2 == Predefined.realType))
+            {
+                realMode = true;
+            }
+            else if (   (type1 == Predefined.booleanType) 
+                     && (type2 == Predefined.booleanType))
+            {
+                booleanMode = true;
+            }
+                            
+            if (integerMode)
+            {
+                int value1 = (Integer) operand1;
+                int value2 = (Integer) operand2;
                 operand1 = (op.equals("+")) ? value1 + value2
                                             : value1 - value2;
             }
-            else if (operand2 instanceof Boolean)
+            else if (realMode)
+            {
+                double value1 = type1 == Predefined.integerType
+                              ? (Integer) operand1 : (Double) operand1;
+                double value2 = type2 == Predefined.integerType
+                              ? (Integer) operand2 : (Double) operand2;
+                operand1 = (op.equals("+")) ? value1 + value2
+                                            : value1 - value2;
+            }
+            else if (booleanMode)
             {
                 operand1 = ((Boolean) operand1) || ((Boolean) operand2);
             }
-            else  // String
+            else  // stringMode
             {
                 operand1 = ((String) operand1) + ((String) operand2);
             }
@@ -241,50 +538,89 @@ public class Executor extends Pcl4BaseVisitor<Object>
     }
 
     @Override 
-    public Object visitTerm(Pcl4Parser.TermContext ctx) 
+    public Object visitTerm(PascalParser.TermContext ctx) 
     {
         int count = ctx.factor().size();
         
         // First factor.
-        Pcl4Parser.FactorContext factorCtx1 = ctx.factor(0);
+        PascalParser.FactorContext factorCtx1 = ctx.factor().get(0);
         Object operand1 = visit(factorCtx1);
+        Typespec type1 = factorCtx1.type;
         
         // Loop over the subsequent factors.
         for (int i = 1; i < count; i++)
         {
-            String op = ctx.mulOp(i-1).getText().toLowerCase();
-            Pcl4Parser.FactorContext factorCtx2 = ctx.factor(i);
+            String op = ctx.mulOp().get(i-1).getText().toLowerCase();
+            PascalParser.FactorContext factorCtx2 = ctx.factor().get(i);
             Object operand2 = visit(factorCtx2);            
+            Typespec type2 = factorCtx2.type;
 
-            if (operand2 instanceof Double)
+            boolean integerMode = false;
+            boolean realMode    = false;
+
+            if (   (type1 == Predefined.integerType)
+                && (type2 == Predefined.integerType)) 
             {
-                double value1 = (Double) operand1;
-                double value2 = (Double) operand2;
+                integerMode = true;
+            }
+            else if (   (type1 == Predefined.realType) 
+                     || (type2 == Predefined.realType))
+            {
+                realMode = true;
+            }
+                
+            if (integerMode)
+            {
+                int value1 = (Integer) operand1;
+                int value2 = (Integer) operand2;
                 
                 if (op.equals("*")) operand1 = value1*value2;
                 
-                else if (   (op.equals("/")) 
-                         || (op.equals("div")) 
-                         || (op.equals("mod")))
+                else if (op.equals("div") || op.equals("/") || op.equals("mod"))
                 {
                     // Check for division by zero.
                     if (value2 == 0) 
                     {
-                        runtimeError("Division by zero", factorCtx2);
+                        error.flag(DIVISION_BY_ZERO, factorCtx2);
                         operand1 = 0;
                     }
                     
-                    else if (op.equals("/")) operand1 = value1/value2;
-                    else
+                    if (op.equals("div"))
                     {
-                        long long1 = (long) value1;
-                        long long2 = (long) value2;
-                        long result = (op.equals("div")) ? long1/long2 : long1%long2;
-                        operand1 = (double) result;
+                        operand1 = value1/value2;
+                    }
+                    else if (op.equals("/"))
+                    {
+                        double doubleValue = value1;
+                        operand1 = doubleValue/value2;
+                    }
+                    else  // mod
+                    {
+                        operand1 = value1 % value2;
                     }
                 }
             }
-            else  // Boolean
+            else if (realMode)
+            {
+                double value1 = type1 == Predefined.integerType
+                        ? (Integer) operand1 : (Double) operand1;
+                double value2 = type2 == Predefined.integerType
+                        ? (Integer) operand2 : (Double) operand2;
+                
+                if (op.equals("*")) operand1 = value1*value2;
+                
+                else if (op.equals("/"))
+                {
+                    // Check for division by zero.
+                    if (value2 == 0) 
+                    {
+                        error.flag(DIVISION_BY_ZERO, factorCtx2);
+                        operand1 = 0;
+                    }
+                    else operand1 = value1/value2;
+                }
+            }
+            else  // booleanMode
             {
                 operand1 = ((Boolean) operand1) && ((Boolean) operand2);
             }
@@ -294,63 +630,113 @@ public class Executor extends Pcl4BaseVisitor<Object>
     }
 
     @Override 
-    public Object visitNotFactor(Pcl4Parser.NotFactorContext ctx) 
+    public Object visitVariableFactor(PascalParser.VariableFactorContext ctx) 
     {
-        boolean value = (boolean) visit(ctx.factor());
-        return !value;
-    }
-
-    @Override 
-    public Object visitParenthesizedExpression(
-                                Pcl4Parser.ParenthesizedExpressionContext ctx) 
-    {
-        return visit(ctx.expression());
-    }
-
-    @Override 
-    public Object visitVariable(Pcl4Parser.VariableContext ctx)
-    {
-        String variableName = ctx.getText();
-        SymtabEntry variableId = symtab.lookup(variableName);
-        Double value = variableId != null ? variableId.getValue() : 0.0;
+        PascalParser.VariableContext varCtx = ctx.variable();
+        Kind kind = varCtx.entry.getKind();
         
-        return value;
-    }
-    
-    @Override 
-    public Object visitNumber(Pcl4Parser.NumberContext ctx)
-    {
-        boolean negate =    (ctx.sign() != null)
-                         && (ctx.sign().getText().equals("-"));
-        Double value = (Double) visit(ctx.unsignedNumber());
-        if (negate) value = -value;
+        // Obtain a constant's value from its symbol table entry.
+        if ((kind == CONSTANT) || (kind == ENUMERATION_CONSTANT))
+        {
+            Object value = varCtx.entry.getValue();
+            
+            if (varCtx.type == Predefined.booleanType)
+            {
+                value = (Integer) value != 0;
+            }
+            
+            return value;
+        }
         
-        return value;
-    }
-    
-    @Override 
-    public Object visitIntegerConstant(Pcl4Parser.IntegerConstantContext ctx)
-    {
-        return Double.parseDouble(ctx.getText());
-    }
-    
-    @Override 
-    public Object visitRealConstant(Pcl4Parser.RealConstantContext ctx)
-    {
-        return Double.parseDouble(ctx.getText());
-    }
-    
-    @Override 
-    public Object visitCharacterConstant(Pcl4Parser.CharacterConstantContext ctx)
-    {
-        String pascalString = ctx.CHARACTER().getText();        
-        return convertString(pascalString);
+        // Obtain a variable's value from its memory cell.
+        else
+        {
+            Cell variableCell = (Cell) visit(varCtx);
+            return variableCell.getValue();
+        }
     }
 
     @Override 
-    public Object visitStringConstant(Pcl4Parser.StringConstantContext ctx)
+    @SuppressWarnings("unchecked")
+    public Object visitVariable(PascalParser.VariableContext ctx) 
     {
-        String pascalString = ctx.STRING().getText();        
+        SymtabEntry variableId = ctx.entry;
+        String variableName = variableId.getName();
+        Typespec variableType = variableId.getType();
+        int nestingLevel = variableId.getSymtab().getNestingLevel();
+
+        // Get the variable reference from the appropriate activation record.
+        StackFrame frame = runtimeStack.getTopmost(nestingLevel);
+        Cell variableCell = frame.getCell(variableName);
+
+        // Execute any array subscripts or record fields.
+        for (PascalParser.ModifierContext modCtx : ctx.modifier()) 
+        {
+            // Subscripts.
+            if (modCtx.indexList() != null)
+            {
+                // Compute a new reference for each subscript.
+                for (PascalParser.IndexContext indexCtx : 
+                                                    modCtx.indexList().index())
+                {
+                    Typespec indexType = variableType.getArrayIndexType();
+                    int minIndex = 0;
+                    
+                    if (indexType.getForm() == SUBRANGE)
+                    {
+                        minIndex = indexType.getSubrangeMinValue();
+                    }
+                    
+                    int value = (Integer) visit(indexCtx.expression());
+                    int index = value - minIndex;
+                    
+                    variableCell = ((Cell[]) variableCell.getValue())[index];
+                    variableType = variableType.getArrayElementType();
+                }
+            }
+
+            // Record field.
+            else 
+            {
+                SymtabEntry fieldId = modCtx.field().entry;
+                String fieldName = fieldId.getName();
+
+                // Compute a new reference for the field.
+                HashMap<String, Cell> map =
+                                (HashMap<String, Cell>) variableCell.getValue();
+                variableCell = map.get(fieldName);
+                variableType = fieldId.getType();
+            }
+        }
+
+        return variableCell;
+    }
+
+    @Override 
+    public Object visitNumberFactor(PascalParser.NumberFactorContext ctx) 
+    {
+        Typespec type = ctx.type;
+        
+        if (type == Predefined.integerType)
+        {
+            return Integer.parseInt(ctx.getText());
+        }
+        else  // double
+        {
+            return Double.parseDouble(ctx.getText());
+        }
+    }
+
+    @Override 
+    public Object visitCharacterFactor(PascalParser.CharacterFactorContext ctx) 
+    {
+        return ctx.getText().charAt(1);
+    }
+
+    @Override 
+    public Object visitStringFactor(PascalParser.StringFactorContext ctx) 
+    {
+        String pascalString = ctx.stringConstant().STRING().getText();        
         return convertString(pascalString);
     }
     
@@ -365,14 +751,188 @@ public class Executor extends Pcl4BaseVisitor<Object>
         return unquoted.replace("''", "'");
     }
 
-    /**
-     * Flag a runtime error.
-     * @param message the runtime error message.
-     * @param ctx the context.
-     */
-    public void runtimeError(String message, ParserRuleContext ctx)
+    @Override 
+    public Object visitFunctionCallFactor(
+                                    PascalParser.FunctionCallFactorContext ctx) 
     {
-        System.out.printf("\n*** RUNTIME ERROR at line %03d: %s\n",
-                          ctx.getStart().getLine(), message);
+        PascalParser.FunctionCallContext callCtx = ctx.functionCall();
+        SymtabEntry routineId = callCtx.functionName().entry;
+        PascalParser.ArgumentListContext argListCtx = callCtx.argumentList();
+        StackFrame newFrame = new StackFrame(routineId);
+        
+        // Execute any call arguments and initialize
+        // the parameters in the routine's new stack frame.
+        if (argListCtx != null) 
+        {
+            ArrayList<SymtabEntry> parms = routineId.getRoutineParameters();
+            executeCallArguments(argListCtx, parms, newFrame);
+        }
+
+        // Push the routine's stack frame onto the runtime stack 
+        // and execute the procedure.
+        runtimeStack.push(newFrame);
+
+        // Execute the routine.
+        PascalParser.CompoundStatementContext stmtCtx = 
+            (PascalParser.CompoundStatementContext) routineId.getExecutable();
+        visit(stmtCtx);
+        
+        // Get the function value from its associated variable.
+        String functionName = routineId.getName();
+        Cell valueCell = newFrame.getCell(functionName);
+        Object functionValue = valueCell.getValue();
+
+        // Pop off the routine's stack frame.
+        runtimeStack.pop();
+        
+        return functionValue;
+    }
+
+    @Override 
+    public Object visitNotFactor(PascalParser.NotFactorContext ctx) 
+    {
+        boolean value = (boolean) visit(ctx.factor());
+        return !value;
+    }
+
+    @Override 
+    public Object visitParenthesizedFactor(
+                                    PascalParser.ParenthesizedFactorContext ctx) 
+    {
+        return visit(ctx.expression());
+    }
+
+    @Override 
+    public Object visitWritelnStatement(PascalParser.WritelnStatementContext ctx) 
+    {
+        visitChildren(ctx);
+        System.out.println();
+        
+        return null;
+    }
+    
+    @Override 
+    public Object visitWriteArguments(PascalParser.WriteArgumentsContext ctx) 
+    {
+        // Loop over each argument.
+        for (PascalParser.WriteArgumentContext argCtx : ctx.writeArgument())
+        {
+            Typespec type = argCtx.expression().type;
+            String argText = argCtx.getText();
+            
+            // Print any literal strings.
+            if (argText.charAt(0) == '\'') 
+            {
+                System.out.print(convertString(argText));
+            }
+            
+            // For any other expression, print its value with a format specifier.
+            else
+            {
+                Object value = visit(argCtx.expression());
+                StringBuffer format = new StringBuffer("%");
+                
+                // Create the format string.
+                PascalParser.FieldWidthContext fwCtx = argCtx.fieldWidth();              
+                if (fwCtx != null)
+                {
+                    String sign = (   (fwCtx.sign() != null) 
+                                   && (fwCtx.sign().getText().equals("-"))) 
+                                ? "-" : "";
+                    format.append(sign)
+                          .append(fwCtx.integerConstant().getText());
+                    
+                    PascalParser.DecimalPlacesContext dpCtx = 
+                                                        fwCtx.decimalPlaces();
+                    if (dpCtx != null)
+                    {
+                        format.append(".")
+                              .append(dpCtx.integerConstant().getText());
+                    }
+                }
+                
+                // Use the format string with printf.
+                if (type == Predefined.integerType)
+                {
+                    format.append("d");
+                    System.out.printf(format.toString(), (int) value);
+                }
+                else if (type == Predefined.realType)
+                {
+                    format.append("f");
+                    System.out.printf(format.toString(), (double) value);
+                }
+                else if (type == Predefined.booleanType)
+                {
+                    format.append("b");
+                    System.out.printf(format.toString(), (boolean) value);
+                }
+                else if (type == Predefined.charType)
+                {
+                    format.append("c");
+                    System.out.printf(format.toString(), (char) value);
+                }
+                else  // string
+                {
+                    format.append("s");
+                    System.out.printf(format.toString(), (String) value);
+                }
+            }
+        }
+
+        return null;
+    }
+
+    @Override 
+    public Object visitReadlnStatement(PascalParser.ReadlnStatementContext ctx) 
+    {
+        visitChildren(ctx);
+        sysin.nextLine();
+        
+        return null;
+    }
+
+    @Override 
+    public Object visitReadArguments(PascalParser.ReadArgumentsContext ctx) 
+    {
+        int size = ctx.variable().size();
+        
+        // Loop over read arguments.
+        for (int i = 0; i < size; i++)
+        {
+            PascalParser.VariableContext varCtx = ctx.variable().get(i);
+            Typespec varType = varCtx.type;
+            
+            if (varType == Predefined.integerType)
+            {
+                int value = sysin.nextInt();
+                assignValue(varCtx, value, Predefined.integerType);
+            }
+            else if (varType == Predefined.realType)
+            {
+                double value = sysin.nextDouble();
+                assignValue(varCtx, value, Predefined.realType);
+            }
+            else if (varType == Predefined.booleanType)
+            {
+                boolean value = sysin.nextBoolean();
+                assignValue(varCtx, value, Predefined.booleanType);
+            }
+            else if (varType == Predefined.charType)
+            {
+                sysin.useDelimiter("");
+                char value = sysin.next().charAt(0);
+                sysin.reset();
+                
+                assignValue(varCtx, value, Predefined.charType);
+            }
+            else  // string
+            {
+                String value = sysin.next();
+                assignValue(varCtx, value, Predefined.stringType);
+            }
+        }
+        
+        return null;
     }
 }
