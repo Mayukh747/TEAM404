@@ -793,7 +793,11 @@ public class Converter extends PascalBaseVisitor<Object>
 
     @Override
     public Object visitProcedureCallStatement(PascalParser.ProcedureCallStatementContext ctx) {
-        int argListSize = ctx.argumentList().argument().size();
+//        int argListSize = ctx.argumentList().argument().size();
+        int argListSize = 0;
+        if(ctx.argumentList() != null){
+            argListSize = ctx.argumentList().argument().size();
+        }
 
         code.emitStart(ctx.procedureName().getText() + "(");
         for (int i = 0; i < argListSize; i++) {

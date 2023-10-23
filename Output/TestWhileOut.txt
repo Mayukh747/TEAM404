@@ -1,0 +1,26 @@
+/Users/mayukhdas/Library/Java/JavaVirtualMachines/corretto-11.0.14.1/Contents/Home/bin/java -javaagent:/Applications/IntelliJ IDEA.app/Contents/lib/idea_rt.jar=50159:/Applications/IntelliJ IDEA.app/Contents/bin -Dfile.encoding=UTF-8 -classpath /Users/mayukhdas/IntelliJ-Workspace/TEAM404/out/production/TEAM404:/Users/mayukhdas/IntelliJ-Workspace/TEAM404/ANTLR-4.13.1/antlr-4.13.1-complete.jar TestWhile
+i = 1
+i = 2
+i = 3
+i = 4
+i = 5
+
+i = 1, j = 10
+i = 1, j = 20
+i = 1, j = 30
+i = 2, j = 10
+i = 2, j = 20
+i = 2, j = 30
+i = 3, j = 10
+i = 3, j = 20
+i = 3, j = 30
+i = 4, j = 10
+i = 4, j = 20
+i = 4, j = 30
+i = 5, j = 10
+i = 5, j = 20
+i = 5, j = 30
+
+[5 milliseconds execution time.]
+
+Process finished with exit code 0
