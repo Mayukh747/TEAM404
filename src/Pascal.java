@@ -9,8 +9,9 @@ import antlr4.*;
 import frontend.*;
 import intermediate.symtab.*;
 import intermediate.util.BackendMode;
-import backend.interpreter.Executor;
 import backend.converter.Converter;
+import backend.interpreter.Executor;
+import backend.compiler.Compiler;
 
 import static intermediate.util.BackendMode.*;
 
@@ -120,6 +121,13 @@ public class Pascal
             case COMPILER:
             {
                 // Pass 3: Compile the Pascal program.
+                System.out.printf("\nPASS 3 Compilation: ");
+                SymtabEntry programId = pass2.getProgramId();
+                Compiler pass3 = new Compiler(programId);
+                pass3.visit(tree);
+                
+                System.out.printf("Object file \"%s\" created.\n",
+                                  pass3.getObjectFileName());
                 break;
             }
         }

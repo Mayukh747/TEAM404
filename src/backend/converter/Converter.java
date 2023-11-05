@@ -333,7 +333,7 @@ public class Converter extends PascalBaseVisitor<Object>
 
     @Override 
     public Object visitRoutineDefinition(
-                                    PascalParser.RoutineDefinitionContext ctx)
+                                    PascalParser.RoutineDefinitionContext ctx) 
     {
         PascalParser.FunctionHeadContext  funcCtx = ctx.functionHead();
         PascalParser.ProcedureHeadContext procCtx = ctx.procedureHead();
@@ -629,6 +629,90 @@ public class Converter extends PascalBaseVisitor<Object>
         
         return null;
     }
+
+    @Override 
+    public Object visitIfStatement(PascalParser.IfStatementContext ctx) 
+    {
+        PascalParser.TrueStatementContext  trueCtx  = ctx.trueStatement();
+        PascalParser.FalseStatementContext falseCtx = ctx.falseStatement();
+
+        code.emit("if (");
+        code.emit((String) visit(ctx.expression()));        
+        code.emit(") ");
+        
+        boolean trueIf = trueCtx.statement().ifStatement() != null;
+        boolean trueCompound = trueCtx.statement().compoundStatement() != null;
+        
+        if (!trueIf)
+        {
+            if (!trueCompound) code.indent();
+            code.emitStart();
+        }
+
+        visit(trueCtx);
+        if (!(trueIf || trueCompound)) code.dedent();
+        
+        if (falseCtx != null)
+        {
+            code.emitStart("else ");
+            
+            boolean falseIf = falseCtx.statement().ifStatement() != null;
+            boolean falseCompound = 
+                            falseCtx.statement().compoundStatement() != null;
+            
+            if (!falseIf)
+            {
+                if (!falseCompound) code.indent();
+                code.emitStart();
+            }
+
+            visit(falseCtx);
+            if (!(falseIf || falseCompound)) code.dedent();
+        }
+        
+        return null;
+    }
+
+    @Override 
+    public Object visitCaseStatement(PascalParser.CaseStatementContext ctx) 
+    {
+        code.emit("switch (" + visit(ctx.expression()) + ")");
+        code.emitLine("{");
+        
+        if (ctx.caseBranchList() != null)
+        {
+            code.indent();
+            visit(ctx.caseBranchList());
+            code.dedent();
+        }
+        
+        code.emitLine("}");
+        return null;
+    }
+
+    @Override 
+    public Object visitCaseBranch(PascalParser.CaseBranchContext ctx) 
+    {
+        PascalParser.CaseConstantListContext listCtx = ctx.caseConstantList();
+        
+        if (listCtx != null)
+        {
+            // Loop over this branch's constants.
+            for (PascalParser.CaseConstantContext constCtx : 
+                                                        listCtx.caseConstant())
+            {
+                code.emitLine("case " + constCtx.getText().toLowerCase() + ":");
+            }
+            
+            code.indent();
+            code.emitStart();
+            visit(ctx.statement());
+            code.emitLine("break;");
+            code.dedent();
+        }
+        
+        return null;
+    }
     
     @Override 
     public Object visitRepeatStatement(PascalParser.RepeatStatementContext ctx) 
@@ -651,178 +735,84 @@ public class Converter extends PascalBaseVisitor<Object>
         return null;
     }
 
-    @Override
-    public Object visitWhileStatement(PascalParser.WhileStatementContext ctx)
+    @Override 
+    public Object visitWhileStatement(PascalParser.WhileStatementContext ctx) 
     {
-        code.emitStart("while (");
+        boolean compound = ctx.statement().compoundStatement() != null;
+        
+        code.emit("while (");
         code.emit((String) visit(ctx.expression()));
-        code.emitEnd(")");
-
-        //Compound
-        if(ctx.statement().compoundStatement() != null) {
-            code.emitStart();
-            visit(ctx.statement());
-        }
-        //Not Compound
-        else {
-            code.emitEnd(" {");
-            code.indent();
-            code.emitStart();
-            visit(ctx.statement());
-            code.dedent();
-            code.emitStart("}");
-        }
+        code.emit(") ");
+        
+        if (compound) code.emitStart();
+        visit(ctx.statement());
+        
         return null;
     }
 
-    @Override
-    public Object visitIfStatement(PascalParser.IfStatementContext ctx) {
-        code.emitStart("if (");
-        code.emit((String) visit(ctx.expression()));
-        code.emit(")");
-
-        //Compound
-        if(ctx.trueStatement().statement().compoundStatement() != null) {
-            code.emitStart();
-            visit(ctx.trueStatement());
-        }
-        //Not Compound
-        else {
-            code.emitLine("{");
-            code.indent();
-            code.emitStart();
-            visit(ctx.trueStatement());
-            code.dedent();
-            code.emitStart("}");
-        }
-
-        if (ctx.ELSE() != null) {
-            code.emitStart("else");
-            //Compound
-            if (ctx.falseStatement().statement().compoundStatement() != null) {
-                code.emitStart();
-                visit(ctx.falseStatement());
-            }
-            //Not Compound
-            else {
-                code.emitLine("{");
-                code.indent();
-                code.emitStart();
-                visit(ctx.falseStatement());
-                code.dedent();
-                code.emitStart("}");
-            }
-        }
+    @Override 
+    public Object visitForStatement(PascalParser.ForStatementContext ctx) 
+    {
+        PascalParser.VariableContext controlCtx = ctx.variable();
+        boolean compound = ctx.statement().compoundStatement() != null;
+        boolean to = ctx.TO() != null;
+        
+        String controlName = controlCtx.entry.getName();
+        String exprText = (String) visit(ctx.expression().get(0));
+        
+        // Initialize the control variable.
+        code.emit("for (" + controlName + " = " + exprText + "; ");
+        
+        // Test the control variable.
+        code.emit(controlName);
+        code.emit(to ? " <= " : " >= ");       
+        exprText = (String) visit(ctx.expression().get(1));
+        code.emit(exprText + "; ");
+        
+        // Increment or decrement the control variable.
+        code.emit(controlName);
+        code.emit(to ? "++) " : "--) ");
+        
+        // Statement.
+        if (compound) code.emitStart();
+        visit(ctx.statement());
+        
         return null;
     }
 
-    @Override
-    public Object visitForStatement(PascalParser.ForStatementContext ctx) {
-        PascalParser.VariableContext varCtx = ctx.variable();
-        String varString = (String) visit(varCtx);
-        String[] expressionStrings = new String[]{(String) visit(ctx.expression(0)), (String) visit(ctx.expression(1))};
-        boolean usesDownto = ctx.DOWNTO() != null;
-
-        code.emitStart("for (");
-        code.emit(varCtx.type == Predefined.integerType ? "int " : "char ");
-        code.emit(varString);
-        code.emit(" = ");
-        code.emit(expressionStrings[0]);
-        code.emit("; ");
-
-        // code emitted so far:   for (int i = a;
-        code.emit(varString);
-        code.emit(usesDownto ? " >= " : " <= ");
-        code.emit(expressionStrings[1]);
-        code.emit("; ");
-
-        // code emitted so far:   for (int i = a; i <= b;
-        code.emit(varString);
-        code.emit(usesDownto ? "--)" : "++)");
-
-        // code emitted so far:   for (int i = a; i <= b; i++)
-        if (ctx.statement().compoundStatement() != null) {
-            code.emitStart();
-            visit(ctx.statement());
+    @Override 
+    public Object visitProcedureCallStatement(
+                                PascalParser.ProcedureCallStatementContext ctx) 
+    {
+        PascalParser.ProcedureNameContext procNameCtx = ctx.procedureName();
+        String procedureName = procNameCtx.entry.getName();
+        
+        code.emit(procedureName);
+        code.emit("(");
+        
+        if (ctx.argumentList() != null)
+        {
+            code.emit((String) visit(ctx.argumentList()));
         }
-        else {
-            code.emitLine("{");
-            code.indent();
-            code.emitStart();
-            visit(ctx.statement());
-            code.dedent();
-            code.emitStart("}");
-        }
+        
+        code.emitEnd(");");       
         return null;
     }
 
-    @Override
-    public Object visitCaseStatement(PascalParser.CaseStatementContext ctx) {
-        code.emitStart("switch(");
-        code.emit((String) visit(ctx.expression()));
-        code.emitEnd(")");
-
-        code.emitLine("{");
-
-        int numberOfCaseBranches = ctx.caseBranchList().caseBranch().size();
-        for (int branchIndex = 0; branchIndex < numberOfCaseBranches; branchIndex++) {
-            PascalParser.CaseBranchContext branch = ctx.caseBranchList().caseBranch(branchIndex);
-            if (branch.caseConstantList() == null) continue;
-            int numberOfConstantsInBranch = branch.caseConstantList().caseConstant().size();
-            for (int constantIndex = 0; constantIndex < numberOfConstantsInBranch; constantIndex++) {
-                code.emitStart("case ");
-                PascalParser.ConstantContext constant = branch.caseConstantList().caseConstant(constantIndex).constant();
-                String constantString = constant.value.toString(); // weird hack b/c visit method returns null
-                if (constant.value instanceof Integer)
-                    code.emit(constantString);
-                else
-                    code.emit("\'" + constantString + "\'");
-                code.emitEnd(": ");
-            }
-            code.indent();
-            code.emitStart();
-            visit(branch.statement());
-            code.emitLine("break;");
-            code.dedent();
+    @Override 
+    public Object visitArgumentList(PascalParser.ArgumentListContext ctx) 
+    {
+        String text = "";
+        String separator = "";
+        
+        for (PascalParser.ArgumentContext argCtx : ctx.argument())
+        {
+            text += separator;
+            text += (String) visit(argCtx.expression());
+            separator = ", ";
         }
 
-        code.emitLine("}");
-
-        return null;
-    }
-
-    @Override
-    public Object visitProcedureCallStatement(PascalParser.ProcedureCallStatementContext ctx) {
-//        int argListSize = ctx.argumentList().argument().size();
-        int argListSize = 0;
-        if(ctx.argumentList() != null){
-            argListSize = ctx.argumentList().argument().size();
-        }
-
-        code.emitStart(ctx.procedureName().getText() + "(");
-        for (int i = 0; i < argListSize; i++) {
-            code.emit((String)visit(ctx.argumentList().argument(i)));
-            if (i < argListSize - 1) code.emit(",");
-        }
-        code.emitEnd(");");
-
-        return null;
-    }
-
-    @Override
-    public Object visitFunctionCallFactor(PascalParser.FunctionCallFactorContext ctx){
-        PascalParser.FunctionCallContext funcCall = ctx.functionCall();
-        PascalParser.ArgumentListContext argList = funcCall.argumentList();
-        String code = "";
-
-        code += funcCall.functionName().getText() + "(";
-
-        for (int i = 0; i < argList.argument().size(); i++) {
-            code += (String) visit(argList.argument().get(i));
-            if (i < argList.argument().size() - 1) code += ",";
-        }
-        code += ")";
-        return code;
+        return text;
     }
 
     @Override 
@@ -1009,6 +999,24 @@ public class Converter extends PascalBaseVisitor<Object>
     {
         String unquoted = pascalString.substring(1, pascalString.length()-1);
         return unquoted.replace("''", "'").replace("\"", "\\\"");
+    }
+
+    @Override 
+    public Object visitFunctionCallFactor(
+                                    PascalParser.FunctionCallFactorContext ctx) 
+    {
+        PascalParser.FunctionCallContext callCtx = ctx.functionCall();
+        PascalParser.FunctionNameContext funcNameCtx = callCtx.functionName();
+        String functionName = funcNameCtx.entry.getName();
+        
+        String text = functionName + "(";
+
+        if (callCtx.argumentList() != null)
+        {
+            text += (String) visit(callCtx.argumentList());
+        }
+        
+        return text += ")";
     }
 
     @Override 
