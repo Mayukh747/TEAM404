@@ -1,8 +1,10 @@
 // Generated from C:/Users/natha/Dev/CompilerProject/Neo.g4 by ANTLR 4.13.1
 
     package antlr4;
+    import java.util.HashMap;
+    import intermediate.symtab.SymtabEntry;
+    import intermediate.type.Typespec;
 
-import intermediate.symtab.SymtabEntry;
 import org.antlr.v4.runtime.atn.*;
 import org.antlr.v4.runtime.dfa.DFA;
 import org.antlr.v4.runtime.*;
@@ -189,7 +191,6 @@ public class NeoParser extends Parser {
 
 	@SuppressWarnings("CheckReturnValue")
 	public static class ProgramHeaderContext extends ParserRuleContext {
-		public SymtabEntry entry = null;
 		public TerminalNode PROGRAM() { return getToken(NeoParser.PROGRAM, 0); }
 		public ProgramIdentifierContext programIdentifier() {
 			return getRuleContext(ProgramIdentifierContext.class,0);

@@ -1,6 +1,8 @@
 .class public demoNeoProgram
 .super java/lang/Object
 
+.field private static _sysin Ljava/util/Scanner;
+
 ;
 ; Runtime input scanner
 ;
@@ -28,6 +30,21 @@
 	return
 
 .limit locals 1
+.limit stack 1
+.end method
+
+;
+; FUNCTION rf_add
+;
+.method private static rf_add(FF)F
+
+.var 0 is r_a F
+.var 1 is r_b F
+
+	fload	1
+	freturn
+
+.limit locals 3
 .limit stack 1
 .end method
 
@@ -65,6 +82,6 @@
 
 	return
 
-.limit locals 6
+.limit locals 8
 .limit stack 8
 .end method

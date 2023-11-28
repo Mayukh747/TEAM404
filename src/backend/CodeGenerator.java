@@ -685,6 +685,15 @@ public class CodeGenerator
         return type != null ? typeDescriptor(type) : "V";
     }
 
+    public String typeDescriptor(String variableName) {
+        if (variableName.charAt(0) == 'r') {
+            return typeDescriptor(Predefined.realType);
+        }
+        else {
+            return typeDescriptor(Predefined.matrixType);
+        }
+    }
+
     /**
      * Return a type descriptor for a Pascal datatype.
      * @param pascalType the datatype.
@@ -692,7 +701,7 @@ public class CodeGenerator
      */
     public String typeDescriptor(Typespec pascalType)
     {
-        Form form = pascalType.getForm();
+//        Form form = pascalType.getForm();
         StringBuffer buffer = new StringBuffer();
 
 //        while (form == ARRAY)
@@ -702,7 +711,7 @@ public class CodeGenerator
 //            form = pascalType.getForm();
 //        }
 
-        pascalType = pascalType.baseType();
+//        pascalType = pascalType.baseType();
         String str = "";
 
 //        if      (pascalType == Predefined.integerType) str = "I";
@@ -713,7 +722,8 @@ public class CodeGenerator
 //        else if (form == ENUMERATION)                  str = "I";
 //        else /* (form == RECORD) */ str = "L" + pascalType.getRecordTypePath() + ";";
 
-        if (pascalType == Predefined.realType)    str = "F";
+        if (pascalType == Predefined.realType)          str = "F";
+        else if (pascalType == Predefined.matrixType)   str = "Llibrary/Matrix;";   // TODO: doubt this is the right string
 
         buffer.append(str);
         return buffer.toString();

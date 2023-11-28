@@ -74,4 +74,10 @@ public class Compiler extends NeoBaseVisitor<Object>{
         programCode.emitProgram(ctx);
         return null;
     }
+
+    @Override
+    public Object visitRealFunctionDefinition(NeoParser.RealFunctionDefinitionContext ctx) {
+        programCode.emitRealFunctionDefinition(ctx);
+        return null;
+    }
 }

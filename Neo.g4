@@ -2,11 +2,16 @@ grammar Neo;
 
 @header {
     package antlr4;
+    import java.util.HashMap;
+    import intermediate.symtab.SymtabEntry;
+    import intermediate.type.Typespec;
 }
+
 
 program : programHeader ';' functionDefinitionList 'main' variableDeclarationList compoundStatement ;
 programHeader : PROGRAM programIdentifier ;
-programIdentifier : IDENTIFIER;
+programIdentifier       locals [ SymtabEntry entry = null ]
+    : IDENTIFIER;
 
 statement : compoundStatement
           | assignmentStatement

@@ -1,10 +1,14 @@
 package backend;
 
+import intermediate.symtab.Predefined;
 import intermediate.symtab.Symtab;
 import intermediate.symtab.SymtabEntry;
 import antlr4.*;
+import intermediate.type.Typespec;
 
 import java.util.ArrayList;
+import java.util.List;
+import java.util.stream.Stream;
 
 import static backend.Directive.*;
 import static backend.Instruction.*;
@@ -13,6 +17,7 @@ import static backend.Instruction.*;
 public class ProgramGenerator extends CodeGenerator {
     private SymtabEntry programId;   // symbol table entry of the program name
     private int programLocalsCount;  // count of program local variables
+
 
     /**
      * Constructor.
@@ -25,6 +30,7 @@ public class ProgramGenerator extends CodeGenerator {
 
         localStack = new LocalStack();
         programLocalsCount = 5;  // +1 because _elapsed is long
+
     }
 
     /**
@@ -43,14 +49,40 @@ public class ProgramGenerator extends CodeGenerator {
         emitDirective(CLASS_PUBLIC, programName);
         emitDirective(SUPER, "java/lang/Object");
 
-        // emitProgramVariables();
+        emitProgramVariables();
         emitInputScanner();
         emitConstructor();
         // emitSubroutines(ctx.block().declarations().routinesPart());
 
+        compiler.visitFunctionDefinitionList(ctx.functionDefinitionList());
+
         emitMainMethod(ctx);
     }
 
+    /**
+     * Emit field directives for the program variables.
+     */
+    private void emitProgramVariables()
+    {
+        // Runtime timer and standard in.
+
+        // Symtab symtab = programId.getRoutineSymtab();
+        // ArrayList<SymtabEntry> ids = symtab.sortedEntries();
+
+        emitLine();
+        emitDirective(FIELD_PRIVATE_STATIC, "_sysin", "Ljava/util/Scanner;");
+
+//        // Loop over all the program's identifiers and
+//        // emit a .field directive for each variable.
+//        for (SymtabEntry id : ids)
+//        {
+//            if (id.getKind() == VARIABLE)
+//            {
+//                emitDirective(FIELD_PRIVATE_STATIC, id.getName(),
+//                        typeDescriptor(id));
+//            }
+//        }
+    }
 
     /**
      * Emit code for the runtime input scanner.
@@ -179,10 +211,131 @@ public class ProgramGenerator extends CodeGenerator {
         emit(RETURN);
         emitLine();
 
-        emitDirective(LIMIT_LOCALS, localVariables.count());
+        emitDirective(LIMIT_LOCALS, localVariables.count() + 5);    // TODO: overkill +5 to get rid of an error. Maybe not the right way to do it.
         emitDirective(LIMIT_STACK,  localStack.capacity() + 1);     // TODO: Make sure this is where we should add 1
         emitDirective(END_METHOD);
 
         close();  // the object file
     }
+
+    public void emitRealFunctionDefinition(NeoParser.RealFunctionDefinitionContext ctx) {
+        emitRealFunctionHeader(ctx);
+        emitRealFunctionLocals(ctx);
+
+        localVariables = new LocalVariables(  // argument is number of local variables we want: # parameters + # declared vars ? I think?
+                ctx.variableList().variable().size() + ctx.variableDeclarationList().variableList().variable().size());
+
+        compiler.visit(ctx.variableDeclarationList());
+        compiler.visit(ctx.compoundStatement());
+
+        emitRealFunctionReturn(ctx);
+        emitFunctionEpilogue();
+    }
+
+    public void emitRealFunctionHeader(NeoParser.RealFunctionDefinitionContext ctx) {
+        String functionName = ctx.realFunctionName().getText();
+        List<NeoParser.VariableContext> parmCtxs = ctx.variableList().variable();
+        StringBuilder buffer = new StringBuilder();
+
+        // function name.
+        buffer.append(functionName);
+        buffer.append("(");
+
+        // Parameter and return type descriptors.
+        if (parmCtxs != null)
+        {
+            for (NeoParser.VariableContext parmCtx : parmCtxs)
+            {
+                //            vvv   Made a custom typeDescriptor in CodeGenerator taking strings and looking at first character to deduce type
+                buffer.append(typeDescriptor(parmCtx.getText()));
+            }
+        }
+        buffer.append(")");
+        buffer.append(typeDescriptor(functionName));
+
+        emitLine();
+        emitComment("FUNCTION " + functionName);
+
+        emitDirective(METHOD_PRIVATE_STATIC, buffer.toString());
+    }
+
+    public void emitRealFunctionLocals(NeoParser.RealFunctionDefinitionContext ctx) {
+        List<NeoParser.VariableContext> localVars =
+            Stream.concat((ctx.variableList().variable()).stream(), (ctx.variableDeclarationList().variableList().variable()).stream()).toList();
+                        //     ^^^  list of parameters concatenated with list of declared vars    ^^^
+
+
+        // Am assuming we want the slot numbers to match to the order of the localVars list.
+
+
+        emitLine();
+
+        // emit a .var directive for each variable and formal parameter.
+        for (int slotNumber = 0; slotNumber < localVars.size(); slotNumber++) {
+            String varName = localVars.get(slotNumber).getText();
+            emitDirective(VAR, slotNumber + " is " + varName, typeDescriptor(varName));
+        }
+    }
+
+    public void emitRealFunctionReturn(NeoParser.RealFunctionDefinitionContext ctx) {
+        emitLine();
+
+        String varName = ctx.realFunctionName().getText();
+        Typespec type = varName.charAt(0) == 'r' ? Predefined.realType : Predefined.matrixType;
+
+        NeoParser.FunctionDefinitionListContext fnDefLstCtx = (NeoParser.FunctionDefinitionListContext) ctx.getParent().getParent();
+        List<NeoParser.FunctionDefinitionContext> fnDefList = fnDefLstCtx.functionDefinition();
+
+        // search for our function's slot number, assuming we want slot numbers of functions to be the order that we define them in
+        int slotNumber = -1;
+        for (int index = 0; index < fnDefList.size(); index++) {
+            String name = "";
+            if (fnDefList.get(index).realFunctionDefinition() != null) {
+                name = fnDefList.get(index).realFunctionDefinition().realFunctionName().getText();
+            }
+            else {
+                name = fnDefList.get(index).matrixFunctionDefinition().matrixFunctionName().getText();
+            }
+            if (name.equals(varName)) {
+                slotNumber = index;
+                break;
+            }
+        }
+
+        emitLoadLocal(type, slotNumber);
+        emitReturnValue(type);
+    }
+
+    private void emitFunctionEpilogue()
+    {
+        emitLine();
+        emitDirective(LIMIT_LOCALS, localVariables.count());
+        emitDirective(LIMIT_STACK,  localStack.capacity());
+        emitDirective(END_METHOD);
+    }
+
+
+    public void emitMatrixFunctionDefinition(NeoParser.MatrixFunctionDefinitionContext ctx) {
+        // TODO
+
+        // ...
+
+
+        emitMatrixFunctionReturn(ctx);
+        emitFunctionEpilogue();
+    }
+
+    public void emitMatrixFunctionHeader(NeoParser.MatrixFunctionDefinitionContext ctx) {
+        // TODO
+    }
+
+    public void emitMatrixFunctionLocals(NeoParser.MatrixFunctionDefinitionContext ctx) {
+        // TODO
+    }
+
+    public void emitMatrixFunctionReturn(NeoParser.MatrixFunctionDefinitionContext ctx) {
+        // TODO
+    }
+
+
 }

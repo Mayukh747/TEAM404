@@ -11,6 +11,11 @@ var r_n, m_50_shrek {
     return m_50_shrek;
 }
 
+rf_add(r_a, r_b)
+var {
+    return r_a + r_b;
+}
+
 main
 var r_idxrow, r_idxcol, m_2_shrek, m_2_cool, r_variable, m_50_A, m_50_B, r_n {
     r_idxrow := 0.0;

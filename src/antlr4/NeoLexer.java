@@ -1,6 +1,9 @@
 // Generated from C:/Users/natha/Dev/CompilerProject/Neo.g4 by ANTLR 4.13.1
 
     package antlr4;
+    import java.util.HashMap;
+    import intermediate.symtab.SymtabEntry;
+    import intermediate.type.Typespec;
 
 import org.antlr.v4.runtime.Lexer;
 import org.antlr.v4.runtime.CharStream;
