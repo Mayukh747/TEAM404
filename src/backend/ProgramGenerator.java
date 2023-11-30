@@ -170,6 +170,7 @@ public class ProgramGenerator extends CodeGenerator {
 
         emitMainPrologue(programId);
 
+        // TODO: assign default values
 
 
 
@@ -249,6 +250,7 @@ public class ProgramGenerator extends CodeGenerator {
     public void emitRealFunctionDefinition(NeoParser.RealFunctionDefinitionContext ctx) {
         // make new currentLocalVariables symtab
         CodeGenerator.currentLocalVariables = new Symtab(1);
+        CodeGenerator.currentLocalVariables.enter(ctx.realFunctionName().getText(), 0);    // for sake of returning
 
         emitRealFunctionHeader(ctx);
         emitRealFunctionLocals(ctx);
@@ -257,6 +259,23 @@ public class ProgramGenerator extends CodeGenerator {
                 ctx.variableList().variable().size() + ctx.variableDeclarationList().variableList().variable().size());
 
         compiler.visit(ctx.variableDeclarationList());
+
+        // initialize variables to default values
+        int numOfParameters = ctx.variableList().variable().size();
+        List<NeoParser.VariableContext> declaredVariableList = ctx.variableDeclarationList().variableList().variable();
+        for (int i = 0; i < declaredVariableList.size(); i++) {
+            NeoParser.VariableContext varCtx = declaredVariableList.get(i);
+            int slotNumber = i + numOfParameters;   // followed by parameters
+            if (varCtx.realVariable() != null) {    // if real var
+                // set to 0
+                emit(LDC, 0.0f);
+                emit(FSTORE, slotNumber);
+            }
+            else if (varCtx.matrixVariable() != null) {
+                // TODO: implement this for matrix variables
+            }
+        }
+
         compiler.visit(ctx.compoundStatement());
 
         emitRealFunctionReturn(ctx);
@@ -264,6 +283,7 @@ public class ProgramGenerator extends CodeGenerator {
     }
 
     public void emitRealFunctionHeader(NeoParser.RealFunctionDefinitionContext ctx) {
+        // TODO parameters shifted by 1 or something. fix it.
         String functionName = ctx.realFunctionName().getText();
         List<NeoParser.VariableContext> parmCtxs = ctx.variableList().variable();
         StringBuilder buffer = new StringBuilder();
@@ -302,14 +322,15 @@ public class ProgramGenerator extends CodeGenerator {
         emitLine();
 
         // emit a .var directive for each variable and formal parameter.
-        for (int slotNumber = 0; slotNumber < localVars.size(); slotNumber++) {
+        for (int slotNumber = 0; slotNumber < localVars.size() ; slotNumber++) {
             String varName = localVars.get(slotNumber).getText();
             CodeGenerator.currentLocalVariables.enter(localVars.get(slotNumber).getText(), slotNumber);
-            // TODO: note to self for where I left off. Make sure to change in the main method the assigning of local vars.
-            //  And make sure to make a new currentLocalVariables symtab for each time I enter a function.
-            System.out.println("set slot number " + slotNumber + " for " + varName);
             emitDirective(VAR, slotNumber + " is " + varName, typeDescriptor(varName));
         }
+        String functionName = ctx.realFunctionName().getText();
+        int functionSlotNumber = localVars.size();
+        CodeGenerator.currentLocalVariables.enter(functionName, functionSlotNumber);
+        emitDirective(VAR, functionSlotNumber + " is " + functionName, typeDescriptor(Predefined.realType));
     }
 
     public void emitRealFunctionReturn(NeoParser.RealFunctionDefinitionContext ctx) {
@@ -317,27 +338,30 @@ public class ProgramGenerator extends CodeGenerator {
 
         String varName = ctx.realFunctionName().getText();
         Typespec type = varName.charAt(0) == 'r' ? Predefined.realType : Predefined.matrixType;
+//
+//        NeoParser.FunctionDefinitionListContext fnDefLstCtx = (NeoParser.FunctionDefinitionListContext) ctx.getParent().getParent();
+//        List<NeoParser.FunctionDefinitionContext> fnDefList = fnDefLstCtx.functionDefinition();
 
-        NeoParser.FunctionDefinitionListContext fnDefLstCtx = (NeoParser.FunctionDefinitionListContext) ctx.getParent().getParent();
-        List<NeoParser.FunctionDefinitionContext> fnDefList = fnDefLstCtx.functionDefinition();
+//        // search for our function's slot number, assuming we want slot numbers of functions to be the order that we define them in
+//        int slotNumber = -1;
+//        for (int index = 0; index < fnDefList.size(); index++) {
+//            String name = "";
+//            if (fnDefList.get(index).realFunctionDefinition() != null) {
+//                name = fnDefList.get(index).realFunctionDefinition().realFunctionName().getText();
+//            }
+//            else {
+//                name = fnDefList.get(index).matrixFunctionDefinition().matrixFunctionName().getText();
+//            }
+//            if (name.equals(varName)) {
+//                slotNumber = index;
+//                break;
+//            }
+//        }
 
-        // search for our function's slot number, assuming we want slot numbers of functions to be the order that we define them in
-        int slotNumber = -1;
-        for (int index = 0; index < fnDefList.size(); index++) {
-            String name = "";
-            if (fnDefList.get(index).realFunctionDefinition() != null) {
-                name = fnDefList.get(index).realFunctionDefinition().realFunctionName().getText();
-            }
-            else {
-                name = fnDefList.get(index).matrixFunctionDefinition().matrixFunctionName().getText();
-            }
-            if (name.equals(varName)) {
-                slotNumber = index;
-                break;
-            }
-        }
+        int functionSlotNumber = ctx.variableDeclarationList().variableList().variable().size() + ctx.variableList().variable().size();
 
-        emitLoadLocal(type, slotNumber);
+        emitStoreLocal(Predefined.realType, functionSlotNumber);
+        emitLoadLocal(Predefined.realType, functionSlotNumber);
         emitReturnValue(type);
     }
 

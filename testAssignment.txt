@@ -2,11 +2,11 @@ Program testAssignment;
 
 rf_assign(r_a, r_b, m_5_someMatrixJustForTesting)
 var m_3_matrix, r_c, r_d {
-    r_c := r_d;
+    r_c := r_a;
     return r_c;
 }
 
 main
-var {
+var r_blahblah, m_3_wowowowow {
     return 0.0;
 }
