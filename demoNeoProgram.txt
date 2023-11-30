@@ -1,6 +1,5 @@
 Program demoNeoProgram;
 
-
 mf_50_IdentityMat()
 var r_n, m_50_shrek {
     r_n := 0.0;
@@ -11,8 +10,9 @@ var r_n, m_50_shrek {
     return m_50_shrek;
 }
 
-rf_add(r_a, r_b)
-var {
+rf_add(r_a, r_b, m_5_someMatrixJustForTesting)
+var m_3_matrix, r_c, r_d {
+    r_c := r_d;
     return r_a + r_b;
 }
 

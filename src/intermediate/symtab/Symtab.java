@@ -100,6 +100,16 @@ public class Symtab
         return entry;
     }
 
+    public SymtabEntry enter(String name, int slotNumber) {
+        SymtabEntry entry;
+        if (name.charAt(0) == 'r')          entry = new RealSymtabEntry(name, slotNumber, this);
+        else if (name.charAt(0) == 'm')     entry = new MatrixSymtabEntry(name, slotNumber,this);
+        else                                entry = new FunctionSymtabEntry(name, slotNumber, this);
+        put(name, entry);
+
+        return entry;
+    }
+
     /**
      * Look up an existing symbol table entry.
      * @param name the name of the entry.

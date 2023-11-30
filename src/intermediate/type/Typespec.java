@@ -20,7 +20,7 @@ public class Typespec
     
     public enum Form
     {
-        SCALAR;
+        SCALAR, MATRIX;
 
         public String toString() { return super.toString().toLowerCase(); }
     }

@@ -896,6 +896,7 @@ public class NeoParser extends Parser {
 
 	@SuppressWarnings("CheckReturnValue")
 	public static class VariableContext extends ParserRuleContext {
+		public int slotNumber = -1;
 		public RealVariableContext realVariable() {
 			return getRuleContext(RealVariableContext.class,0);
 		}

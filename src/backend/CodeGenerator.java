@@ -4,9 +4,11 @@ import antlr4.NeoParser;
 import intermediate.type.*;
 import intermediate.type.Typespec.Form;
 import intermediate.symtab.*;
+import intermediate.symtab.Predefined;
 
 import java.io.FileWriter;
 import java.io.PrintWriter;
+import java.util.List;
 
 import static backend.Instruction.*;
 import backend.Compiler;
@@ -23,7 +25,9 @@ public class CodeGenerator
     protected String objectFileName;
         
     protected static int count = 0;
-    
+
+    public static Symtab currentLocalVariables = new Symtab(1);    // don't care about nesting level
+
     /**
      * Constructor.
      * @param programName the name of the program.
@@ -722,8 +726,11 @@ public class CodeGenerator
 //        else if (form == ENUMERATION)                  str = "I";
 //        else /* (form == RECORD) */ str = "L" + pascalType.getRecordTypePath() + ";";
 
-        if (pascalType == Predefined.realType)          str = "F";
-        else if (pascalType == Predefined.matrixType)   str = "Llibrary/Matrix;";   // TODO: doubt this is the right string
+        if (pascalType.equals(Predefined.realType))          str = "F";
+        //else if (pascalType == Predefined.matrixType)   str = "Llibrary/Matrix;";   // TODO: doubt this is the right string
+        else {
+            str = "Llibrary/Matrix;";
+        }
 
         buffer.append(str);
         return buffer.toString();
@@ -834,4 +841,5 @@ public class CodeGenerator
 //        String unquoted = pascalString.substring(1, pascalString.length()-1);
 //        return unquoted.replace("''", "'").replace("\"", "\\\"");
 //    }
+
 }

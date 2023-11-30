@@ -36,16 +36,21 @@
 ;
 ; FUNCTION rf_add
 ;
-.method private static rf_add(FF)F
+.method private static rf_add(FFLlibrary/Matrix;)F
 
 .var 0 is r_a F
 .var 1 is r_b F
+.var 2 is m_5_someMatrixJustForTesting Llibrary/Matrix;
+.var 3 is m_3_matrix Llibrary/Matrix;
+.var 4 is r_c F
+.var 5 is r_d F
+	fstore	-1
 
-	fload	1
+	fload	0
 	freturn
 
-.limit locals 3
-.limit stack 1
+.limit locals 7
+.limit stack 0
 .end method
 
 ;
@@ -59,7 +64,19 @@
 
 	invokestatic	java/time/Instant/now()Ljava/time/Instant;
 	astore_1
+.var 4 is r_variable F
+.var 5 is m_50_A Llibrary/Matrix;
+.var 6 is m_50_B Llibrary/Matrix;
+.var 7 is r_n F
 
+	fstore	-1
+	fstore	-1
+	fstore	-1
+	fstore	-1
+	fstore	-1
+	fstore	-1
+	fstore	-1
+	fstore	-1
 
 	invokestatic	java/time/Instant/now()Ljava/time/Instant;
 	astore_2
@@ -82,6 +99,6 @@
 
 	return
 
-.limit locals 8
-.limit stack 8
+.limit locals 12
+.limit stack 7
 .end method

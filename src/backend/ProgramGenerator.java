@@ -138,12 +138,40 @@ public class ProgramGenerator extends CodeGenerator {
      */
     private void emitMainMethod(NeoParser.ProgramContext ctx)
     {
+        // make new currentLocalVariables symtab
+        CodeGenerator.currentLocalVariables = new Symtab(1);
+
         emitLine();
         emitComment("MAIN");
         emitDirective(METHOD_PUBLIC_STATIC,
                 "main([Ljava/lang/String;)V");
 
+        emitDirective(VAR, "0 is args [Ljava/lang/String;");
+        emitDirective(VAR, "1 is _start Ljava/time/Instant;");
+        emitDirective(VAR, "2 is _end Ljava/time/Instant;");
+        emitDirective(VAR, "3 is _elapsed J");
+        // handle the variable declaration list
+        List<NeoParser.VariableContext> varCtxList = ctx.variableDeclarationList().variableList().variable();
+        for (int i = 0; i < varCtxList.size(); i++) {
+            varCtxList.get(i).slotNumber = i + 4;       // +4 because main already has 4 local vars
+            if (varCtxList.get(i).realVariable() != null) {     // if real var
+                CodeGenerator.currentLocalVariables.enter((varCtxList.get(i).realVariable().getText()), i+4);
+            }
+            else {
+                CodeGenerator.currentLocalVariables.enter((varCtxList.get(i).matrixVariable().getText()), i+4);
+            }
+        }
+        // emit a .var directive for each variable
+        for (int slotNumber = 4; slotNumber < varCtxList.size() + 4; slotNumber++) {    // start at 4 because already emitted 4 vars in emitMainPrologue
+            String varName = varCtxList.get(slotNumber - 4).getText();
+            emitDirective(VAR, slotNumber + " is " + varName, typeDescriptor(varName));
+        }
+
+
         emitMainPrologue(programId);
+
+
+
 
         // Emit code to allocate any arrays, records, and strings.
         // StructuredDataGenerator structureCode =
@@ -163,10 +191,10 @@ public class ProgramGenerator extends CodeGenerator {
      */
     private void emitMainPrologue(SymtabEntry programId)
     {
-        emitDirective(VAR, "0 is args [Ljava/lang/String;");
-        emitDirective(VAR, "1 is _start Ljava/time/Instant;");
-        emitDirective(VAR, "2 is _end Ljava/time/Instant;");
-        emitDirective(VAR, "3 is _elapsed J");
+//        emitDirective(VAR, "0 is args [Ljava/lang/String;");
+//        emitDirective(VAR, "1 is _start Ljava/time/Instant;");
+//        emitDirective(VAR, "2 is _end Ljava/time/Instant;");
+//        emitDirective(VAR, "3 is _elapsed J");
 
         // Runtime timer.
         emitLine();
@@ -219,6 +247,9 @@ public class ProgramGenerator extends CodeGenerator {
     }
 
     public void emitRealFunctionDefinition(NeoParser.RealFunctionDefinitionContext ctx) {
+        // make new currentLocalVariables symtab
+        CodeGenerator.currentLocalVariables = new Symtab(1);
+
         emitRealFunctionHeader(ctx);
         emitRealFunctionLocals(ctx);
 
@@ -273,6 +304,10 @@ public class ProgramGenerator extends CodeGenerator {
         // emit a .var directive for each variable and formal parameter.
         for (int slotNumber = 0; slotNumber < localVars.size(); slotNumber++) {
             String varName = localVars.get(slotNumber).getText();
+            CodeGenerator.currentLocalVariables.enter(localVars.get(slotNumber).getText(), slotNumber);
+            // TODO: note to self for where I left off. Make sure to change in the main method the assigning of local vars.
+            //  And make sure to make a new currentLocalVariables symtab for each time I enter a function.
+            System.out.println("set slot number " + slotNumber + " for " + varName);
             emitDirective(VAR, slotNumber + " is " + varName, typeDescriptor(varName));
         }
     }
@@ -317,6 +352,10 @@ public class ProgramGenerator extends CodeGenerator {
 
     public void emitMatrixFunctionDefinition(NeoParser.MatrixFunctionDefinitionContext ctx) {
         // TODO
+
+        // make new currentLocalVariables symtab
+        CodeGenerator.currentLocalVariables = new Symtab(1);
+
 
         // ...
 

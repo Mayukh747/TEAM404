@@ -4,7 +4,7 @@ import intermediate.type.Typespec;
 
 import java.util.ArrayList;
 
-import static intermediate.type.Typespec.Form.SCALAR;
+import static intermediate.type.Typespec.Form.*;
 
 /**
  * <h1>Predefined</h1>
@@ -18,11 +18,14 @@ import static intermediate.type.Typespec.Form.SCALAR;
 public class Predefined
 {
     // Predefined types.
-    public static Typespec realType;
-    public static Typespec matrixType;
+    public static Typespec realType = new Typespec(SCALAR);
+    public static Typespec matrixType = new Typespec(MATRIX);
 
     // Predefined identifiers.
     public static SymtabEntry printId;
+
+
+
 //
 //    /**
 //     * Initialize a symbol table stack with predefined identifiers.

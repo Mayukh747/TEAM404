@@ -1,6 +1,7 @@
 package backend;
 
 import antlr4.*;
+import intermediate.symtab.Symtab;
 import intermediate.symtab.SymtabEntry;
 
 public class Compiler extends NeoBaseVisitor<Object>{
@@ -79,5 +80,20 @@ public class Compiler extends NeoBaseVisitor<Object>{
     public Object visitRealFunctionDefinition(NeoParser.RealFunctionDefinitionContext ctx) {
         programCode.emitRealFunctionDefinition(ctx);
         return null;
+    }
+
+    @Override
+    public Object visitAssignmentStatement(NeoParser.AssignmentStatementContext ctx) {
+        statementCode.emitAssignment(ctx);
+        return null;
+    }
+
+    @Override
+    public Object visitRealExpression(NeoParser.RealExpressionContext ctx) {
+        // TODO
+        // was doing emitAssignment and realized I need to do this in the process to emit the RHS.
+        expressionCode.emitRealExpression(ctx);
+
+        return null;    // temporary return value ?
     }
 }
