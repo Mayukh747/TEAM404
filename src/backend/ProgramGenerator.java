@@ -153,7 +153,6 @@ public class ProgramGenerator extends CodeGenerator {
         // handle the variable declaration list
         List<NeoParser.VariableContext> varCtxList = ctx.variableDeclarationList().variableList().variable();
         for (int i = 0; i < varCtxList.size(); i++) {
-            varCtxList.get(i).slotNumber = i + 4;       // +4 because main already has 4 local vars
             if (varCtxList.get(i).realVariable() != null) {     // if real var
                 CodeGenerator.currentLocalVariables.enter((varCtxList.get(i).realVariable().getText()), i+4);
             }
@@ -170,7 +169,20 @@ public class ProgramGenerator extends CodeGenerator {
 
         emitMainPrologue(programId);
 
-        // TODO: assign default values
+        // initialize variables to default values
+        List<NeoParser.VariableContext> declaredVariableList = ctx.variableDeclarationList().variableList().variable();
+        for (int i = 0; i < declaredVariableList.size(); i++) {
+            NeoParser.VariableContext varCtx = declaredVariableList.get(i);
+            int slotNumber = i + 4;   // because 4 things placed automatically in front in main method
+            if (varCtx.realVariable() != null) {    // if real var
+                // set to 0
+                emit(LDC, 0.0f);
+                emit(FSTORE, slotNumber);
+            }
+            else if (varCtx.matrixVariable() != null) {
+                // TODO: implement this for matrix variables
+            }
+        }
 
 
 

@@ -32,4 +32,9 @@ public class Matrix {
         }
         return res;
     }
+
+//    public static String toString(){
+//        return"[1232\nsdfasdf"
+//                System.out.pinrltn....
+//    }
 }

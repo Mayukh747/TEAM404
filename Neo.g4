@@ -45,7 +45,8 @@ ifStatement     : IF '(' expression ')' compoundStatement (ELSE compoundStatemen
 
 whileStatement : WHILE '(' expression ')' compoundStatement ;
 
-printStatement : PRINT '(' expression ')' ;
+//printStatement : PRINT '(' expression ')' ;
+printStatement: PRINT '(' variable ')';
 
 returnStatement: RETURN expression ;
 

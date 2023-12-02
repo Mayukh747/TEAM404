@@ -1,4 +1,4 @@
-// Generated from C:/Users/natha/Dev/CompilerProject/Neo.g4 by ANTLR 4.13.1
+// Generated from /Users/mayukh/IdeaProjects/TEAM404/Neo.g4 by ANTLR 4.13.1
 
     package antlr4;
     import java.util.HashMap;
@@ -896,7 +896,6 @@ public class NeoParser extends Parser {
 
 	@SuppressWarnings("CheckReturnValue")
 	public static class VariableContext extends ParserRuleContext {
-		public int slotNumber = -1;
 		public RealVariableContext realVariable() {
 			return getRuleContext(RealVariableContext.class,0);
 		}
@@ -1226,8 +1225,8 @@ public class NeoParser extends Parser {
 	@SuppressWarnings("CheckReturnValue")
 	public static class PrintStatementContext extends ParserRuleContext {
 		public TerminalNode PRINT() { return getToken(NeoParser.PRINT, 0); }
-		public ExpressionContext expression() {
-			return getRuleContext(ExpressionContext.class,0);
+		public VariableContext variable() {
+			return getRuleContext(VariableContext.class,0);
 		}
 		public PrintStatementContext(ParserRuleContext parent, int invokingState) {
 			super(parent, invokingState);
@@ -1259,7 +1258,7 @@ public class NeoParser extends Parser {
 			setState(185);
 			match(T__6);
 			setState(186);
-			expression();
+			variable();
 			setState(187);
 			match(T__7);
 			}
@@ -2901,7 +2900,7 @@ public class NeoParser extends Parser {
 		"\u0000\u00b4\u00b5\u0003(\u0014\u0000\u00b5\u00b6\u0005\b\u0000\u0000"+
 		"\u00b6\u00b7\u0003\b\u0004\u0000\u00b7#\u0001\u0000\u0000\u0000\u00b8"+
 		"\u00b9\u0005 \u0000\u0000\u00b9\u00ba\u0005\u0007\u0000\u0000\u00ba\u00bb"+
-		"\u0003(\u0014\u0000\u00bb\u00bc\u0005\b\u0000\u0000\u00bc%\u0001\u0000"+
+		"\u0003\u001a\r\u0000\u00bb\u00bc\u0005\b\u0000\u0000\u00bc%\u0001\u0000"+
 		"\u0000\u0000\u00bd\u00be\u0005\u001f\u0000\u0000\u00be\u00bf\u0003(\u0014"+
 		"\u0000\u00bf\'\u0001\u0000\u0000\u0000\u00c0\u00c4\u0003*\u0015\u0000"+
 		"\u00c1\u00c2\u0003:\u001d\u0000\u00c2\u00c3\u0003*\u0015\u0000\u00c3\u00c5"+

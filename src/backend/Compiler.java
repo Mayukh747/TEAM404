@@ -96,4 +96,10 @@ public class Compiler extends NeoBaseVisitor<Object>{
 
         return null;    // temporary return value ?
     }
+
+    @Override
+    public Object visitPrintStatement(NeoParser.PrintStatementContext ctx) {
+        statementCode.emitPrintStatement(ctx);
+        return null;
+    }
 }

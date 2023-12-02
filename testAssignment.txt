@@ -3,6 +3,7 @@ Program testAssignment;
 rf_assign(r_a, r_b, m_5_someMatrixJustForTesting)
 var m_3_matrix, r_c, r_d {
     r_c := r_a;
+    print(r_c);
     return r_c;
 }
 

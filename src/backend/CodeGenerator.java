@@ -1,6 +1,7 @@
 package backend;
 
-import antlr4.NeoParser;
+import antlr4.*;
+
 import intermediate.type.*;
 import intermediate.type.Typespec.Form;
 import intermediate.symtab.*;
@@ -8,11 +9,8 @@ import intermediate.symtab.Predefined;
 
 import java.io.FileWriter;
 import java.io.PrintWriter;
-import java.util.List;
 
 import static backend.Instruction.*;
-import backend.Compiler;
-import static intermediate.type.Typespec.Form.*;
 
 public class CodeGenerator
 {    

@@ -1,4 +1,4 @@
-.class public testAssignment
+.class public testPrint
 .super java/lang/Object
 
 .field private static _sysin Ljava/util/Scanner;
@@ -12,7 +12,7 @@
 	dup
 	getstatic	java/lang/System/in Ljava/io/InputStream;
 	invokespecial	java/util/Scanner/<init>(Ljava/io/InputStream;)V
-	putstatic	testAssignment/_sysin Ljava/util/Scanner;
+	putstatic	testPrint/_sysin Ljava/util/Scanner;
 	return
 
 .limit locals 0
@@ -23,7 +23,7 @@
 ; Main class constructor
 ;
 .method public <init>()V
-.var 0 is this LtestAssignment;
+.var 0 is this LtestPrint;
 
 	aload_0
 	invokespecial	java/lang/Object/<init>()V
@@ -31,45 +31,6 @@
 
 .limit locals 1
 .limit stack 1
-.end method
-
-;
-; FUNCTION rf_assign
-;
-.method private static rf_assign(FFLlibrary/Matrix;)F
-
-.var 0 is r_a F
-.var 1 is r_b F
-.var 2 is m_5_someMatrixJustForTesting Llibrary/Matrix;
-.var 3 is m_3_matrix Llibrary/Matrix;
-.var 4 is r_c F
-.var 5 is r_d F
-.var 6 is rf_assign F
-	ldc	0.0
-	fstore	4
-	ldc	0.0
-	fstore	5
-	fload	0
-	fstore	4
-	getstatic	java/lang/System/out Ljava/io/PrintStream;
-	ldc	"%f\n"
-	iconst_1
-	anewarray	java/lang/Object
-	dup
-	iconst_0
-	fload	4
-	invokestatic	java/lang/Float/valueOf(F)Ljava/lang/Float;
-	aastore
-	invokevirtual	java/io/PrintStream/printf(Ljava/lang/String;[Ljava/lang/Object;)Ljava/io/PrintStream;
-	pop
-	fload	4
-
-	fstore	6
-	fload	6
-	freturn
-
-.limit locals 7
-.limit stack 6
 .end method
 
 ;
@@ -81,11 +42,23 @@
 .var 2 is _end Ljava/time/Instant;
 .var 3 is _elapsed J
 .var 4 is r_blahblah F
-.var 5 is m_3_wowowowow Llibrary/Matrix;
 
 	invokestatic	java/time/Instant/now()Ljava/time/Instant;
 	astore_1
+	ldc	0.0
+	fstore	4
 
+	getstatic	java/lang/System/out Ljava/io/PrintStream;
+	ldc	"%f\n"
+	iconst_1
+	anewarray	java/lang/Object
+	dup
+	iconst_0
+	fload	4
+	invokestatic	java/lang/Float/valueOf(F)Ljava/lang/Float;
+	aastore
+	invokevirtual	java/io/PrintStream/printf(Ljava/lang/String;[Ljava/lang/Object;)Ljava/io/PrintStream;
+	pop
 
 	invokestatic	java/time/Instant/now()Ljava/time/Instant;
 	astore_2
@@ -108,6 +81,6 @@
 
 	return
 
-.limit locals 12
+.limit locals 11
 .limit stack 8
 .end method
