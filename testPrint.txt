@@ -1,6 +1,0 @@
-Program testPrint;
-
-main
-var r_blahblah {
-    print(r_blahblah);
-}

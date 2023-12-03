@@ -180,7 +180,13 @@ public class ProgramGenerator extends CodeGenerator {
                 emit(FSTORE, slotNumber);
             }
             else if (varCtx.matrixVariable() != null) {
-                // TODO: implement this for matrix variables
+                int matrixSize = Integer.parseInt(varCtx.matrixVariable().INTEGER().getText());
+                emit(NEW, "library/Matrix");
+                emit(DUP);
+                emit(LDC, matrixSize);
+                emit(INVOKESPECIAL, "library/Matrix/<init>(I)V");
+                emit(ASTORE, slotNumber);
+                emit(ALOAD, slotNumber);
             }
         }
 
@@ -285,6 +291,14 @@ public class ProgramGenerator extends CodeGenerator {
             }
             else if (varCtx.matrixVariable() != null) {
                 // TODO: implement this for matrix variables
+                int matrixSize = Integer.parseInt(varCtx.matrixVariable().INTEGER().getText());
+                emit(NEW, "library/Matrix");
+                emit(DUP);
+                emit(LDC, matrixSize);
+                emit(INVOKESPECIAL, "library/Matrix/<init>(I)V");
+                emit(ASTORE);
+                emit(ALOAD);
+
             }
         }
 

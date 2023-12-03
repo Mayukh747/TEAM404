@@ -1,0 +1,6 @@
+Program TestPrint;
+
+main
+var m_5_shrek {
+    print(m_5_shrek);
+}

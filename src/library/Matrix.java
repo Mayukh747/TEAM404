@@ -1,14 +1,18 @@
 package library;
 
 public class Matrix {
-    double[][] mat;
+    float[][] mat;
 
-    public static double[][] mult(double[][] mat1, double[][] mat2){
+    public Matrix(int size){
+        mat = new float[size][size];
+    }
+
+    public static float[][] mult(float[][] mat1, float[][] mat2){
         int rowsA = mat1.length;
         int colsA = mat1[0].length;
         int colsB = mat2[0].length;
 
-        double[][] result = new double[rowsA][colsB];
+        float[][] result = new float[rowsA][colsB];
 
         for (int i = 0; i < rowsA; i++) {
             for (int j = 0; j < colsB; j++) {
@@ -20,10 +24,10 @@ public class Matrix {
         return result;
     }
 
-    public static double[][] add(double[][] mat1, double[][] mat2){
+    public static float[][] add(float[][] mat1, float[][] mat2){
         int row = mat1.length;
         int col = mat1[0].length;
-        double[][] res = new double[row][col];
+        float[][] res = new float[row][col];
 
         for(int i = 0; i < row; i ++){
             for(int j = 0; j < col; j++){
@@ -33,8 +37,16 @@ public class Matrix {
         return res;
     }
 
-//    public static String toString(){
-//        return"[1232\nsdfasdf"
-//                System.out.pinrltn....
-//    }
+    public static void printMatrix(Matrix matrix){
+        float[][] mat = matrix.mat;
+
+        String out = new String();
+        for(float[] arr: mat){
+            for(float f: arr){
+                out += (String.valueOf(f) + "\t");
+            }
+            out += ("\n");
+        }
+        System.out.println(out);
+    }
 }

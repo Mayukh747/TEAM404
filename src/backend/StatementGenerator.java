@@ -40,7 +40,27 @@ public class StatementGenerator extends CodeGenerator {
         }
     }
 
-    public void emitPrintStatement(NeoParser.PrintStatementContext argsCtx)
+    public void emitPrintStatement(NeoParser.PrintStatementContext argsCtx){
+        if(argsCtx.variable().realVariable() == null){
+            emitPrintMatrixVariable(argsCtx);
+        }
+        else{
+            emitPrintRealVariable(argsCtx);
+        }
+    }
+
+    public void emitPrintMatrixVariable(NeoParser.PrintStatementContext argsCtx){
+//        emit(GETSTATIC, "library/Matrix");
+
+        String matrixName = argsCtx.variable().matrixVariable().getText();
+        int slotNumber = CodeGenerator.currentLocalVariables.lookup(matrixName).getSlotNumber();
+
+        emit(ALOAD, slotNumber);
+
+        emit(INVOKESTATIC, "library/Matrix/printMatrix(Llibrary/Matrix;)V");
+    }
+
+    public void emitPrintRealVariable(NeoParser.PrintStatementContext argsCtx)
     {
         boolean needLF = true;
         emit(GETSTATIC, "java/lang/System/out", "Ljava/io/PrintStream;");
