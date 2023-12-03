@@ -290,15 +290,13 @@ public class ProgramGenerator extends CodeGenerator {
                 emit(FSTORE, slotNumber);
             }
             else if (varCtx.matrixVariable() != null) {
-                // TODO: implement this for matrix variables
                 int matrixSize = Integer.parseInt(varCtx.matrixVariable().INTEGER().getText());
                 emit(NEW, "library/Matrix");
                 emit(DUP);
                 emit(LDC, matrixSize);
                 emit(INVOKESPECIAL, "library/Matrix/<init>(I)V");
-                emit(ASTORE);
-                emit(ALOAD);
-
+                emit(ASTORE, slotNumber);
+                emit(ALOAD, slotNumber);
             }
         }
 
@@ -309,7 +307,6 @@ public class ProgramGenerator extends CodeGenerator {
     }
 
     public void emitRealFunctionHeader(NeoParser.RealFunctionDefinitionContext ctx) {
-        // TODO parameters shifted by 1 or something. fix it.
         String functionName = ctx.realFunctionName().getText();
         List<NeoParser.VariableContext> parmCtxs = ctx.variableList().variable();
         StringBuilder buffer = new StringBuilder();
@@ -405,6 +402,28 @@ public class ProgramGenerator extends CodeGenerator {
 
         // make new currentLocalVariables symtab
         CodeGenerator.currentLocalVariables = new Symtab(1);
+
+        // initialize variables to default values
+        int numOfParameters = ctx.variableList().variable().size();
+        List<NeoParser.VariableContext> declaredVariableList = ctx.variableDeclarationList().variableList().variable();
+        for (int i = 0; i < declaredVariableList.size(); i++) {
+            NeoParser.VariableContext varCtx = declaredVariableList.get(i);
+            int slotNumber = i + numOfParameters;   // followed by parameters
+            if (varCtx.realVariable() != null) {    // if real var
+                // set to 0
+                emit(LDC, 0.0f);
+                emit(FSTORE, slotNumber);
+            }
+            else if (varCtx.matrixVariable() != null) {
+                int matrixSize = Integer.parseInt(varCtx.matrixVariable().INTEGER().getText());
+                emit(NEW, "library/Matrix");
+                emit(DUP);
+                emit(LDC, matrixSize);
+                emit(INVOKESPECIAL, "library/Matrix/<init>(I)V");
+                emit(ASTORE, slotNumber);
+                emit(ALOAD, slotNumber);
+            }
+        }
 
 
         // ...

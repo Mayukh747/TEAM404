@@ -1,4 +1,4 @@
-// Generated from /Users/mayukh/IdeaProjects/TEAM404/Neo.g4 by ANTLR 4.13.1
+// Generated from C:/Users/natha/Dev/CompilerProject/Neo.g4 by ANTLR 4.13.1
 
     package antlr4;
     import java.util.HashMap;
@@ -171,6 +171,12 @@ public interface NeoVisitor<T> extends ParseTreeVisitor<T> {
 	 * @return the visitor result
 	 */
 	T visitRealNumber(NeoParser.RealNumberContext ctx);
+	/**
+	 * Visit a parse tree produced by {@link NeoParser#integer}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitInteger(NeoParser.IntegerContext ctx);
 	/**
 	 * Visit a parse tree produced by {@link NeoParser#realFunctionCall}.
 	 * @param ctx the parse tree

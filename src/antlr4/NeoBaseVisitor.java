@@ -1,4 +1,4 @@
-// Generated from /Users/mayukh/IdeaProjects/TEAM404/Neo.g4 by ANTLR 4.13.1
+// Generated from C:/Users/natha/Dev/CompilerProject/Neo.g4 by ANTLR 4.13.1
 
     package antlr4;
     import java.util.HashMap;
@@ -199,6 +199,13 @@ public class NeoBaseVisitor<T> extends AbstractParseTreeVisitor<T> implements Ne
 	 * {@link #visitChildren} on {@code ctx}.</p>
 	 */
 	@Override public T visitRealNumber(NeoParser.RealNumberContext ctx) { return visitChildren(ctx); }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation returns the result of calling
+	 * {@link #visitChildren} on {@code ctx}.</p>
+	 */
+	@Override public T visitInteger(NeoParser.IntegerContext ctx) { return visitChildren(ctx); }
 	/**
 	 * {@inheritDoc}
 	 *

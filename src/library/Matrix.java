@@ -3,7 +3,7 @@ package library;
 public class Matrix {
     float[][] mat;
 
-    public Matrix(int size){
+    public Matrix(int size) {
         mat = new float[size][size];
     }
 
@@ -35,6 +35,10 @@ public class Matrix {
             }
         }
         return res;
+    }
+
+    public static float getEntry(Matrix matrix, float row, float col) {
+        return matrix.mat[(int) row][(int) col];
     }
 
     public static void printMatrix(Matrix matrix){

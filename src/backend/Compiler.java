@@ -90,11 +90,16 @@ public class Compiler extends NeoBaseVisitor<Object>{
 
     @Override
     public Object visitRealExpression(NeoParser.RealExpressionContext ctx) {
-        // TODO
-        // was doing emitAssignment and realized I need to do this in the process to emit the RHS.
         expressionCode.emitRealExpression(ctx);
 
         return null;    // temporary return value ?
+    }
+
+    @Override
+    public Object visitMatrixExpression(NeoParser.MatrixExpressionContext ctx) {
+        expressionCode.emitMatrixExpression(ctx);
+
+        return null;    // temporary return value?
     }
 
     @Override

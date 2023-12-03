@@ -1,4 +1,4 @@
-// Generated from /Users/mayukh/IdeaProjects/TEAM404/Neo.g4 by ANTLR 4.13.1
+// Generated from C:/Users/natha/Dev/CompilerProject/Neo.g4 by ANTLR 4.13.1
 
     package antlr4;
     import java.util.HashMap;
@@ -272,6 +272,16 @@ public interface NeoListener extends ParseTreeListener {
 	 * @param ctx the parse tree
 	 */
 	void exitRealNumber(NeoParser.RealNumberContext ctx);
+	/**
+	 * Enter a parse tree produced by {@link NeoParser#integer}.
+	 * @param ctx the parse tree
+	 */
+	void enterInteger(NeoParser.IntegerContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link NeoParser#integer}.
+	 * @param ctx the parse tree
+	 */
+	void exitInteger(NeoParser.IntegerContext ctx);
 	/**
 	 * Enter a parse tree produced by {@link NeoParser#realFunctionCall}.
 	 * @param ctx the parse tree

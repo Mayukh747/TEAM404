@@ -25,16 +25,21 @@ public class StatementGenerator extends CodeGenerator {
         if (ctx.lhs().variable() != null && ctx.lhs().variable().realVariable() != null) {          // if lhs is real var
             compiler.visitExpression(ctx.rhs().expression());
 
-            // for sake of debugging
-            NeoParser.RealVariableContext varCtx = ctx.lhs().variable().realVariable();
-            String varName = varCtx.getText();
+            NeoParser.RealVariableContext realVarCtx = ctx.lhs().variable().realVariable();
+            String varName = realVarCtx.getText();
             int slotNumber = CodeGenerator.currentLocalVariables.lookup(varName).getSlotNumber();
 
             emitStoreLocal(Predefined.realType, slotNumber);
-            System.out.println("emitted store for " + varName + ", slot number " + slotNumber);
 
         } else if (ctx.lhs().variable() != null && ctx.lhs().variable().matrixVariable() != null) {   // if lhs is matrix var
             // TODO
+            compiler.visitExpression(ctx.rhs().expression());
+
+            NeoParser.MatrixVariableContext matVarCtx = ctx.lhs().variable().matrixVariable();
+            String varName = matVarCtx.getText();
+            int slotNumber = CodeGenerator.currentLocalVariables.lookup(varName).getSlotNumber();
+
+            emitStoreLocal(Predefined.matrixType, slotNumber);
         } else {      // lhs is matrix entry
             // TODO
         }

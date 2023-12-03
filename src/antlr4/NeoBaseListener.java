@@ -1,4 +1,4 @@
-// Generated from /Users/mayukh/IdeaProjects/TEAM404/Neo.g4 by ANTLR 4.13.1
+// Generated from C:/Users/natha/Dev/CompilerProject/Neo.g4 by ANTLR 4.13.1
 
     package antlr4;
     import java.util.HashMap;
@@ -329,6 +329,18 @@ public class NeoBaseListener implements NeoListener {
 	 * <p>The default implementation does nothing.</p>
 	 */
 	@Override public void exitRealNumber(NeoParser.RealNumberContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void enterInteger(NeoParser.IntegerContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void exitInteger(NeoParser.IntegerContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *

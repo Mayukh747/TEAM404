@@ -69,7 +69,9 @@ realFactor     : realVariable
 
 
 realVariable : 'r_' IDENTIFIER ;
-realNumber : '-'? REAL ;
+// realNumber : '-'? REAL ;
+realNumber : '-'? integer '.' integer;
+integer : INTEGER;
 
 realFunctionCall : realFunctionName '(' argumentList? ')' ;
 realFunctionName : 'rf_' IDENTIFIER ;
@@ -79,9 +81,7 @@ realRelOp : '=' | '!=' | '<=' ;
 realAddOp : '+' | '-' | '||' ;
 realMulOp : '*' | '/' | '&&' ;
 
-matrixExpression : matrixTerm (matrixAddOp matrixTerm)*
-                 | matrixFunctionCall
-                 ;
+matrixExpression : matrixTerm (matrixAddOp matrixTerm)* ;
 matrixTerm      :   matrixFactor (matrixMulOp matrixFactor)*;
 matrixFactor    :   matrixVariable
                 |   matrixFunctionCall
@@ -96,9 +96,9 @@ matrixFunctionCall: matrixFunctionName '(' argumentList? ')' ;
 matrixFunctionName: 'mf_' INTEGER '_' IDENTIFIER;
 matrixFunctionDefinition: matrixFunctionName '(' variableList ')' variableDeclarationList compoundStatement;
 
-matrixRelOp : '=' | '!=' | '<=' ;
+matrixRelOp : '=' | '!=' ;
 matrixAddOp : '+' | '-' | '||' ;
-matrixMulOp : '*' | '/' | '&&' ;
+matrixMulOp : '*' | '&&' ;
 
 PROGRAM   : P R O G R A M ;
 WHILE     : W H I L E ;
@@ -140,7 +140,7 @@ fragment Z : ('z' | 'Z') ;
 
 IDENTIFIER : [a-zA-Z][a-zA-Z0-9]* ;
 INTEGER    : [0-9]+ ;
-REAL       : INTEGER '.' INTEGER ;
+// REAL       : INTEGER '.' INTEGER ;
 
 NEWLINE : '\r'? '\n' -> skip  ;
 WS      : [ \t]+ -> skip ;
