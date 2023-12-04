@@ -2297,6 +2297,9 @@ public class NeoParser extends Parser {
 		public MatrixFunctionCallContext matrixFunctionCall() {
 			return getRuleContext(MatrixFunctionCallContext.class,0);
 		}
+		public MatrixFactorContext matrixFactor() {
+			return getRuleContext(MatrixFactorContext.class,0);
+		}
 		public MatrixExpressionContext matrixExpression() {
 			return getRuleContext(MatrixExpressionContext.class,0);
 		}
@@ -2346,7 +2349,7 @@ public class NeoParser extends Parser {
 				setState(293);
 				match(T__8);
 				setState(294);
-				matrixVariable();
+				matrixFactor();
 				}
 				break;
 			case T__6:
@@ -2992,7 +2995,7 @@ public class NeoParser extends Parser {
 		"\u0000\u0000\u0000\u0120\u011e\u0001\u0000\u0000\u0000\u0120\u0121\u0001"+
 		"\u0000\u0000\u0000\u0121E\u0001\u0000\u0000\u0000\u0122\u0120\u0001\u0000"+
 		"\u0000\u0000\u0123\u012c\u0003H$\u0000\u0124\u012c\u0003L&\u0000\u0125"+
-		"\u0126\u0005\t\u0000\u0000\u0126\u012c\u0003H$\u0000\u0127\u0128\u0005"+
+		"\u0126\u0005\t\u0000\u0000\u0126\u012c\u0003F#\u0000\u0127\u0128\u0005"+
 		"\u0007\u0000\u0000\u0128\u0129\u0003B!\u0000\u0129\u012a\u0005\b\u0000"+
 		"\u0000\u012a\u012c\u0001\u0000\u0000\u0000\u012b\u0123\u0001\u0000\u0000"+
 		"\u0000\u012b\u0124\u0001\u0000\u0000\u0000\u012b\u0125\u0001\u0000\u0000"+

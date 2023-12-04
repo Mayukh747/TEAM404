@@ -85,7 +85,7 @@ matrixExpression : matrixTerm (matrixAddOp matrixTerm)* ;
 matrixTerm      :   matrixFactor (matrixMulOp matrixFactor)*;
 matrixFactor    :   matrixVariable
                 |   matrixFunctionCall
-                |   '!'matrixVariable
+                |   '!'matrixFactor
                 |   '('matrixExpression')'
                 ;
 

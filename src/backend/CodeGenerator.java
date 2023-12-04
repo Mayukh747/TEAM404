@@ -37,15 +37,16 @@ public class CodeGenerator
     {
         this.programName    = programName;
         this.localVariables = null;
-        this.localStack     = null;
+        // this.localStack     = null;
+        this.localStack = new LocalStack();
         this.compiler       = compiler;
         
         // Create the Jasmin object file.
         try 
         {
-//            objectFileName = programName + "." + suffix;
+            objectFileName = programName + "." + suffix;
 //            objectFile = new PrintWriter(new FileWriter(objectFileName));
-            File outputFile = new File("src/", programName + "." + suffix);
+            File outputFile = new File("src/", objectFileName);
             objectFile = new PrintWriter(new FileWriter(outputFile));
         }
         catch (Exception ex) 

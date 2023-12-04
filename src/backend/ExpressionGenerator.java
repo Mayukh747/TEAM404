@@ -27,8 +27,11 @@ public class ExpressionGenerator extends CodeGenerator {
                 if (ctx.realAddOp(i-1).getText().equals("+")) {
                     emit(Instruction.FADD);
                 }
-                if (ctx.realAddOp(i-1).getText().equals("-")) {
+                else if (ctx.realAddOp(i-1).getText().equals("-")) {
                     emit(Instruction.FSUB);
+                }
+                else if (ctx.realAddOp(i-1).getText().equals("||")) {
+                    emit(Instruction.INVOKESTATIC, "library/Matrix/booleanOr(FF)F");
                 }
             }
         }
@@ -39,10 +42,10 @@ public class ExpressionGenerator extends CodeGenerator {
         for (int i = 0; i < numberOfFactors; i++) {
             emitRealFactor(ctx.realFactor(i));
             if (i != 0) {
-                if (ctx.realMulOp(i-1).getText().equals("*")) {
+                if (ctx.realMulOp(i-1).getText().equals("*") || ctx.realMulOp(i-1).getText().equals("&&")) {    // nice shortcut
                     emit(Instruction.FMUL);
                 }
-                if (ctx.realMulOp(i-1).getText().equals("/")) {
+                else if (ctx.realMulOp(i-1).getText().equals("/")) {
                     emit(Instruction.FDIV);
                 }
             }
@@ -59,7 +62,16 @@ public class ExpressionGenerator extends CodeGenerator {
         else if (ctx.matrixEntry() != null) {   // is matrix entry
             emitMatrixEntry(ctx.matrixEntry());
         }
-        // TODO other cases
+        else if (ctx.realFunctionCall() != null) {  // is function call
+            emitRealFunctionCall(ctx.realFunctionCall());
+        }
+        else if (ctx.realFactor() != null) {    // is a not statement
+            emitRealFactor(ctx.realFactor());
+            emit(Instruction.INVOKESTATIC, "library/Matrix/booleanNot(F)F");
+        }
+        else {                                  // is parenthesized realExpression
+            emitRealExpression(ctx.realExpression());
+        }
     }
 
     public void emitRealVariable(NeoParser.RealVariableContext ctx) {
@@ -81,17 +93,36 @@ public class ExpressionGenerator extends CodeGenerator {
     }
 
     public void emitMatrixEntry(NeoParser.MatrixEntryContext ctx) {
+        NeoParser.MatrixVariableContext matCtx = ctx.matrixVariable();
+        String varName = matCtx.getText();
+        int slotNumber = CodeGenerator.currentLocalVariables.lookup(varName).getSlotNumber();
 
+        // emit matrix, then row, then col
+        emit(Instruction.ALOAD, slotNumber);
+        emitRealExpression(ctx.realExpression(0));
+        emitRealExpression(ctx.realExpression((1)));
+
+        emit(Instruction.INVOKESTATIC, "library/Matrix/getEntry(Llibrary/Matrix;FF)Llibrary/Matrix;");
     }
 
-    // TODO: for now ignoring subtraction and division for matrices. Maybe we will just remove that from the grammar.
+    public void emitRealFunctionCall(NeoParser.RealFunctionCallContext ctx) {
+        // TODO
+    }
 
     public void emitMatrixExpression(NeoParser.MatrixExpressionContext ctx) {
         int numberOfTerms = ctx.matrixTerm().size();
         for (int i = 0; i < numberOfTerms; i++) {
             emitMatrixTerm(ctx.matrixTerm(i));
             if (i != 0) {
-                emit(Instruction.INVOKESTATIC, "library/Matrix/add(Llibrary/Matrix;Llibrary/Matrix;)Llibrary/Matrix;");
+                if (ctx.matrixAddOp(i-1).getText().equals("+")) {
+                    emit(Instruction.INVOKESTATIC, "library/Matrix/add(Llibrary/Matrix;Llibrary/Matrix;)Llibrary/Matrix;");
+                }
+                else if (ctx.matrixAddOp(i-1).getText().equals("-")) {
+                    emit(Instruction.INVOKESTATIC, "library/Matrix/sub(Llibrary/Matrix;Llibrary/Matrix;)Llibrary/Matrix;");
+                }
+                else if (ctx.matrixAddOp(i-1).getText().equals("||")) {
+                    emit(Instruction.INVOKESTATIC, "library/Matrix/booleanOr(FF)F");
+                }
             }
         }
     }
@@ -101,20 +132,39 @@ public class ExpressionGenerator extends CodeGenerator {
         for (int i = 0; i < numberOfFactors; i++) {
             emitMatrixFactor(ctx.matrixFactor(i));
             if (i != 0) {
-                emit(Instruction.INVOKESTATIC, "library/Matrix/mult(Llibrary/Matrix;Llibrary/Matrix;)Llibrary/Matrix;");
+                if (ctx.matrixMulOp(i-1).getText().equals("*")) {
+                    emit(Instruction.INVOKESTATIC, "library/Matrix/mult(Llibrary/Matrix;Llibrary/Matrix;)Llibrary/Matrix;");
+                }
+                else if (ctx.matrixMulOp(i-1).getText().equals("&&")) {
+                    emit(Instruction.FMUL);
+                }
+
             }
         }
     }
 
     public void emitMatrixFactor(NeoParser.MatrixFactorContext ctx) {
-        if (ctx.matrixVariable() != null) {     // if is matrix variable
+        if (ctx.matrixVariable() != null) {     // is matrix variable
             emitMatrixVariable(ctx.matrixVariable());
         }
-        // TODO other cases
+        else if (ctx.matrixFunctionCall() != null) {     // is function call
+            emitMatrixFunctionCall(ctx.matrixFunctionCall());
+        }
+        else if (ctx.matrixFactor() != null) {      // is not statement
+            emitMatrixFactor(ctx.matrixFactor());
+            emit(Instruction.INVOKESTATIC, "library/Matrix/booleanNot(F)F");
+        }
+        else if (ctx.matrixExpression() != null) {   // is parenthesized matrix expression
+            emitMatrixExpression(ctx.matrixExpression());
+        }
     }
 
     public void emitMatrixVariable(NeoParser.MatrixVariableContext ctx) {
         int slotNumber = CodeGenerator.currentLocalVariables.lookup(ctx.getText()).getSlotNumber();
         emit(Instruction.ALOAD, slotNumber);
+    }
+
+    public void emitMatrixFunctionCall(NeoParser.MatrixFunctionCallContext ctx) {
+        // TODO
     }
 }

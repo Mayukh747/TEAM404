@@ -34,7 +34,6 @@ public class StatementGenerator extends CodeGenerator {
             emitStoreLocal(Predefined.realType, slotNumber);
 
         } else if (ctx.lhs().variable() != null && ctx.lhs().variable().matrixVariable() != null) {   // if lhs is matrix var
-            // TODO
             compiler.visitExpression(ctx.rhs().expression());
 
             NeoParser.MatrixVariableContext matVarCtx = ctx.lhs().variable().matrixVariable();
@@ -43,7 +42,6 @@ public class StatementGenerator extends CodeGenerator {
 
             emitStoreLocal(Predefined.matrixType, slotNumber);
         } else {      // lhs is matrix entry
-            // TODO
             //Emit Matrix
             NeoParser.MatrixEntryContext matEntryCtx = ctx.lhs().matrixEntry();
             String varName = matEntryCtx.matrixVariable().getText();
@@ -62,6 +60,47 @@ public class StatementGenerator extends CodeGenerator {
             compiler.visitExpression(ctx.rhs().expression());
             emit(INVOKESTATIC, "library/Matrix/setEntry(Llibrary/Matrix;FFF)V");
         }
+    }
+
+    public void emitIfStatement(NeoParser.IfStatementContext ctx) {
+        Label thenLabel = new Label();
+        Label falseLabel = new Label();
+        Label nextLabel = new Label();
+
+        compiler.visitExpression(ctx.expression());
+
+        if (ctx.ELSE() == null) {       // has no ELSE block
+            //emit(INVOKESTATIC, "java/lang/math/round(F)I");
+            emit(INVOKESTATIC, "library/Matrix/floatToInt(F)I");
+            emit(IFEQ, nextLabel);
+            emitLabel(thenLabel);
+            compiler.visit(ctx.compoundStatement(0));   // if true
+            emitLabel(nextLabel);
+        }
+        else {                          // has an ELSE block
+            //emit(INVOKESTATIC, "java/lang/math/round(F)I");
+            emit(INVOKESTATIC, "library/Matrix/floatToInt(F)I");
+            emit(IFEQ, falseLabel);
+            emitLabel(thenLabel);
+            compiler.visit(ctx.compoundStatement(0));   // if true
+            emit(GOTO, nextLabel);
+            emitLabel(falseLabel);
+            compiler.visit(ctx.compoundStatement(1));   // if false
+            emitLabel(nextLabel);
+        }
+    }
+
+    public void emitWhileStatement(NeoParser.WhileStatementContext ctx) {
+        Label loopLabel = new Label();
+        Label loopExitLabel = new Label();
+        emitLabel(loopLabel);
+        compiler.visit(ctx.expression());
+        emit(INVOKESTATIC, "library/Matrix/floatToInt(F)I");
+        emit(IFEQ, loopExitLabel);
+
+        compiler.visit(ctx.compoundStatement());
+        emit(GOTO, loopLabel);
+        emitLabel(loopExitLabel);
     }
 
     public void emitPrintStatement(NeoParser.PrintStatementContext argsCtx){

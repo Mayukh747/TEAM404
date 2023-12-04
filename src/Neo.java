@@ -91,6 +91,13 @@ public class Neo {
         Compiler pass3 = new Compiler(programId);
         pass3.visit(tree);
 
+        try{
+            pass3.visit(tree);
+        } catch(Exception e){
+            pass3.code.close();
+            System.out.println(e.getMessage());
+        }
+
         System.out.printf("Object file \"%s\" created.\n",
                 pass3.getObjectFileName());
 

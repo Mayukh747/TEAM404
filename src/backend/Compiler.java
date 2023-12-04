@@ -8,7 +8,7 @@ public class Compiler extends NeoBaseVisitor<Object>{
     public SymtabEntry programId;  // symbol table entry of the program name
     private String programName;     // the program name
 
-    private CodeGenerator       code;            // base code generator
+    public  CodeGenerator       code;            // base code generator
     private ProgramGenerator    programCode;     // program code generator
     private StatementGenerator  statementCode;   // statement code generator
     ExpressionGenerator expressionCode;  // expression code generator
@@ -89,6 +89,49 @@ public class Compiler extends NeoBaseVisitor<Object>{
     }
 
     @Override
+    public Object visitExpression(NeoParser.ExpressionContext ctx) {
+        if (ctx.realExpression() != null) {     // real expression
+            if (ctx.realRelOp() == null) {
+                visitRealExpression(ctx.realExpression(0));
+            }
+            else if (ctx.realRelOp().getText().equals("=")) {
+                visitRealExpression(ctx.realExpression(0));
+                visitRealExpression(ctx.realExpression(1));
+                code.emit(Instruction.INVOKESTATIC, "library/Matrix/realEquals(FF)F");
+            }
+            else if (ctx.realRelOp().getText().equals("!=")) {
+                visitRealExpression(ctx.realExpression(0));
+                visitRealExpression(ctx.realExpression(1));
+                code.emit(Instruction.INVOKESTATIC, "library/Matrix/realEquals(FF)F");
+                code.emit(Instruction.INVOKESTATIC, "library/Matrix/booleanNot(F)F");
+            }
+            else if (ctx.realRelOp().getText().equals("<=")) {
+                visitRealExpression(ctx.realExpression(0));
+                visitRealExpression(ctx.realExpression(1));
+                code.emit(Instruction.INVOKESTATIC, "library/Matrix/realLessEq(FF)F");
+            }
+        }
+        else {          // matrix expression
+            if (ctx.matrixRelOp() == null) {
+                visitMatrixExpression(ctx.matrixExpression(0));
+            }
+            else if (ctx.matrixRelOp().getText().equals("=")) {
+                visitMatrixExpression(ctx.matrixExpression(0));
+                visitMatrixExpression(ctx.matrixExpression(1));
+                code.emit(Instruction.INVOKESTATIC, "library/Matrix/matrixEquals(Llibrary/Matrix;Llibrary/Matrix;)F");
+            }
+            else if (ctx.realRelOp().getText().equals("!=")) {
+                visitMatrixExpression(ctx.matrixExpression(0));
+                visitMatrixExpression(ctx.matrixExpression(1));
+                code.emit(Instruction.INVOKESTATIC, "library/Matrix/matrixEquals(Llibrary/Matrix;Llibrary/Matrix;)F");
+                code.emit(Instruction.INVOKESTATIC, "library/Matrix/booleanNot(F)F");
+            }
+        }
+
+        return null;
+    }
+
+    @Override
     public Object visitRealExpression(NeoParser.RealExpressionContext ctx) {
         expressionCode.emitRealExpression(ctx);
 
@@ -105,6 +148,18 @@ public class Compiler extends NeoBaseVisitor<Object>{
     @Override
     public Object visitPrintStatement(NeoParser.PrintStatementContext ctx) {
         statementCode.emitPrintStatement(ctx);
+        return null;
+    }
+
+    @Override
+    public Object visitIfStatement(NeoParser.IfStatementContext ctx) {
+        statementCode.emitIfStatement(ctx);
+        return null;
+    }
+
+    @Override
+    public Object visitWhileStatement(NeoParser.WhileStatementContext ctx) {
+        statementCode.emitWhileStatement(ctx);
         return null;
     }
 }
