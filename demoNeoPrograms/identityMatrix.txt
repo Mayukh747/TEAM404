@@ -1,0 +1,11 @@
+program testWhile;
+
+main
+var r_n, m_10_shrek {
+    r_n := 0.0;
+    while(r_n <= 9.5){
+        m_10_shrek[r_n][r_n] := 1.0;
+        r_n := r_n + 1.0;
+    };
+    print(m_10_shrek);
+}

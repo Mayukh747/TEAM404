@@ -398,10 +398,17 @@ public class ProgramGenerator extends CodeGenerator {
 
 
     public void emitMatrixFunctionDefinition(NeoParser.MatrixFunctionDefinitionContext ctx) {
-        // TODO
-
         // make new currentLocalVariables symtab
         CodeGenerator.currentLocalVariables = new Symtab(1);
+        CodeGenerator.currentLocalVariables.enter(ctx.matrixFunctionName().getText(), 0);    // for sake of returning
+
+        emitMatrixFunctionHeader(ctx);
+        emitMatrixFunctionLocals(ctx);
+
+        localVariables = new LocalVariables(  // argument is number of local variables we want: # parameters + # declared vars ? I think?
+                ctx.variableList().variable().size() + ctx.variableDeclarationList().variableList().variable().size());
+
+        compiler.visit(ctx.variableDeclarationList());
 
         // initialize variables to default values
         int numOfParameters = ctx.variableList().variable().size();
@@ -425,24 +432,90 @@ public class ProgramGenerator extends CodeGenerator {
             }
         }
 
-
-        // ...
-
+        compiler.visit(ctx.compoundStatement());
 
         emitMatrixFunctionReturn(ctx);
         emitFunctionEpilogue();
     }
 
     public void emitMatrixFunctionHeader(NeoParser.MatrixFunctionDefinitionContext ctx) {
-        // TODO
+        String functionName = ctx.matrixFunctionName().getText();
+        List<NeoParser.VariableContext> parmCtxs = ctx.variableList().variable();
+        StringBuilder buffer = new StringBuilder();
+
+        // function name.
+        buffer.append(functionName);
+        buffer.append("(");
+        // Parameter and return type descriptors.
+        if (parmCtxs != null)
+        {
+            for (NeoParser.VariableContext parmCtx : parmCtxs)
+            {
+                //            vvv   Made a custom typeDescriptor in CodeGenerator taking strings and looking at first character to deduce type
+                buffer.append(typeDescriptor(parmCtx.getText()));
+            }
+        }
+        buffer.append(")");
+        buffer.append(typeDescriptor(functionName));
+
+        emitLine();
+        emitComment("FUNCTION " + functionName);
+
+        emitDirective(METHOD_PRIVATE_STATIC, buffer.toString());
     }
 
     public void emitMatrixFunctionLocals(NeoParser.MatrixFunctionDefinitionContext ctx) {
-        // TODO
+        List<NeoParser.VariableContext> localVars =
+                Stream.concat((ctx.variableList().variable()).stream(), (ctx.variableDeclarationList().variableList().variable()).stream()).toList();
+        //     ^^^  list of parameters concatenated with list of declared vars    ^^^
+
+
+        // Am assuming we want the slot numbers to match to the order of the localVars list.
+
+        emitLine();
+
+        // emit a .var directive for each variable and formal parameter.
+        for (int slotNumber = 0; slotNumber < localVars.size() ; slotNumber++) {
+            String varName = localVars.get(slotNumber).getText();
+            CodeGenerator.currentLocalVariables.enter(localVars.get(slotNumber).getText(), slotNumber);
+            emitDirective(VAR, slotNumber + " is " + varName, typeDescriptor(varName));
+        }
+        String functionName = ctx.matrixFunctionName().getText();
+        int functionSlotNumber = localVars.size();
+        CodeGenerator.currentLocalVariables.enter(functionName, functionSlotNumber);
+        emitDirective(VAR, functionSlotNumber + " is " + functionName, typeDescriptor(Predefined.matrixType));
     }
 
     public void emitMatrixFunctionReturn(NeoParser.MatrixFunctionDefinitionContext ctx) {
-        // TODO
+        emitLine();
+
+        String varName = ctx.matrixFunctionName().getText();
+        Typespec type = varName.charAt(0) == 'r' ? Predefined.realType : Predefined.matrixType;
+//
+//        NeoParser.FunctionDefinitionListContext fnDefLstCtx = (NeoParser.FunctionDefinitionListContext) ctx.getParent().getParent();
+//        List<NeoParser.FunctionDefinitionContext> fnDefList = fnDefLstCtx.functionDefinition();
+
+//        // search for our function's slot number, assuming we want slot numbers of functions to be the order that we define them in
+//        int slotNumber = -1;
+//        for (int index = 0; index < fnDefList.size(); index++) {
+//            String name = "";
+//            if (fnDefList.get(index).realFunctionDefinition() != null) {
+//                name = fnDefList.get(index).realFunctionDefinition().realFunctionName().getText();
+//            }
+//            else {
+//                name = fnDefList.get(index).matrixFunctionDefinition().matrixFunctionName().getText();
+//            }
+//            if (name.equals(varName)) {
+//                slotNumber = index;
+//                break;
+//            }
+//        }
+
+        int functionSlotNumber = ctx.variableDeclarationList().variableList().variable().size() + ctx.variableList().variable().size();
+
+        emitStoreLocal(Predefined.matrixType, functionSlotNumber);
+        emitLoadLocal(Predefined.matrixType, functionSlotNumber);
+        emitReturnValue(type);
     }
 
 

@@ -8,7 +8,7 @@ public class Compiler extends NeoBaseVisitor<Object>{
     public SymtabEntry programId;  // symbol table entry of the program name
     private String programName;     // the program name
 
-    public  CodeGenerator       code;            // base code generator
+    public CodeGenerator       code;             // base code generator
     private ProgramGenerator    programCode;     // program code generator
     private StatementGenerator  statementCode;   // statement code generator
     ExpressionGenerator expressionCode;  // expression code generator
@@ -79,6 +79,12 @@ public class Compiler extends NeoBaseVisitor<Object>{
     @Override
     public Object visitRealFunctionDefinition(NeoParser.RealFunctionDefinitionContext ctx) {
         programCode.emitRealFunctionDefinition(ctx);
+        return null;
+    }
+
+    @Override
+    public Object visitMatrixFunctionDefinition(NeoParser.MatrixFunctionDefinitionContext ctx){
+        programCode.emitMatrixFunctionDefinition(ctx);
         return null;
     }
 
