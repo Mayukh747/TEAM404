@@ -7,6 +7,7 @@ import intermediate.type.Typespec.Form;
 import intermediate.symtab.*;
 import intermediate.symtab.Predefined;
 
+import java.io.File;
 import java.io.FileWriter;
 import java.io.PrintWriter;
 
@@ -42,8 +43,10 @@ public class CodeGenerator
         // Create the Jasmin object file.
         try 
         {
-            objectFileName = programName + "." + suffix;
-            objectFile = new PrintWriter(new FileWriter(objectFileName));
+//            objectFileName = programName + "." + suffix;
+//            objectFile = new PrintWriter(new FileWriter(objectFileName));
+            File outputFile = new File("src/", programName + "." + suffix);
+            objectFile = new PrintWriter(new FileWriter(outputFile));
         }
         catch (Exception ex) 
         {

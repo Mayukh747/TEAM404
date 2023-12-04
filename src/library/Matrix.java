@@ -7,7 +7,15 @@ public class Matrix {
         mat = new float[size][size];
     }
 
-    public static float[][] mult(float[][] mat1, float[][] mat2){
+    public Matrix(float [][] m){
+        mat = m;
+    }
+
+    public static Matrix mult(Matrix matrix1, Matrix matrix2){
+
+        float[][] mat1 = matrix1.mat;
+        float[][] mat2 = matrix2.mat;
+
         int rowsA = mat1.length;
         int colsA = mat1[0].length;
         int colsB = mat2[0].length;
@@ -21,10 +29,13 @@ public class Matrix {
                 }
             }
         }
-        return result;
+        return new Matrix(result);
     }
 
-    public static float[][] add(float[][] mat1, float[][] mat2){
+    public static Matrix add(Matrix matrix1, Matrix matrix2){
+        float[][] mat1 = matrix1.mat;
+        float[][] mat2 = matrix2.mat;
+
         int row = mat1.length;
         int col = mat1[0].length;
         float[][] res = new float[row][col];
@@ -34,7 +45,8 @@ public class Matrix {
                 res[i][j] = mat1[i][j] + mat2[i][j];
             }
         }
-        return res;
+
+        return new Matrix(res);
     }
 
     public static float getEntry(Matrix matrix, float row, float col) {
