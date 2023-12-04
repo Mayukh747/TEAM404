@@ -11,7 +11,7 @@ public class Compiler extends NeoBaseVisitor<Object>{
     private CodeGenerator       code;            // base code generator
     private ProgramGenerator    programCode;     // program code generator
     private StatementGenerator  statementCode;   // statement code generator
-    private ExpressionGenerator expressionCode;  // expression code generator
+    ExpressionGenerator expressionCode;  // expression code generator
 
     /**
      * Constructor for the base compiler.

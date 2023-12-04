@@ -4,6 +4,8 @@ import intermediate.symtab.Predefined;
 import intermediate.type.Typespec;
 import antlr4.*;
 
+import java.beans.Expression;
+
 import static backend.Instruction.*;
 import static com.sun.org.apache.bcel.internal.classfile.Utility.convertString;
 //import static intermediate.type.Typespec.Form.ENUMERATION;
@@ -42,6 +44,23 @@ public class StatementGenerator extends CodeGenerator {
             emitStoreLocal(Predefined.matrixType, slotNumber);
         } else {      // lhs is matrix entry
             // TODO
+            //Emit Matrix
+            NeoParser.MatrixEntryContext matEntryCtx = ctx.lhs().matrixEntry();
+            String varName = matEntryCtx.matrixVariable().getText();
+            int slotNumber = CodeGenerator.currentLocalVariables.lookup(varName).getSlotNumber();
+            emit(ALOAD, slotNumber);
+
+            //Emit Row and Col
+            compiler.expressionCode.emitRealExpression(matEntryCtx.realExpression(0));
+            compiler.expressionCode.emitRealExpression(matEntryCtx.realExpression(1));
+//            emit(FLOAD, matEntryCtx.realExpression(0).getText());
+//            emit(FLOAD, matEntryCtx.realExpression(1).getText());
+
+//            //Emit RHS
+//            emitStoreLocal(Predefined.matrixType, slotNumber);
+
+            compiler.visitExpression(ctx.rhs().expression());
+            emit(INVOKESTATIC, "library/Matrix/setEntry(Llibrary/Matrix;FFF)V");
         }
     }
 

@@ -2,5 +2,6 @@ Program TestPrint;
 
 main
 var m_5_shrek {
+    m_5_shrek[1.0][1.0] := 5.0;
     print(m_5_shrek);
 }

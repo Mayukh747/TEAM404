@@ -41,6 +41,10 @@ public class Matrix {
         return matrix.mat[(int) row][(int) col];
     }
 
+    public static void setEntry(Matrix matrix, float row, float col, float val){
+        matrix.mat[(int) row][(int) col] = (int) val;
+    }
+
     public static void printMatrix(Matrix matrix){
         float[][] mat = matrix.mat;
 
