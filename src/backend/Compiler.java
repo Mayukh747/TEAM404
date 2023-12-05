@@ -88,6 +88,7 @@ public class Compiler extends NeoBaseVisitor<Object>{
         return null;
     }
 
+
     @Override
     public Object visitAssignmentStatement(NeoParser.AssignmentStatementContext ctx) {
         statementCode.emitAssignment(ctx);
@@ -96,7 +97,7 @@ public class Compiler extends NeoBaseVisitor<Object>{
 
     @Override
     public Object visitExpression(NeoParser.ExpressionContext ctx) {
-        if (ctx.realExpression() != null) {     // real expression
+        if (ctx.realExpression().size() > 0) {     // real expression
             if (ctx.realRelOp() == null) {
                 visitRealExpression(ctx.realExpression(0));
             }
@@ -126,7 +127,7 @@ public class Compiler extends NeoBaseVisitor<Object>{
                 visitMatrixExpression(ctx.matrixExpression(1));
                 code.emit(Instruction.INVOKESTATIC, "library/Matrix/matrixEquals(Llibrary/Matrix;Llibrary/Matrix;)F");
             }
-            else if (ctx.realRelOp().getText().equals("!=")) {
+            else if (ctx.matrixRelOp().getText().equals("!=")) {
                 visitMatrixExpression(ctx.matrixExpression(0));
                 visitMatrixExpression(ctx.matrixExpression(1));
                 code.emit(Instruction.INVOKESTATIC, "library/Matrix/matrixEquals(Llibrary/Matrix;Llibrary/Matrix;)F");

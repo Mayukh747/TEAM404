@@ -3,6 +3,9 @@ package backend;
 import antlr4.*;
 import backend.Instruction.*;
 import frontend.SemanticErrorHandler;
+import intermediate.type.Typespec;
+
+import static backend.Instruction.INVOKESTATIC;
 
 public class ExpressionGenerator extends CodeGenerator {
 
@@ -31,7 +34,7 @@ public class ExpressionGenerator extends CodeGenerator {
                     emit(Instruction.FSUB);
                 }
                 else if (ctx.realAddOp(i-1).getText().equals("||")) {
-                    emit(Instruction.INVOKESTATIC, "library/Matrix/booleanOr(FF)F");
+                    emit(INVOKESTATIC, "library/Matrix/booleanOr(FF)F");
                 }
             }
         }
@@ -67,7 +70,7 @@ public class ExpressionGenerator extends CodeGenerator {
         }
         else if (ctx.realFactor() != null) {    // is a not statement
             emitRealFactor(ctx.realFactor());
-            emit(Instruction.INVOKESTATIC, "library/Matrix/booleanNot(F)F");
+            emit(INVOKESTATIC, "library/Matrix/booleanNot(F)F");
         }
         else {                                  // is parenthesized realExpression
             emitRealExpression(ctx.realExpression());
@@ -102,11 +105,23 @@ public class ExpressionGenerator extends CodeGenerator {
         emitRealExpression(ctx.realExpression(0));
         emitRealExpression(ctx.realExpression((1)));
 
-        emit(Instruction.INVOKESTATIC, "library/Matrix/getEntry(Llibrary/Matrix;FF)Llibrary/Matrix;");
+        emit(INVOKESTATIC, "library/Matrix/getEntry(Llibrary/Matrix;FF)Llibrary/Matrix;");
     }
 
     public void emitRealFunctionCall(NeoParser.RealFunctionCallContext ctx) {
-        // TODO
+        compiler.visitArgumentList(ctx.argumentList());
+        String functionSignature = new String();
+        functionSignature += "(";
+        for(NeoParser.ArgumentContext argCtx: ctx.argumentList().argument()){
+            if(argCtx.expression().realExpression().size() > 0){
+                functionSignature += "F";
+            }
+            else{
+                functionSignature += "Llibrary/Matrix;";
+            }
+        }
+        functionSignature += ")F";
+        emit(INVOKESTATIC, programName +  "/" + ctx.realFunctionName().getText() + functionSignature);
     }
 
     public void emitMatrixExpression(NeoParser.MatrixExpressionContext ctx) {
@@ -115,13 +130,13 @@ public class ExpressionGenerator extends CodeGenerator {
             emitMatrixTerm(ctx.matrixTerm(i));
             if (i != 0) {
                 if (ctx.matrixAddOp(i-1).getText().equals("+")) {
-                    emit(Instruction.INVOKESTATIC, "library/Matrix/add(Llibrary/Matrix;Llibrary/Matrix;)Llibrary/Matrix;");
+                    emit(INVOKESTATIC, "library/Matrix/add(Llibrary/Matrix;Llibrary/Matrix;)Llibrary/Matrix;");
                 }
                 else if (ctx.matrixAddOp(i-1).getText().equals("-")) {
-                    emit(Instruction.INVOKESTATIC, "library/Matrix/sub(Llibrary/Matrix;Llibrary/Matrix;)Llibrary/Matrix;");
+                    emit(INVOKESTATIC, "library/Matrix/sub(Llibrary/Matrix;Llibrary/Matrix;)Llibrary/Matrix;");
                 }
                 else if (ctx.matrixAddOp(i-1).getText().equals("||")) {
-                    emit(Instruction.INVOKESTATIC, "library/Matrix/booleanOr(FF)F");
+                    emit(INVOKESTATIC, "library/Matrix/booleanOr(FF)F");
                 }
             }
         }
@@ -133,7 +148,7 @@ public class ExpressionGenerator extends CodeGenerator {
             emitMatrixFactor(ctx.matrixFactor(i));
             if (i != 0) {
                 if (ctx.matrixMulOp(i-1).getText().equals("*")) {
-                    emit(Instruction.INVOKESTATIC, "library/Matrix/mult(Llibrary/Matrix;Llibrary/Matrix;)Llibrary/Matrix;");
+                    emit(INVOKESTATIC, "library/Matrix/mult(Llibrary/Matrix;Llibrary/Matrix;)Llibrary/Matrix;");
                 }
                 else if (ctx.matrixMulOp(i-1).getText().equals("&&")) {
                     emit(Instruction.FMUL);
@@ -152,7 +167,7 @@ public class ExpressionGenerator extends CodeGenerator {
         }
         else if (ctx.matrixFactor() != null) {      // is not statement
             emitMatrixFactor(ctx.matrixFactor());
-            emit(Instruction.INVOKESTATIC, "library/Matrix/booleanNot(F)F");
+            emit(INVOKESTATIC, "library/Matrix/booleanNot(F)F");
         }
         else if (ctx.matrixExpression() != null) {   // is parenthesized matrix expression
             emitMatrixExpression(ctx.matrixExpression());
@@ -165,6 +180,18 @@ public class ExpressionGenerator extends CodeGenerator {
     }
 
     public void emitMatrixFunctionCall(NeoParser.MatrixFunctionCallContext ctx) {
-        // TODO
+        compiler.visitArgumentList(ctx.argumentList());
+        String functionSignature = new String();
+        functionSignature += "(";
+        for(NeoParser.ArgumentContext argCtx: ctx.argumentList().argument()){
+            if(argCtx.expression().realExpression().size() > 0){
+                functionSignature += "F";
+            }
+            else{
+                functionSignature += "Llibrary/Matrix;";
+            }
+        }
+        functionSignature += ")Llibrary/Matrix;";
+        emit(INVOKESTATIC, programName +  "/" + ctx.matrixFunctionName().getText() + functionSignature);
     }
 }

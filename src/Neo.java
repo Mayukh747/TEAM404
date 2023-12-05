@@ -89,7 +89,7 @@ public class Neo {
         System.out.printf("\nPASS 3 Compilation: ");
         SymtabEntry programId = pass2.getProgramId();
         Compiler pass3 = new Compiler(programId);
-        pass3.visit(tree);
+        //pass3.visit(tree);
 
         try{
             pass3.visit(tree);
@@ -97,6 +97,7 @@ public class Neo {
             pass3.code.close();
             System.out.println(e.getMessage());
         }
+
 
         System.out.printf("Object file \"%s\" created.\n",
                 pass3.getObjectFileName());

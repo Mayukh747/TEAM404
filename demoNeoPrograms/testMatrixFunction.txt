@@ -1,7 +1,6 @@
 program testMatrix;
 
-mf_6_testFunction(m_6_matrix)
-var {
+mf_6_testFunction(m_6_matrix){
     m_6_matrix[1.0][1.0] := 20.0;
     return m_6_matrix;
 }
