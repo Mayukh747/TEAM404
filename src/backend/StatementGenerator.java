@@ -41,6 +41,7 @@ public class StatementGenerator extends CodeGenerator {
             int slotNumber = CodeGenerator.currentLocalVariables.lookup(varName).getSlotNumber();
 
             emitStoreLocal(Predefined.matrixType, slotNumber);
+            emit(ALOAD, slotNumber);
         } else {      // lhs is matrix entry
             //Emit Matrix
             NeoParser.MatrixEntryContext matEntryCtx = ctx.lhs().matrixEntry();

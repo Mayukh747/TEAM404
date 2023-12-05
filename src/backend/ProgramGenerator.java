@@ -258,8 +258,8 @@ public class ProgramGenerator extends CodeGenerator {
         emit(RETURN);
         emitLine();
 
-        emitDirective(LIMIT_LOCALS, localVariables.count() + 10);    // TODO: overkill +5 to get rid of an error. Maybe not the right way to do it.
-        emitDirective(LIMIT_STACK,  localStack.capacity() + 1);     // TODO: Make sure this is where we should add 1
+        emitDirective(LIMIT_LOCALS, localVariables.count() + 100);    // TODO: overkill +5 to get rid of an error. Maybe not the right way to do it.
+        emitDirective(LIMIT_STACK,  localStack.capacity() + 10);     // TODO: Make sure this is where we should add 1
         emitDirective(END_METHOD);
 
         close();  // the object file

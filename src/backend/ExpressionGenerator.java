@@ -105,7 +105,7 @@ public class ExpressionGenerator extends CodeGenerator {
         emitRealExpression(ctx.realExpression(0));
         emitRealExpression(ctx.realExpression((1)));
 
-        emit(INVOKESTATIC, "library/Matrix/getEntry(Llibrary/Matrix;FF)Llibrary/Matrix;");
+        emit(INVOKESTATIC, "library/Matrix/getEntry(Llibrary/Matrix;FF)F");
     }
 
     public void emitRealFunctionCall(NeoParser.RealFunctionCallContext ctx) {

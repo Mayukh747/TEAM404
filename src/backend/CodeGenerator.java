@@ -553,7 +553,9 @@ public class CodeGenerator
                 case 1:  emit(ASTORE_1); break;
                 case 2:  emit(ASTORE_2); break;
                 case 3:  emit(ASTORE_3); break;
-                default: emit(ASTORE, slot);
+                default:
+                    emit(ASTORE, slot);
+                    //emit(ALOAD, slot);
             }
         }
     }

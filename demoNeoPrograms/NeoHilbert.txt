@@ -1,23 +1,55 @@
 program hilbert;
 
-decompose{
-
-
+rf_abs(r_x)
+var {
+    if(r_x <= 0.0){
+        r_x:= -1.0 * r_x;
+    };
+    return r_x;
 }
 
-solve{
 
+mf_10_decompose(r_n, m_10_A, m_10_LU)
+var {
+
+    return m_10_A;
 }
 
-invert {
+mf_10_solve()
+var m_10_temp{
+    return m_10_temp;
+}
 
+mf_10_invert(r_n, m_10_A, m_10_Ainv)
+var m_10_LU, m_10_b, m_10_x, r_j, r_i, m_10_fres1, m_10_fres2 {
+    m_10_fres1 := mf_10_decompose(r_n, m_10_A, m_10_LU);
+    r_j := 1.0;
+    while(r_j <= r_n + 1.0){
+        r_i := 1.0;
+        while(r_i <= r_n + 1.0){
+            if(r_i = r_j){
+                m_10_b[r_i][0.0] := 1.0;
+            }
+            else{
+                 m_10_b[r_i][0.0] := 0.0;
+            };
+
+            m_10_fres2 := mf_10_solve(r_n, m_10_LU, m_10_b, m_10_x);
+
+            r_i := 1.0;
+            while(r_i <= r_n + 1.0){
+                m_10_Ainv[r_i][r_j] := m_10_x[r_i][0.0];
+            };
+        };
+    };
+    return m_10_fres2;
 }
 
 main
-r_n, m_5_H, r_i, r_j {
-    r_n := 5
+var r_n, m_5_H, r_i, r_j {
+    r_n := -5.0;
 
-    r_i := 1
-    r_j :
-
+    r_n := rf_abs(r_n);
+    print(r_n);
 }
+

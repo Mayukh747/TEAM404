@@ -1,14 +1,14 @@
-program testMatrix;
-
-mf_6_testFunction(m_6_matrix)
-var {
-    m_6_matrix[1.0][1.0] := 20.0;
-    return m_6_matrix;
-}
+program testWhile;
 
 main
-var m_3_someMatrix, m_6_matrix, m_6_matrix1 {
-    m_6_matrix1[1.0][1.0] := 10.0;
-    m_6_matrix1 := mf_6_testFunction(m_6_matrix1);
-    print(m_6_matrix1);
+var r_n, r_j{
+    r_n := 1.0;
+    while(r_n <= 10.0){
+        while(r_j <= 10.0){
+            r_j := r_j + 1.0;
+            print(r_j);
+        };
+        r_j := 1.0;
+        r_n := r_n + 1.0;
+    };
 }

@@ -95,6 +95,7 @@ public class Neo {
             pass3.visit(tree);
         } catch(Exception e){
             pass3.code.close();
+            System.out.println(e.getStackTrace());
             System.out.println(e.getMessage());
         }
 
