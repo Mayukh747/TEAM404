@@ -9,7 +9,7 @@ var {
 }
 
 main
-var r_n, r_i, r_j, r_k, r_normrow, r_pivot, r_size, r_biggest, r_mult, r_pivotindex,r_sigcode, m_10_A, m_10_Ainv, m_10_LU, m_10_b, m_10_x,
+var r_n, r_i, r_j, r_k, r_normrow, r_pivot, r_size, r_biggest, r_mult, m_10_A, m_10_Ainv, m_10_LU, m_10_b, m_10_x,
 m_10_scales,m_10_ps{
     r_n := 10.0;
 
@@ -54,44 +54,6 @@ m_10_scales,m_10_ps{
 
         r_k := r_k + 1.0;
     };
-
-    if(r_biggest = 0.0){
-        r_sigcode := 100.0;
-        print(r_sigcode);
-    }
-    else{
-        if(r_pivotindex != r_k){
-            r_j := m_10_ps[r_k][0.0];
-            m_10_ps[r_k][0.0] := m_10_ps[r_pivotindex][0.0];
-            m_10_ps[r_pivotindex][0.0] := r_j;
-        };
-        r_pivot := m_10_LU[m_10_ps[r_pivotindex][0.0]][r_k];
-
-        r_i := r_k + 1.0;
-        while(r_i <= r_n - 1.0){
-            r_mult := m_10_LU[m_10_ps[r_i][0.0]][r_k]/r_pivot;
-            m_10_LU[m_10_ps[r_i][0.0]][r_k] := r_mult;
-
-            if(r_mult != 0.0){
-                r_j := r_k + 1.0;
-                while(r_j <= r_n - 1.0){
-                    m_10_LU[m_10_ps[r_i][0.0]][r_j] := m_10_LU[m_10_ps[r_i][0.0]][r_j] - r_mult * m_10_LU[m_10_ps[r_k][0.0]][r_j];
-
-                    r_j := r_j + 1.0;
-                };
-            };
-
-            r_i := r_i + 1.0;
-        };
-    };
-
-    if(m_10_LU[m_10_ps[r_n-1.0][0.0]][r_n-1.0] = 0.0){
-        r_sigcode := 200.0;
-        print(r_sigcode);
-    };
-
-
-
     print(r_i);
     print(r_k);
     print(m_10_LU);

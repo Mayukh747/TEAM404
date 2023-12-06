@@ -1,11 +1,15 @@
 program testWhile;
 
 main
-var r_n, m_10_shrek {
-    r_n := 0.0;
-    while(r_n <= 9.5){
-        m_10_shrek[r_n][r_n] := 1.0;
+var r_n, r_j{
+    r_n := 1.0;
+    while(r_n <= 10.0){
+
+        r_j := 1.0;
+        while(r_j <= 10.0){
+            r_j := r_j + 1.0;
+            print(r_j);
+        };
         r_n := r_n + 1.0;
     };
-    print(m_10_shrek);
 }
