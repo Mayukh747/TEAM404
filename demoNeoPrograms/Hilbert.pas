@@ -91,7 +91,7 @@ PROCEDURE decompose(n : integer; VAR A, LU : matrix);
                     pivotindex := i;     {row index of this element}
                 END;
             END;
-----------
+
             IF biggest = 0 THEN singular(SINGULARMATRIX)
             ELSE BEGIN
                 IF pivotindex <> k THEN BEGIN

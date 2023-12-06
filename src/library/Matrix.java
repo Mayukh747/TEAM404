@@ -71,20 +71,17 @@ public class Matrix {
     }
 
     public static void setEntry(Matrix matrix, float row, float col, float val){
-        matrix.mat[(int) row][(int) col] = (int) val;
+        matrix.mat[(int) row][(int) col] = val;
     }
 
     public static void printMatrix(Matrix matrix){
         float[][] mat = matrix.mat;
-
-        String out = new String();
-        for(float[] arr: mat){
-            for(float f: arr){
-                out += (String.valueOf(f) + "\t");
+        for (int row = 0; row < mat.length; row++) {
+            for (int col = 0; col < mat[row].length; col++) {
+                System.out.printf("%4f\t", mat[row][col]);
             }
-            out += ("\n");
+            System.out.println();
         }
-        System.out.println(out);
     }
 
     public static float booleanNot(float value) {
