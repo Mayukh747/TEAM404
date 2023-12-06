@@ -108,17 +108,6 @@ L006:
 	fload	2
 	fload	3
 	invokestatic	library/Matrix/setEntry(Llibrary/Matrix;FFF)V
-	getstatic	java/lang/System/out Ljava/io/PrintStream;
-	ldc	"%f\n"
-	iconst_1
-	anewarray	java/lang/Object
-	dup
-	iconst_0
-	fload	3
-	invokestatic	java/lang/Float/valueOf(F)Ljava/lang/Float;
-	aastore
-	invokevirtual	java/io/PrintStream/printf(Ljava/lang/String;[Ljava/lang/Object;)Ljava/io/PrintStream;
-	pop
 	fload	2
 	ldc	1.0
 	fadd
@@ -139,7 +128,7 @@ L005:
 	areturn
 
 .limit locals 5
-.limit stack 16
+.limit stack 12
 .end method
 
 ;
@@ -160,14 +149,18 @@ L005:
 .var 11 is r_biggest F
 .var 12 is r_mult F
 .var 13 is r_pivotindex F
-.var 14 is r_sigcode F
-.var 15 is m_10_A Llibrary/Matrix;
-.var 16 is m_10_Ainv Llibrary/Matrix;
-.var 17 is m_10_LU Llibrary/Matrix;
-.var 18 is m_10_b Llibrary/Matrix;
-.var 19 is m_10_x Llibrary/Matrix;
-.var 20 is m_10_scales Llibrary/Matrix;
-.var 21 is m_10_ps Llibrary/Matrix;
+.var 14 is r_isolve F
+.var 15 is r_jsolve F
+.var 16 is r_sigcode F
+.var 17 is r_dot F
+.var 18 is m_10_inv Llibrary/Matrix;
+.var 19 is m_10_H Llibrary/Matrix;
+.var 20 is m_10_Hinv Llibrary/Matrix;
+.var 21 is m_10_LU Llibrary/Matrix;
+.var 22 is m_10_b Llibrary/Matrix;
+.var 23 is m_10_x Llibrary/Matrix;
+.var 24 is m_10_scales Llibrary/Matrix;
+.var 25 is m_10_ps Llibrary/Matrix;
 
 	invokestatic	java/time/Instant/now()Ljava/time/Instant;
 	astore_1
@@ -193,24 +186,12 @@ L005:
 	fstore	13
 	ldc	0.0
 	fstore	14
-	new	library/Matrix
-	dup
-	ldc	10
-	invokespecial	library/Matrix/<init>(I)V
-	astore	15
-	aload	15
-	new	library/Matrix
-	dup
-	ldc	10
-	invokespecial	library/Matrix/<init>(I)V
-	astore	16
-	aload	16
-	new	library/Matrix
-	dup
-	ldc	10
-	invokespecial	library/Matrix/<init>(I)V
-	astore	17
-	aload	17
+	ldc	0.0
+	fstore	15
+	ldc	0.0
+	fstore	16
+	ldc	0.0
+	fstore	17
 	new	library/Matrix
 	dup
 	ldc	10
@@ -235,7 +216,49 @@ L005:
 	invokespecial	library/Matrix/<init>(I)V
 	astore	21
 	aload	21
+	new	library/Matrix
+	dup
+	ldc	10
+	invokespecial	library/Matrix/<init>(I)V
+	astore	22
+	aload	22
+	new	library/Matrix
+	dup
+	ldc	10
+	invokespecial	library/Matrix/<init>(I)V
+	astore	23
+	aload	23
+	new	library/Matrix
+	dup
+	ldc	10
+	invokespecial	library/Matrix/<init>(I)V
+	astore	24
+	aload	24
+	new	library/Matrix
+	dup
+	ldc	10
+	invokespecial	library/Matrix/<init>(I)V
+	astore	25
+	aload	25
 
+	invokestatic	hilbert/mf_10_hilbert()Llibrary/Matrix;
+	astore	19
+	aload	19
+	aload	19
+	invokestatic	library/Matrix/printMatrix(Llibrary/Matrix;)V
+	ldc	100.0
+	fstore	16
+	getstatic	java/lang/System/out Ljava/io/PrintStream;
+	ldc	"%f\n"
+	iconst_1
+	anewarray	java/lang/Object
+	dup
+	iconst_0
+	fload	16
+	invokestatic	java/lang/Float/valueOf(F)Ljava/lang/Float;
+	aastore
+	invokevirtual	java/io/PrintStream/printf(Ljava/lang/String;[Ljava/lang/Object;)Ljava/io/PrintStream;
+	pop
 	ldc	10.0
 	fstore	4
 	ldc	1.0
@@ -248,7 +271,7 @@ L008:
 	invokestatic	library/Matrix/realLessEq(FF)F
 	invokestatic	library/Matrix/floatToInt(F)I
 	ifeq	L009
-	aload	21
+	aload	25
 	fload	5
 	ldc	0.0
 	fload	5
@@ -265,16 +288,16 @@ L010:
 	invokestatic	library/Matrix/realLessEq(FF)F
 	invokestatic	library/Matrix/floatToInt(F)I
 	ifeq	L011
-	aload	17
+	aload	21
 	fload	5
 	fload	6
-	aload	15
+	aload	19
 	fload	5
 	fload	6
 	invokestatic	library/Matrix/getEntry(Llibrary/Matrix;FF)F
 	invokestatic	library/Matrix/setEntry(Llibrary/Matrix;FFF)V
 	fload	8
-	aload	17
+	aload	21
 	fload	5
 	fload	6
 	invokestatic	library/Matrix/getEntry(Llibrary/Matrix;FF)F
@@ -283,7 +306,7 @@ L010:
 	invokestatic	library/Matrix/floatToInt(F)I
 	ifeq	L014
 L012:
-	aload	17
+	aload	21
 	fload	5
 	fload	6
 	invokestatic	library/Matrix/getEntry(Llibrary/Matrix;FF)F
@@ -305,7 +328,7 @@ L011:
 	invokestatic	library/Matrix/floatToInt(F)I
 	ifeq	L016
 L015:
-	aload	20
+	aload	24
 	fload	5
 	ldc	0.0
 	ldc	1.0
@@ -314,7 +337,7 @@ L015:
 	invokestatic	library/Matrix/setEntry(Llibrary/Matrix;FFF)V
 	goto	L017
 L016:
-	aload	20
+	aload	24
 	fload	5
 	ldc	0.0
 	ldc	0.0
@@ -350,16 +373,16 @@ L020:
 	invokestatic	library/Matrix/realLessEq(FF)F
 	invokestatic	library/Matrix/floatToInt(F)I
 	ifeq	L021
-	aload	17
 	aload	21
+	aload	25
 	fload	5
 	ldc	0.0
 	invokestatic	library/Matrix/getEntry(Llibrary/Matrix;FF)F
 	fload	7
 	invokestatic	library/Matrix/getEntry(Llibrary/Matrix;FF)F
 	invokestatic	hilbert/rf_abs(F)F
-	aload	20
-	aload	21
+	aload	24
+	aload	25
 	fload	5
 	ldc	0.0
 	invokestatic	library/Matrix/getEntry(Llibrary/Matrix;FF)F
@@ -400,15 +423,15 @@ L019:
 	invokestatic	library/Matrix/floatToInt(F)I
 	ifeq	L026
 L025:
-	ldc	100.0
-	fstore	14
+	ldc	200.0
+	fstore	16
 	getstatic	java/lang/System/out Ljava/io/PrintStream;
 	ldc	"%f\n"
 	iconst_1
 	anewarray	java/lang/Object
 	dup
 	iconst_0
-	fload	14
+	fload	16
 	invokestatic	java/lang/Float/valueOf(F)Ljava/lang/Float;
 	aastore
 	invokevirtual	java/io/PrintStream/printf(Ljava/lang/String;[Ljava/lang/Object;)Ljava/io/PrintStream;
@@ -422,27 +445,27 @@ L026:
 	invokestatic	library/Matrix/floatToInt(F)I
 	ifeq	L030
 L028:
-	aload	21
+	aload	25
 	fload	7
 	ldc	0.0
 	invokestatic	library/Matrix/getEntry(Llibrary/Matrix;FF)F
 	fstore	6
-	aload	21
+	aload	25
 	fload	7
 	ldc	0.0
-	aload	21
+	aload	25
 	fload	13
 	ldc	0.0
 	invokestatic	library/Matrix/getEntry(Llibrary/Matrix;FF)F
 	invokestatic	library/Matrix/setEntry(Llibrary/Matrix;FFF)V
-	aload	21
+	aload	25
 	fload	13
 	ldc	0.0
 	fload	6
 	invokestatic	library/Matrix/setEntry(Llibrary/Matrix;FFF)V
 L030:
-	aload	17
 	aload	21
+	aload	25
 	fload	13
 	ldc	0.0
 	invokestatic	library/Matrix/getEntry(Llibrary/Matrix;FF)F
@@ -461,8 +484,8 @@ L031:
 	invokestatic	library/Matrix/realLessEq(FF)F
 	invokestatic	library/Matrix/floatToInt(F)I
 	ifeq	L032
-	aload	17
 	aload	21
+	aload	25
 	fload	5
 	ldc	0.0
 	invokestatic	library/Matrix/getEntry(Llibrary/Matrix;FF)F
@@ -471,8 +494,8 @@ L031:
 	fload	9
 	fdiv
 	fstore	12
-	aload	17
 	aload	21
+	aload	25
 	fload	5
 	ldc	0.0
 	invokestatic	library/Matrix/getEntry(Llibrary/Matrix;FF)F
@@ -498,22 +521,22 @@ L036:
 	invokestatic	library/Matrix/realLessEq(FF)F
 	invokestatic	library/Matrix/floatToInt(F)I
 	ifeq	L037
-	aload	17
 	aload	21
+	aload	25
 	fload	5
 	ldc	0.0
 	invokestatic	library/Matrix/getEntry(Llibrary/Matrix;FF)F
 	fload	6
-	aload	17
 	aload	21
+	aload	25
 	fload	5
 	ldc	0.0
 	invokestatic	library/Matrix/getEntry(Llibrary/Matrix;FF)F
 	fload	6
 	invokestatic	library/Matrix/getEntry(Llibrary/Matrix;FF)F
 	fload	12
-	aload	17
 	aload	21
+	aload	25
 	fload	7
 	ldc	0.0
 	invokestatic	library/Matrix/getEntry(Llibrary/Matrix;FF)F
@@ -536,8 +559,8 @@ L035:
 	goto	L031
 L032:
 L027:
-	aload	17
 	aload	21
+	aload	25
 	fload	4
 	ldc	1.0
 	fsub
@@ -552,20 +575,317 @@ L027:
 	invokestatic	library/Matrix/floatToInt(F)I
 	ifeq	L040
 L038:
-	ldc	200.0
-	fstore	14
+	ldc	300.0
+	fstore	16
 	getstatic	java/lang/System/out Ljava/io/PrintStream;
 	ldc	"%f\n"
 	iconst_1
 	anewarray	java/lang/Object
 	dup
 	iconst_0
-	fload	14
+	fload	16
 	invokestatic	java/lang/Float/valueOf(F)Ljava/lang/Float;
 	aastore
 	invokevirtual	java/io/PrintStream/printf(Ljava/lang/String;[Ljava/lang/Object;)Ljava/io/PrintStream;
 	pop
 L040:
+	ldc	350.0
+	fstore	16
+	getstatic	java/lang/System/out Ljava/io/PrintStream;
+	ldc	"%f\n"
+	iconst_1
+	anewarray	java/lang/Object
+	dup
+	iconst_0
+	fload	16
+	invokestatic	java/lang/Float/valueOf(F)Ljava/lang/Float;
+	aastore
+	invokevirtual	java/io/PrintStream/printf(Ljava/lang/String;[Ljava/lang/Object;)Ljava/io/PrintStream;
+	pop
+	ldc	0.0
+	fstore	6
+L041:
+	fload	6
+	fload	4
+	ldc	1.0
+	fsub
+	invokestatic	library/Matrix/realLessEq(FF)F
+	invokestatic	library/Matrix/floatToInt(F)I
+	ifeq	L042
+	ldc	0.0
+	fstore	5
+L043:
+	fload	5
+	fload	4
+	ldc	1.0
+	fsub
+	invokestatic	library/Matrix/realLessEq(FF)F
+	invokestatic	library/Matrix/floatToInt(F)I
+	ifeq	L044
+	fload	5
+	fload	6
+	invokestatic	library/Matrix/realEquals(FF)F
+	invokestatic	library/Matrix/floatToInt(F)I
+	ifeq	L046
+L045:
+	aload	22
+	fload	5
+	ldc	0.0
+	ldc	1.0
+	invokestatic	library/Matrix/setEntry(Llibrary/Matrix;FFF)V
+	goto	L047
+L046:
+	aload	22
+	fload	5
+	ldc	0.0
+	ldc	0.0
+	invokestatic	library/Matrix/setEntry(Llibrary/Matrix;FFF)V
+L047:
+	fload	5
+	ldc	1.0
+	fadd
+	fstore	5
+	goto	L043
+L044:
+	ldc	0.0
+	fstore	14
+L048:
+	fload	14
+	fload	4
+	ldc	1.0
+	fsub
+	invokestatic	library/Matrix/realLessEq(FF)F
+	invokestatic	library/Matrix/floatToInt(F)I
+	ifeq	L049
+	ldc	0.0
+	fstore	17
+	ldc	0.0
+	fstore	15
+L050:
+	fload	15
+	fload	14
+	ldc	1.0
+	fsub
+	invokestatic	library/Matrix/realLessEq(FF)F
+	invokestatic	library/Matrix/floatToInt(F)I
+	ifeq	L051
+	fload	17
+	aload	21
+	aload	25
+	fload	14
+	ldc	0.0
+	invokestatic	library/Matrix/getEntry(Llibrary/Matrix;FF)F
+	fload	15
+	invokestatic	library/Matrix/getEntry(Llibrary/Matrix;FF)F
+	aload	23
+	fload	15
+	ldc	0.0
+	invokestatic	library/Matrix/getEntry(Llibrary/Matrix;FF)F
+	fmul
+	fadd
+	fstore	17
+	goto	L050
+L051:
+	aload	23
+	fload	14
+	ldc	0.0
+	aload	22
+	aload	25
+	fload	14
+	ldc	0.0
+	invokestatic	library/Matrix/getEntry(Llibrary/Matrix;FF)F
+	ldc	0.0
+	invokestatic	library/Matrix/getEntry(Llibrary/Matrix;FF)F
+	fload	17
+	fsub
+	invokestatic	library/Matrix/setEntry(Llibrary/Matrix;FFF)V
+	fload	14
+	ldc	1.0
+	fadd
+	fstore	14
+	goto	L048
+L049:
+	fload	4
+	fstore	14
+L052:
+	fload	14
+	fload	4
+	ldc	1.0
+	fsub
+	invokestatic	library/Matrix/realLessEq(FF)F
+	invokestatic	library/Matrix/floatToInt(F)I
+	ifeq	L053
+	ldc	0.0
+	fstore	17
+	ldc	0.0
+	fstore	15
+L054:
+	fload	15
+	fload	14
+	ldc	1.0
+	fsub
+	invokestatic	library/Matrix/realLessEq(FF)F
+	invokestatic	library/Matrix/floatToInt(F)I
+	ifeq	L055
+	fload	17
+	aload	21
+	aload	25
+	fload	14
+	ldc	0.0
+	invokestatic	library/Matrix/getEntry(Llibrary/Matrix;FF)F
+	fload	15
+	invokestatic	library/Matrix/getEntry(Llibrary/Matrix;FF)F
+	aload	23
+	fload	15
+	ldc	0.0
+	invokestatic	library/Matrix/getEntry(Llibrary/Matrix;FF)F
+	fmul
+	fadd
+	fstore	17
+	fload	15
+	ldc	1.0
+	fadd
+	fstore	15
+	goto	L054
+L055:
+	aload	23
+	fload	14
+	ldc	0.0
+	aload	22
+	aload	25
+	fload	14
+	ldc	0.0
+	invokestatic	library/Matrix/getEntry(Llibrary/Matrix;FF)F
+	ldc	0.0
+	invokestatic	library/Matrix/getEntry(Llibrary/Matrix;FF)F
+	fload	17
+	fsub
+	invokestatic	library/Matrix/setEntry(Llibrary/Matrix;FFF)V
+	fload	14
+	ldc	1.0
+	fadd
+	fstore	14
+	goto	L052
+L053:
+	ldc	0.0
+	fstore	14
+L056:
+	fload	14
+	fload	4
+	ldc	1.0
+	fsub
+	invokestatic	library/Matrix/realLessEq(FF)F
+	invokestatic	library/Matrix/floatToInt(F)I
+	ifeq	L057
+	ldc	0.0
+	fstore	17
+	fload	4
+	ldc	1.0
+	fsub
+	fload	14
+	fsub
+	ldc	1.0
+	fadd
+	fstore	15
+L058:
+	fload	15
+	fload	4
+	ldc	1.0
+	fsub
+	invokestatic	library/Matrix/realLessEq(FF)F
+	invokestatic	library/Matrix/floatToInt(F)I
+	ifeq	L059
+	fload	17
+	aload	21
+	aload	25
+	fload	14
+	ldc	0.0
+	invokestatic	library/Matrix/getEntry(Llibrary/Matrix;FF)F
+	fload	15
+	invokestatic	library/Matrix/getEntry(Llibrary/Matrix;FF)F
+	aload	23
+	fload	15
+	ldc	0.0
+	invokestatic	library/Matrix/getEntry(Llibrary/Matrix;FF)F
+	fmul
+	fadd
+	fstore	17
+	fload	15
+	ldc	1.0
+	fadd
+	fstore	15
+	goto	L058
+L059:
+	aload	23
+	fload	4
+	ldc	1.0
+	fsub
+	fload	14
+	fsub
+	ldc	0.0
+	aload	23
+	fload	4
+	ldc	1.0
+	fsub
+	fload	14
+	fsub
+	ldc	0.0
+	invokestatic	library/Matrix/getEntry(Llibrary/Matrix;FF)F
+	fload	17
+	fsub
+	aload	21
+	aload	25
+	fload	4
+	ldc	1.0
+	fsub
+	fload	14
+	fsub
+	ldc	0.0
+	invokestatic	library/Matrix/getEntry(Llibrary/Matrix;FF)F
+	fload	4
+	ldc	1.0
+	fsub
+	fload	14
+	fsub
+	invokestatic	library/Matrix/getEntry(Llibrary/Matrix;FF)F
+	fdiv
+	invokestatic	library/Matrix/setEntry(Llibrary/Matrix;FFF)V
+	fload	14
+	ldc	1.0
+	fadd
+	fstore	14
+	goto	L056
+L057:
+	ldc	0.0
+	fstore	5
+L060:
+	fload	5
+	ldc	9.0
+	invokestatic	library/Matrix/realLessEq(FF)F
+	invokestatic	library/Matrix/floatToInt(F)I
+	ifeq	L061
+	aload	20
+	fload	5
+	fload	6
+	aload	23
+	fload	5
+	ldc	0.0
+	invokestatic	library/Matrix/getEntry(Llibrary/Matrix;FF)F
+	invokestatic	library/Matrix/setEntry(Llibrary/Matrix;FFF)V
+	fload	5
+	ldc	1.0
+	fadd
+	fstore	5
+	goto	L060
+L061:
+	fload	6
+	ldc	1.0
+	fadd
+	fstore	6
+	goto	L041
+L042:
+	aload	21
+	invokestatic	library/Matrix/printMatrix(Llibrary/Matrix;)V
 	getstatic	java/lang/System/out Ljava/io/PrintStream;
 	ldc	"%f\n"
 	iconst_1
@@ -588,12 +908,7 @@ L040:
 	aastore
 	invokevirtual	java/io/PrintStream/printf(Ljava/lang/String;[Ljava/lang/Object;)Ljava/io/PrintStream;
 	pop
-	aload	17
-	invokestatic	library/Matrix/printMatrix(Llibrary/Matrix;)V
-	invokestatic	hilbert/mf_10_hilbert()Llibrary/Matrix;
-	astore	17
-	aload	17
-	aload	17
+	aload	20
 	invokestatic	library/Matrix/printMatrix(Llibrary/Matrix;)V
 
 	invokestatic	java/time/Instant/now()Ljava/time/Instant;
@@ -618,5 +933,5 @@ L040:
 	return
 
 .limit locals 105
-.limit stack 136
+.limit stack 208
 .end method
