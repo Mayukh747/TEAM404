@@ -20,8 +20,6 @@ public class ExpressionGenerator extends CodeGenerator {
     }
 
 
-    // TODO: some of these emit methods related to real expressions do not yet consider boolean operations and function calls
-
     public void emitRealExpression(NeoParser.RealExpressionContext ctx) {
         int numberOfTerms = ctx.realTerm().size();
         for (int i = 0; i < numberOfTerms; i++) {
@@ -33,9 +31,9 @@ public class ExpressionGenerator extends CodeGenerator {
                 else if (ctx.realAddOp(i-1).getText().equals("-")) {
                     emit(Instruction.FSUB);
                 }
-                else if (ctx.realAddOp(i-1).getText().equals("||")) {
-                    emit(INVOKESTATIC, "library/Matrix/booleanOr(FF)F");
-                }
+//                else if (ctx.realAddOp(i-1).getText().equals("||")) {
+//                    emit(INVOKESTATIC, "library/Matrix/booleanOr(FF)F");
+//                }
             }
         }
     }
@@ -45,7 +43,7 @@ public class ExpressionGenerator extends CodeGenerator {
         for (int i = 0; i < numberOfFactors; i++) {
             emitRealFactor(ctx.realFactor(i));
             if (i != 0) {
-                if (ctx.realMulOp(i-1).getText().equals("*") || ctx.realMulOp(i-1).getText().equals("&&")) {    // nice shortcut
+                if (ctx.realMulOp(i-1).getText().equals("*")) {    // nice shortcut
                     emit(Instruction.FMUL);
                 }
                 else if (ctx.realMulOp(i-1).getText().equals("/")) {
@@ -68,10 +66,10 @@ public class ExpressionGenerator extends CodeGenerator {
         else if (ctx.realFunctionCall() != null) {  // is function call
             emitRealFunctionCall(ctx.realFunctionCall());
         }
-        else if (ctx.realFactor() != null) {    // is a not statement
-            emitRealFactor(ctx.realFactor());
-            emit(INVOKESTATIC, "library/Matrix/booleanNot(F)F");
-        }
+//        else if (ctx.realFactor() != null) {    // is a not statement
+//            emitRealFactor(ctx.realFactor());
+//            emit(INVOKESTATIC, "library/Matrix/booleanNot(F)F");
+//        }
         else {                                  // is parenthesized realExpression
             emitRealExpression(ctx.realExpression());
         }
@@ -165,10 +163,10 @@ public class ExpressionGenerator extends CodeGenerator {
         else if (ctx.matrixFunctionCall() != null) {     // is function call
             emitMatrixFunctionCall(ctx.matrixFunctionCall());
         }
-        else if (ctx.matrixFactor() != null) {      // is not statement
-            emitMatrixFactor(ctx.matrixFactor());
-            emit(INVOKESTATIC, "library/Matrix/booleanNot(F)F");
-        }
+//        else if (ctx.matrixFactor() != null) {      // is not statement
+//            emitMatrixFactor(ctx.matrixFactor());
+//            emit(INVOKESTATIC, "library/Matrix/booleanNot(F)F");
+//        }
         else if (ctx.matrixExpression() != null) {   // is parenthesized matrix expression
             emitMatrixExpression(ctx.matrixExpression());
         }
@@ -193,5 +191,32 @@ public class ExpressionGenerator extends CodeGenerator {
         }
         functionSignature += ")Llibrary/Matrix;";
         emit(INVOKESTATIC, programName +  "/" + ctx.matrixFunctionName().getText() + functionSignature);
+    }
+
+    public void emitBooleanExpression(NeoParser.BooleanExpressionContext ctx) {
+        int numberOfTerms = ctx.booleanTerm().size();
+        for (int i = 0; i < numberOfTerms; i++) {
+            emitBooleanTerm(ctx.booleanTerm(i));
+            if (i != 0) {
+                emit(INVOKESTATIC, "library/Matrix/booleanOr(FF)F");
+            }
+        }
+    }
+
+    public void emitBooleanTerm(NeoParser.BooleanTermContext ctx) {
+        int numberOfFactors = ctx.booleanFactor().size();
+        for (int i = 0; i < numberOfFactors; i++) {
+            emitBooleanFactor(ctx.booleanFactor(i));
+            if (i != 0) {
+                emit(Instruction.FMUL);
+            }
+        }
+    }
+
+    public void emitBooleanFactor(NeoParser.BooleanFactorContext ctx){
+        compiler.visitExpression(ctx.expression());
+        // logic to check !
+        if(ctx.getText().charAt(0) == '!')
+            emit(INVOKESTATIC, "library/Matrix/booleanNot(F)F");
     }
 }

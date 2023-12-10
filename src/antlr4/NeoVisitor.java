@@ -1,4 +1,4 @@
-// Generated from /Users/mayukh/IdeaProjects/TEAM404/Neo.g4 by ANTLR 4.13.1
+// Generated from C:/Users/natha/Dev/CompilerProject/Neo.g4 by ANTLR 4.13.1
 
     package antlr4;
     import java.util.HashMap;
@@ -135,6 +135,24 @@ public interface NeoVisitor<T> extends ParseTreeVisitor<T> {
 	 * @return the visitor result
 	 */
 	T visitReturnStatement(NeoParser.ReturnStatementContext ctx);
+	/**
+	 * Visit a parse tree produced by {@link NeoParser#booleanExpression}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitBooleanExpression(NeoParser.BooleanExpressionContext ctx);
+	/**
+	 * Visit a parse tree produced by {@link NeoParser#booleanTerm}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitBooleanTerm(NeoParser.BooleanTermContext ctx);
+	/**
+	 * Visit a parse tree produced by {@link NeoParser#booleanFactor}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitBooleanFactor(NeoParser.BooleanFactorContext ctx);
 	/**
 	 * Visit a parse tree produced by {@link NeoParser#expression}.
 	 * @param ctx the parse tree

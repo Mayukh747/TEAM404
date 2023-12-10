@@ -1,4 +1,4 @@
-// Generated from /Users/mayukh/IdeaProjects/TEAM404/Neo.g4 by ANTLR 4.13.1
+// Generated from C:/Users/natha/Dev/CompilerProject/Neo.g4 by ANTLR 4.13.1
 
     package antlr4;
     import java.util.HashMap;
@@ -212,6 +212,36 @@ public interface NeoListener extends ParseTreeListener {
 	 * @param ctx the parse tree
 	 */
 	void exitReturnStatement(NeoParser.ReturnStatementContext ctx);
+	/**
+	 * Enter a parse tree produced by {@link NeoParser#booleanExpression}.
+	 * @param ctx the parse tree
+	 */
+	void enterBooleanExpression(NeoParser.BooleanExpressionContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link NeoParser#booleanExpression}.
+	 * @param ctx the parse tree
+	 */
+	void exitBooleanExpression(NeoParser.BooleanExpressionContext ctx);
+	/**
+	 * Enter a parse tree produced by {@link NeoParser#booleanTerm}.
+	 * @param ctx the parse tree
+	 */
+	void enterBooleanTerm(NeoParser.BooleanTermContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link NeoParser#booleanTerm}.
+	 * @param ctx the parse tree
+	 */
+	void exitBooleanTerm(NeoParser.BooleanTermContext ctx);
+	/**
+	 * Enter a parse tree produced by {@link NeoParser#booleanFactor}.
+	 * @param ctx the parse tree
+	 */
+	void enterBooleanFactor(NeoParser.BooleanFactorContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link NeoParser#booleanFactor}.
+	 * @param ctx the parse tree
+	 */
+	void exitBooleanFactor(NeoParser.BooleanFactorContext ctx);
 	/**
 	 * Enter a parse tree produced by {@link NeoParser#expression}.
 	 * @param ctx the parse tree

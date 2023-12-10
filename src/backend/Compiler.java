@@ -118,7 +118,7 @@ public class Compiler extends NeoBaseVisitor<Object>{
                 code.emit(Instruction.INVOKESTATIC, "library/Matrix/realLessEq(FF)F");
             }
         }
-        else {          // matrix expression
+        else if (ctx.matrixExpression().size() > 0){          // matrix expression
             if (ctx.matrixRelOp() == null) {
                 visitMatrixExpression(ctx.matrixExpression(0));
             }
@@ -133,6 +133,9 @@ public class Compiler extends NeoBaseVisitor<Object>{
                 code.emit(Instruction.INVOKESTATIC, "library/Matrix/matrixEquals(Llibrary/Matrix;Llibrary/Matrix;)F");
                 code.emit(Instruction.INVOKESTATIC, "library/Matrix/booleanNot(F)F");
             }
+        }
+        else {      // boolean expression
+            expressionCode.emitBooleanExpression(ctx.booleanExpression());
         }
 
         return null;

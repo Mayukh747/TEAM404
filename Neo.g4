@@ -50,8 +50,14 @@ printStatement: PRINT '(' variable ')';
 
 returnStatement: RETURN expression ;
 
+
+booleanExpression : booleanTerm ('||' booleanTerm)*;
+booleanTerm : booleanFactor ('&&' booleanFactor)*;
+booleanFactor : ('!')? '(' expression ')';
+
 expression : realExpression (realRelOp realExpression)?
            | matrixExpression (matrixRelOp matrixExpression)?
+           | booleanExpression
            ;
 
 realExpression : realTerm (realAddOp realTerm)* ;
@@ -63,7 +69,7 @@ realFactor     : realVariable
                | realFunctionCall
 //               | matrixVariable '[' INTEGER ']' '[' INTEGER ']'
                | matrixEntry
-               | '!' realFactor
+//               | '!' realFactor
                | '(' realExpression ')'
                ;
 
@@ -78,14 +84,14 @@ realFunctionName : 'rf_' IDENTIFIER ;
 realFunctionDefinition: realFunctionName '(' variableList ')' variableDeclarationList compoundStatement;
 
 realRelOp : '=' | '!=' | '<=' ;
-realAddOp : '+' | '-' | '||' ;
-realMulOp : '*' | '/' | '&&' ;
+realAddOp : '+' | '-' ;
+realMulOp : '*' | '/' ;
 
 matrixExpression : matrixTerm (matrixAddOp matrixTerm)* ;
 matrixTerm      :   matrixFactor (matrixMulOp matrixFactor)*;
 matrixFactor    :   matrixVariable
                 |   matrixFunctionCall
-                |   '!'matrixFactor
+//                |   '!'matrixFactor
                 |   '('matrixExpression')'
                 ;
 
@@ -97,8 +103,8 @@ matrixFunctionName: 'mf_' INTEGER '_' IDENTIFIER;
 matrixFunctionDefinition: matrixFunctionName '(' variableList ')' variableDeclarationList compoundStatement;
 
 matrixRelOp : '=' | '!=' ;
-matrixAddOp : '+' | '-' | '||' ;
-matrixMulOp : '*' | '&&' ;
+matrixAddOp : '+' | '-' ;
+matrixMulOp : '*' ;
 
 PROGRAM   : P R O G R A M ;
 WHILE     : W H I L E ;
