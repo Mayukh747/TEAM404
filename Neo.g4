@@ -67,9 +67,10 @@ realTerm       : realFactor (realMulOp realFactor)* ;
 realFactor     : realVariable
                | realNumber
                | realFunctionCall
+               | detTerm
 //               | matrixVariable '[' INTEGER ']' '[' INTEGER ']'
                | matrixEntry
-//               | '!' realFactor
+               | '!' realFactor
                | '(' realExpression ')'
                ;
 
@@ -91,9 +92,13 @@ matrixExpression : matrixTerm (matrixAddOp matrixTerm)* ;
 matrixTerm      :   matrixFactor (matrixMulOp matrixFactor)*;
 matrixFactor    :   matrixVariable
                 |   matrixFunctionCall
-//                |   '!'matrixFactor
+                |   invTerm
+                |   '!'matrixFactor
                 |   '('matrixExpression')'
                 ;
+
+invTerm : INV '(' matrixVariable ')';
+detTerm : DET '(' matrixVariable ')';
 
 matrixVariable: 'm_' INTEGER '_' IDENTIFIER;
 matrixEntry : matrixVariable '[' realExpression '][' realExpression ']';
@@ -113,6 +118,8 @@ ELSE      : E L S E ;
 RETURN    : R E T U R N;
 PRINT     : P R I N T;
 VAR       : V A R;
+INV       : I N V;
+DET       : D E T;
 
 fragment A : ('a' | 'A') ;
 fragment B : ('b' | 'B') ;

@@ -130,41 +130,7 @@ m_10_inv, m_10_H, m_10_Hinv, m_10_LU, m_10_b, m_10_x, m_10_scales, m_10_ps{
             r_i := r_i + 1.0;
         };
 
-        r_isolve := 0.0;
-        while(r_isolve <= r_n - 1.0){
-            r_dot := 0.0;
-            r_jsolve := 0.0;
-            while(r_jsolve <= r_isolve - 1.0){
-                r_dot := r_dot + m_10_LU[m_10_ps[r_isolve][0.0]][r_jsolve] * m_10_x[r_jsolve][0.0];
-            };
-            m_10_x[r_isolve][0.0] := m_10_b[m_10_ps[r_isolve][0.0]][0.0] - r_dot;
-            r_isolve := r_isolve + 1.0;
-        };
 
-        r_isolve := r_n;
-        while(r_isolve <= r_n - 1.0){
-            r_dot := 0.0;
-            r_jsolve := 0.0;
-            while(r_jsolve <= r_isolve - 1.0){
-                r_dot := r_dot + m_10_LU[m_10_ps[r_isolve][0.0]][r_jsolve] * m_10_x[r_jsolve][0.0];
-                r_jsolve := r_jsolve + 1.0;
-            };
-            m_10_x[r_isolve][0.0] := m_10_b[m_10_ps[r_isolve][0.0]][0.0] - r_dot;
-            r_isolve := r_isolve + 1.0;
-        };
-
-
-        r_isolve := 0.0;
-        while(r_isolve <= r_n - 1.0){
-            r_dot := 0.0;
-            r_jsolve := r_n - 1.0 - r_isolve + 1.0;
-            while(r_jsolve <= r_n - 1.0){
-                r_dot := r_dot + m_10_LU[m_10_ps[r_isolve][0.0]][r_jsolve] * m_10_x[r_jsolve][0.0];
-                r_jsolve := r_jsolve + 1.0;
-            };
-            m_10_x[r_n - 1.0 - r_isolve][0.0] := (m_10_x[r_n - 1.0 - r_isolve][0.0] - r_dot)/m_10_LU[m_10_ps[r_n - 1.0 - r_isolve][0.0]][r_n - 1.0 - r_isolve];
-            r_isolve := r_isolve + 1.0;
-        };
 
         r_i := 0.0;
         while(r_i <= 9.0){

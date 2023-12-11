@@ -43,7 +43,7 @@ public class ExpressionGenerator extends CodeGenerator {
         for (int i = 0; i < numberOfFactors; i++) {
             emitRealFactor(ctx.realFactor(i));
             if (i != 0) {
-                if (ctx.realMulOp(i-1).getText().equals("*")) {    // nice shortcut
+                if (ctx.realMulOp(i-1).getText().equals("*") || ctx.realMulOp(i-1).getText().equals("&&")) {    // nice shortcut
                     emit(Instruction.FMUL);
                 }
                 else if (ctx.realMulOp(i-1).getText().equals("/")) {
@@ -65,6 +65,10 @@ public class ExpressionGenerator extends CodeGenerator {
         }
         else if (ctx.realFunctionCall() != null) {  // is function call
             emitRealFunctionCall(ctx.realFunctionCall());
+        }
+        else if (ctx.detTerm() != null){
+            emitMatrixVariable(ctx.detTerm().matrixVariable());
+            emit(INVOKESTATIC, "library/Matrix/determinant(Llibrary/Matrix;)F");
         }
 //        else if (ctx.realFactor() != null) {    // is a not statement
 //            emitRealFactor(ctx.realFactor());
@@ -162,6 +166,10 @@ public class ExpressionGenerator extends CodeGenerator {
         }
         else if (ctx.matrixFunctionCall() != null) {     // is function call
             emitMatrixFunctionCall(ctx.matrixFunctionCall());
+        }
+        else if (ctx.invTerm() != null){
+            emitMatrixVariable(ctx.invTerm().matrixVariable());
+            emit(INVOKESTATIC, "library/Matrix/inverse(Llibrary/Matrix;)Llibrary/Matrix;");
         }
 //        else if (ctx.matrixFactor() != null) {      // is not statement
 //            emitMatrixFactor(ctx.matrixFactor());

@@ -66,6 +66,87 @@ public class Matrix {
         return new Matrix(res);
     }
 
+    public static float determinant(Matrix m) {
+        float[][] matrix = m.mat;
+        int n = matrix.length;
+        float det = 0;
+
+        if (n == 1) {
+            return matrix[0][0]; // Base case: If matrix size is 1x1, return the single element
+        } else if (n == 2) {
+            return matrix[0][0] * matrix[1][1] - matrix[0][1] * matrix[1][0]; // Base case: For 2x2 matrix
+        } else {
+            for (int col = 0; col < n; col++) {
+                float[][] subMatrix = new float[n - 1][n - 1];
+                for (int i = 1; i < n; i++) {
+                    int k = 0;
+                    for (int j = 0; j < n; j++) {
+                        if (j != col) {
+                            subMatrix[i - 1][k] = matrix[i][j];
+                            k++;
+                        }
+                    }
+                }
+                det += java.lang.Math.pow(-1, col) * matrix[0][col] * determinant(new Matrix(subMatrix));
+            }
+        }
+        return det;
+    }
+
+    public static Matrix inverse(Matrix m) {
+
+
+        float[][] matrix = m.mat;
+
+        int n = matrix.length;
+        if (n != matrix[0].length) {
+            // Check if the matrix is square
+            throw new IllegalArgumentException("Matrix should be square for inversion.");
+        }
+
+        float[][] augmentedMatrix = new float[n][2 * n];
+        float[][] invertedMatrix = new float[n][n];
+
+        // Create an augmented matrix [A | I] where I is the identity matrix
+        for (int i = 0; i < n; i++) {
+            System.arraycopy(matrix[i], 0, augmentedMatrix[i], 0, n);
+            for (int j = 0; j < matrix.length; j++){
+                double scale = Math.pow(10, 8);
+                augmentedMatrix[i][j] = (float) (Math.round(augmentedMatrix[i][j] * scale) / scale);
+            }
+            augmentedMatrix[i][n + i] = 1.0f;
+        }
+
+        // Perform Gaussian elimination
+        for (int i = 0; i < n; i++) {
+            float pivot = augmentedMatrix[i][i];
+            if (pivot == 0) {
+                throw new ArithmeticException("Matrix is singular, cannot be inverted.");
+            }
+
+            for (int j = 0; j < 2 * n; j++) {
+                augmentedMatrix[i][j] /= pivot;
+            }
+
+            for (int k = 0; k < n; k++) {
+                if (k != i) {
+                    float factor = augmentedMatrix[k][i];
+                    for (int j = 0; j < 2 * n; j++) {
+                        augmentedMatrix[k][j] -= factor * augmentedMatrix[i][j];
+                    }
+                }
+            }
+        }
+
+        // Extract the inverted matrix from the augmented matrix
+        for (int i = 0; i < n; i++) {
+            System.arraycopy(augmentedMatrix[i], n, invertedMatrix[i], 0, n);
+        }
+
+        return new Matrix(invertedMatrix);
+    }
+
+
     public static float getEntry(Matrix matrix, float row, float col) {
         return matrix.mat[(int) row][(int) col];
     }
@@ -78,10 +159,11 @@ public class Matrix {
         float[][] mat = matrix.mat;
         for (int row = 0; row < mat.length; row++) {
             for (int col = 0; col < mat[row].length; col++) {
-                System.out.printf("%4f\t", mat[row][col]);
+                System.out.printf("%.4f\t", mat[row][col]);
             }
             System.out.println();
         }
+        System.out.println();
     }
 
     public static float booleanNot(float value) {
