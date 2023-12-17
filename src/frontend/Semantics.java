@@ -67,15 +67,31 @@ public class Semantics extends NeoBaseVisitor<Object> {
 
     @Override
     public Object visitAssignmentStatement(NeoParser.AssignmentStatementContext ctx) {
-        if (ctx.lhs().matrixEntry() != null || ctx.lhs().variable().realVariable() != null) {          // lhs is real variable or matrix entry
+        if (ctx.lhs().matrixEntry() != null) {          // lhs is matrix entry
+
+            visitMatrixEntry(ctx.lhs().matrixEntry());
+
             if (ctx.rhs().expression().matrixExpression().size() > 0) {   // rhs is a matrix expression
                 error.flag(TYPE_MISMATCH, ctx);
             }
+
+            visitExpression(ctx.rhs().expression());
+        }
+        else if (ctx.lhs().variable().realVariable() != null) {     // lhs is real variable
+
+            visitRealVariable(ctx.lhs().variable().realVariable());
+            if (ctx.rhs().expression().matrixExpression().size() > 0) {   // rhs is a matrix expression
+                error.flag(TYPE_MISMATCH, ctx);
+            }
+
+            visitExpression(ctx.rhs().expression());
         }
         else if (ctx.lhs().variable().matrixVariable() != null) {   // lhs is matrix variable
             if (ctx.rhs().expression().realExpression().size() > 0) {     // rhs is a real expression
                 error.flag(TYPE_MISMATCH, ctx);
             }
+
+            visitMatrixVariable(ctx.lhs().variable().matrixVariable());
 
             int lhsMatrixSize = Integer.valueOf(ctx.lhs().variable().matrixVariable().INTEGER().getText());
             int rhsMatrixSize = (int) visitExpression(ctx.rhs().expression());      // checks that rhs is valid along the way
@@ -249,11 +265,14 @@ public class Semantics extends NeoBaseVisitor<Object> {
 
         for (int i = 0; i < ctx.argumentList().argument().size(); i ++){
             int size = (int) visitExpression(aCtx.get(i).expression());
-            if (size == 0 ^ pCtx.get(i).getSize() == 0){        // size == 0 means real
+            // size == 0 means that it's real
+            // check that one is real and another is a matrix
+            if (size == 0 ^ pCtx.get(i).getSize() == 0){
                 error.flag(TYPE_MISMATCH, ctx);
                 return null;
             }
-            else {
+            // if sizes don't match, it's a matrix mismatch
+            else if (size != pCtx.get(i).getSize()){
                 error.flag(MATRIX_SIZE_MISMATCH, ctx);
                 return null;
             }
@@ -307,7 +326,9 @@ public class Semantics extends NeoBaseVisitor<Object> {
 
     @Override
     public Object visitMatrixEntry(NeoParser.MatrixEntryContext ctx) {
-        String identifier = ctx.getText();
+        String identifier = ctx.matrixVariable().getText();
+        visitRealExpression(ctx.realExpression(0));
+        visitRealExpression(ctx.realExpression(1));
         if (localVarSymtab.lookup(identifier) == null) error.flag(UNDECLARED_IDENTIFIER, ctx);
         return null;
     }

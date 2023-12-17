@@ -50,7 +50,6 @@ L001:
 	fload	0
 	fmul
 	fstore_0
-	fload	0
 L003:
 	fload	0
 
@@ -129,7 +128,7 @@ L005:
 	areturn
 
 .limit locals 5
-.limit stack 13
+.limit stack 12
 .end method
 
 ;
@@ -172,3 +171,50 @@ L005:
 	astore	7
 	aload	7
 
+	invokestatic	hilbert/mf_10_hilbert()Llibrary/Matrix;
+	astore	4
+	aload	4
+	aload	4
+	invokestatic	library/Matrix/printMatrix(Llibrary/Matrix;)V
+	aload	4
+	invokestatic	library/Matrix/inverse(Llibrary/Matrix;)Llibrary/Matrix;
+	astore	5
+	aload	5
+	aload	5
+	invokestatic	library/Matrix/printMatrix(Llibrary/Matrix;)V
+	aload	4
+	aload	5
+	invokestatic	library/Matrix/mult(Llibrary/Matrix;Llibrary/Matrix;)Llibrary/Matrix;
+	astore	6
+	aload	6
+	aload	5
+	invokestatic	library/Matrix/inverse(Llibrary/Matrix;)Llibrary/Matrix;
+	astore	7
+	aload	7
+	aload	7
+	invokestatic	library/Matrix/printMatrix(Llibrary/Matrix;)V
+
+	invokestatic	java/time/Instant/now()Ljava/time/Instant;
+	astore_2
+	aload_1
+	aload_2
+	invokestatic	java/time/Duration/between(Ljava/time/temporal/Temporal;Ljava/time/temporal/Temporal;)Ljava/time/Duration;
+	invokevirtual	java/time/Duration/toMillis()J
+	lstore_3
+	getstatic	java/lang/System/out Ljava/io/PrintStream;
+	ldc	"\n[%,d milliseconds execution time.]\n"
+	iconst_1
+	anewarray	java/lang/Object
+	dup
+	iconst_0
+	lload_3
+	invokestatic	java/lang/Long/valueOf(J)Ljava/lang/Long;
+	aastore
+	invokevirtual	java/io/PrintStream/printf(Ljava/lang/String;[Ljava/lang/Object;)Ljava/io/PrintStream;
+	pop
+
+	return
+
+.limit locals 105
+.limit stack 45
+.end method

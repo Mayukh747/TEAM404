@@ -84,6 +84,9 @@ public class Neo {
             System.out.println("Object file not created or modified.");
             return;
         }
+        else {
+            System.out.println("There were no semantic errors.");
+        }
 
         // Pass 3: Compile the Pascal program.
         System.out.printf("\nPASS 3 Compilation: ");

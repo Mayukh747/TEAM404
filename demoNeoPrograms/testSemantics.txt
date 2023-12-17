@@ -1,0 +1,31 @@
+program hilbert;
+
+rf_abs(r_x)
+var {
+    if(r_x <= 0.0){
+        r_x:= -1.0 * r_x;
+        return r_x;
+    };
+    return r_x;
+}
+
+mf_10_hilbert()
+var m_10_h, r_i, r_j, r_temp{
+    while(r_i <= 9.0){
+        while(r_j <= 9.0){
+            r_temp := 1.0/(r_z + r_j + 1.0);
+            m_10_h[r_i][r_j] := r_temp;
+            r_j := r_j + 1.0;
+        };
+        r_j := 0.0;
+        r_i := r_i + 1.0;
+    };
+}
+
+main
+var m_10_m, m_10_mInv, m_10_prod, m_10_a{
+    r_a := rf_abs(r_b);
+
+
+
+}
