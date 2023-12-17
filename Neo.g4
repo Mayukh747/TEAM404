@@ -70,7 +70,7 @@ realFactor     : realVariable
                | detTerm
 //               | matrixVariable '[' INTEGER ']' '[' INTEGER ']'
                | matrixEntry
-               | '!' realFactor
+//               | '!' realFactor
                | '(' realExpression ')'
                ;
 
@@ -93,7 +93,6 @@ matrixTerm      :   matrixFactor (matrixMulOp matrixFactor)*;
 matrixFactor    :   matrixVariable
                 |   matrixFunctionCall
                 |   invTerm
-                |   '!'matrixFactor
                 |   '('matrixExpression')'
                 ;
 

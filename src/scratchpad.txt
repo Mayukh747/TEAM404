@@ -4,6 +4,7 @@ rf_abs(r_x)
 var {
     if(r_x <= 0.0){
         r_x:= -1.0 * r_x;
+        return r_x;
     };
     return r_x;
 }
@@ -23,9 +24,5 @@ var m_10_h, r_i, r_j, r_temp{
 
 main
 var m_10_m, m_10_mInv, m_10_prod, m_10_a{
-
-    m_10_m := mf_10_hilbert();
-
-    m_10_mInv := INV(m_10_m);
-
+    r_a := rf_abs(r_b);
 }

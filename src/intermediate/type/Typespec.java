@@ -15,6 +15,7 @@ import java.util.ArrayList;
 public class Typespec
 {
     private Form form;               // type form
+    private int size;                // size of matrix
     private SymtabEntry identifier;  // type identifier
     private TypeInfo info;           // type information
     
@@ -52,7 +53,19 @@ public class Typespec
         // Initialize the appropriate type information.
         switch (form)
         {
-                
+            default: break;
+        }
+    }
+
+    public Typespec(Form form, int s)
+    {
+        this.form = form;
+        this.identifier = null;
+        this.size = s;
+
+        // Initialize the appropriate type information.
+        switch (form)
+        {
             default: break;
         }
     }
@@ -96,5 +109,5 @@ public class Typespec
         return this;
     }
 
-
+    public int getSize() {return size;}
 }
