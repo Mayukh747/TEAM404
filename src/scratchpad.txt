@@ -1,41 +1,48 @@
-program hilbert;
+program twoByTwo;
 
-rf_abs(r_x)
+rf_determinant(m_2_matrix)
 var {
-    if(r_x <= 0.0){
-        r_x:= -1.0 * r_x;
-    };
-    return r_x;
+    return m_2_matrix[0.0][0.0] * m_2_matrix[1.0][1.0] - m_2_matrix[0.0][1.0] * m_2_matrix[1.0][0.0];
 }
 
-mf_10_hilbert()
-var m_10_h, r_i, r_j, r_temp{
-    while(r_i <= 9.0){
-        while(r_j <= 9.0){
-            r_temp := 1.0/(r_i + r_j + 1.0);
-            m_10_h[r_i][r_j] := r_temp;
-            r_j := r_j + 1.0;
-        };
-        r_j := 0.0;
-        r_i := r_i + 1.0;
-    };
+mf_2_inverse(m_2_matrix)
+var m_2_result, r_d, r_temp {
+    r_d := rf_determinant(m_2_matrix);
+    r_temp := m_2_matrix[0.0][0.0];
+    m_2_result[0.0][0.0] := m_2_matrix[1.0][1.0] / r_d;
+    m_2_result[1.0][1.0] := r_temp / r_d;
+    m_2_result[0.0][1.0] := m_2_matrix[0.0][1.0] * (-1.0) / r_d;
+    m_2_result[1.0][0.0] := m_2_matrix[1.0][0.0] * (-1.0) / r_d;
+    return m_2_result;
 }
 
 main
-var m_10_m, m_10_mInv, m_10_prod, m_10_a, r_a {
+var m_2_matrix, m_2_matrixInverse, m_2_matrixProduct, r_matrixDet, m_2_invertedMatrix,
+r_matrixInverseDet, r_matrixProductDet, r_matrixDetProduct, r_matrixDet1 {
+    m_2_matrix[0.0][0.0] := 2.0;
+    m_2_matrix[1.0][0.0] := 3.0;
+    m_2_matrix[0.0][1.0] := -1.0;
+    m_2_matrix[1.0][1.0] := -5.0;
 
-    m_10_m := mf_10_hilbert();
-    print(m_10_m);
+    m_2_matrixInverse := mf_2_inverse(m_2_matrix);
+    m_2_matrixProduct := m_2_matrix * m_2_matrixInverse;
+    r_matrixDet := rf_determinant(m_2_matrix);
+    r_matrixInverseDet := rf_determinant(m_2_matrixInverse);
+    r_matrixProductDet := rf_determinant(m_2_matrixProduct);
+    r_matrixDetProduct := rf_determinant(m_2_matrix) * rf_determinant(m_2_matrixInverse);
 
-    m_10_mInv := INV(m_10_m);
-    print(m_10_mInv);
 
-    m_10_prod := m_10_m * m_10_mInv;
+    print(m_2_matrix);
+    print(m_2_matrixInverse);
+    print(m_2_matrixProduct);
+    print(r_matrixDet);
+    print(r_matrixInverseDet);
+    print(r_matrixProductDet);
+    print(r_matrixDetProduct);
 
-    m_10_a := INV(m_10_mInv);
-    print(m_10_a);
+    m_2_invertedMatrix := inv(m_2_matrix);
+    r_matrixDet1 := det(m_2_matrix);
 
-    r_a := mf_10_hilbert(r_e);
-    r_a := rf_abs(0.0) + rf_abs(rf_abs(r_a));
-    r_a := rf_abs(m_10_a);
+    print(m_2_invertedMatrix);
+    print(r_matrixDet1);
 }

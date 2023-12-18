@@ -113,15 +113,21 @@ public class Semantics extends NeoBaseVisitor<Object> {
             }
             return 0;
         }
-        //Expression is a matrix expression
-        List<NeoParser.MatrixExpressionContext> l = ctx.matrixExpression();
-        int size = (int) visitMatrixExpression(l.get(0));
-        for(int i = 1; i < l.size(); i++){
-            if (size != (int) visitMatrixExpression(l.get(i))){
-                error.flag(MATRIX_SIZE_MISMATCH, ctx);
-            }
+        else if (ctx.booleanExpression() != null){
+            return visit(ctx.booleanExpression());
         }
-        return size;
+        else if (ctx.matrixExpression().size() > 0) {
+            //Expression is a matrix expression
+            List<NeoParser.MatrixExpressionContext> l = ctx.matrixExpression();
+            int size = (int) visitMatrixExpression(l.get(0));
+            for (int i = 1; i < l.size(); i++) {
+                if (size != (int) visitMatrixExpression(l.get(i))) {
+                    error.flag(MATRIX_SIZE_MISMATCH, ctx);
+                }
+            }
+            return size;
+        }
+        return null;
     }
 
     @Override
@@ -154,7 +160,10 @@ public class Semantics extends NeoBaseVisitor<Object> {
         localVarSymtab = new Symtab(1);
         ArrayList<Typespec> declaredParameterTypes = new ArrayList<Typespec>();
         for (NeoParser.VariableContext vCtx: ctx.variableList().variable()){
-            Typespec t = new Typespec(vCtx.realVariable() != null ? Typespec.Form.MATRIX : Typespec.Form.SCALAR);
+            int paramSize = vCtx.matrixVariable() != null ?
+                    Integer.valueOf(vCtx.matrixVariable().INTEGER().getText()) :
+                    0;
+            Typespec t = new Typespec(vCtx.matrixVariable() != null ? Typespec.Form.MATRIX : Typespec.Form.SCALAR, paramSize);
             declaredParameterTypes.add(t);
             localVarSymtab.enter(vCtx.getText(), 0);
         }
@@ -180,7 +189,10 @@ public class Semantics extends NeoBaseVisitor<Object> {
         ArrayList<Typespec> declaredParameterTypes = new ArrayList<Typespec>();
         localVarSymtab = new Symtab(1);
         for (NeoParser.VariableContext vCtx: ctx.variableList().variable()){
-            Typespec t = new Typespec(vCtx.realVariable() != null ? Typespec.Form.MATRIX : Typespec.Form.SCALAR);
+            int paramSize = vCtx.matrixVariable() != null ?
+                    Integer.valueOf(vCtx.matrixVariable().INTEGER().getText()) :
+                    0;
+            Typespec t = new Typespec(vCtx.matrixVariable() != null ? Typespec.Form.MATRIX : Typespec.Form.SCALAR, paramSize);
             declaredParameterTypes.add(t);
             localVarSymtab.enter(vCtx.getText(), 0);
         }
@@ -302,7 +314,7 @@ public class Semantics extends NeoBaseVisitor<Object> {
                 error.flag(TYPE_MISMATCH, ctx);
                 return null;
             }
-            else {
+            else if (size != pCtx.get(i).getSize()) {
                 error.flag(MATRIX_SIZE_MISMATCH, ctx);
                 return null;
             }

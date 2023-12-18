@@ -1,0 +1,76 @@
+program treeTheoremTest;
+
+mf_4_adjacencyToDegree(m_4_adjacencyMatrix) 
+var r_row, r_col, r_degree, m_4_degreeMatrix {
+    r_row := 0.0;
+    while (r_row <= 3.5) {
+        r_degree := 0.0;
+        r_col := 0.0;
+        while (r_col <= 3.5) {
+            r_degree := r_degree + m_4_adjacencyMatrix[r_row][r_col];
+            r_col := r_col + 1.0;
+        };
+        m_4_degreeMatrix[r_row][r_row] := r_degree;
+        r_row := r_row + 1.0;
+    };
+    return m_4_degreeMatrix;
+}
+
+mf_4_makeLaplacian(m_4_degreeMatrix, m_4_adjacencyMatrix)
+var {
+    return m_4_degreeMatrix - m_4_adjacencyMatrix;
+}
+
+mf_3_removeRowAndCol(m_4_matrix, r_rowToRemove, r_colToRemove)
+var m_3_result, r_row, r_col, r_reducedRow, r_reducedCol {
+    r_row := 0.0;
+    while (r_row <= 3.5) {
+        r_col := 0.0;
+        while (r_col <= 3.5) {
+            if ((r_row != r_rowToRemove) && (r_col != r_colToRemove)) {
+                if ((r_rowToRemove <= r_row) && (r_rowToRemove != r_row)) {
+                    r_reducedRow := r_row - 1.0;
+                }
+                else {
+                    r_reducedRow := r_row;
+                };
+                if ((r_colToRemove <= r_col) && (r_colToRemove != r_col)) {
+                    r_reducedCol := r_col - 1.0;
+                }
+                else {
+                    r_reducedCol := r_col;
+                };
+                m_3_result[r_reducedRow][r_reducedCol] := m_4_matrix[r_row][r_col];
+            };
+            r_col := r_col + 1.0;
+        };
+        r_row := r_row + 1.0;
+    };
+    return m_3_result;
+}
+
+main
+var m_4_adjacencyMatrix, m_4_degreeMatrix, m_4_laplacianMatrix, m_3_reducedLaplacian, r_col, r_row, r_determinant {
+    r_row := 0.0;
+    while (r_row <= 3.5) {
+        r_col := 0.0;
+        while (r_col <= 3.5) {
+            if (r_row != r_col) {
+                m_4_adjacencyMatrix[r_row][r_col] := 1.0;
+            };
+            r_col := r_col + 1.0;
+        };
+        r_row := r_row + 1.0;
+    };
+
+    m_4_degreeMatrix := mf_4_adjacencyToDegree(m_4_adjacencyMatrix);
+    m_4_laplacianMatrix := mf_4_makeLaplacian(m_4_degreeMatrix, m_4_adjacencyMatrix);
+    m_3_reducedLaplacian := mf_3_removeRowAndCol(m_4_laplacianMatrix, 0.0, 0.0);
+    r_determinant := det(m_3_reducedLaplacian);
+    
+    print(m_4_adjacencyMatrix);
+    print(m_4_degreeMatrix);
+    print(m_4_laplacianMatrix);
+    print(m_3_reducedLaplacian);
+    print(r_determinant);
+}
